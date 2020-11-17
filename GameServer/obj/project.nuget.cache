@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "8Avwi7XGqaJ0xvti7O5qWPMlG0NSTR9kiKbr76aCNmFPNkWzc6EWk/3aIQorLrsuPfjFIGBx3pcjNtaHXuqt4w==",
+  "dgSpecHash": "fZFdNrB4IvyWXCbNNQey0un07HEU3vcbN/alb4lxNIokZVGlsEw6IIIHvAEMTfU1F7uC4fC0JEoZ+ZqPdPEFFw==",
   "success": true,
-  "projectFilePath": "D:\\GameServer\\GameServer.csproj",
+  "projectFilePath": "D:\\NetworkingTutorial\\GameServer\\GameServer.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
