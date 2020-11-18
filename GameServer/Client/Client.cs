@@ -26,8 +26,8 @@ namespace GameServer
 			{
 				if (client.Id != Id)
 				{
-					Server.SpawnRemotePlayer(Id, client.player);
-					Server.SpawnRemotePlayer(client.Id, player);
+					Server.SpawnPlayer(Id, client.player);
+					Server.SpawnPlayer(client.Id, player);
 				}
 			}
 

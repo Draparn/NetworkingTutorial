@@ -119,16 +119,10 @@ namespace GameServer
 		#endregion
 
 		#region Game related
-		public static void SpawnLocalPlayer(int id, Player player)
+		public static void SpawnPlayer(int id, Player player)
 		{
 
 		}
-
-		public static void SpawnRemotePlayer(int id, Player player)
-		{
-
-		}
-
 		#endregion
 
 	}
