@@ -1,34 +1,31 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets.Scripts.Client
+public class UIManager : MonoBehaviour
 {
-	public class UIManager : MonoBehaviour
+	public static UIManager Instance;
+
+	public GameObject StartMenu;
+
+	public InputField ConnectToIPField;
+	public InputField UserNameField;
+
+	private void Awake()
 	{
-		public static UIManager Instance;
+		if (Instance == null)
+			Instance = this;
+		else if (Instance != this)
+			Destroy(this);
 
-		public GameObject StartMenu;
+		ConnectToIPField.text = "192.168.0.11";
+	}
 
-		public InputField ConnectToIPField;
-		public InputField UserNameField;
+	public void ConnectToServer()
+	{
+		StartMenu.SetActive(false);
+		ConnectToIPField.interactable = false;
+		UserNameField.interactable = false;
 
-		private void Awake()
-		{
-			if (Instance == null)
-				Instance = this;
-			else if (Instance != this)
-				Destroy(this);
-
-			ConnectToIPField.text = "192.168.0.11";
-		}
-
-		public void ConnectToServer()
-		{
-			StartMenu.SetActive(false);
-			ConnectToIPField.interactable = false;
-			UserNameField.interactable = false;
-
-			Client.Instance.ConnectToServer(ConnectToIPField.text);
-		}
+		Client.Instance.ConnectToServer(ConnectToIPField.text);
 	}
 }

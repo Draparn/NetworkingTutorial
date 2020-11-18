@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GameServer
+﻿namespace GameServer
 {
 	public class ServerSend
 	{
-		public static void Welcome(int clientId, string msg)
+		public static void SendWelcome(int clientId, string msg)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.welcome))
 			{
@@ -17,7 +13,7 @@ namespace GameServer
 			}
 		}
 
-		public static void SpawnPlayer(int clientId, Player player)
+		public static void SendSpawnPlayer(int clientId, Player player)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.spawnPlayer))
 			{
@@ -27,6 +23,27 @@ namespace GameServer
 				packet.Write(player.Rotation);
 
 				SendTCPDataToClient(clientId, packet);
+			}
+		}
+
+		public static void SendUpdatePlayerPosition(Player player)
+		{
+			using (Packet packet = new Packet((int)ServerPackets.playerPosition))
+			{
+				packet.Write(player.PlayerId);
+				packet.Write(player.Position);
+
+				SendUDPDataToAllClients(packet);
+			}
+		}
+		public static void SendUpdatePlayerRotation(Player player)
+		{
+			using (Packet packet = new Packet((int)ServerPackets.playerRotation))
+			{
+				packet.Write(player.PlayerId);
+				packet.Write(player.Rotation);
+
+				SendUDPDataToAllClientsExcept(player.PlayerId, packet);
 			}
 		}
 

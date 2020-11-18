@@ -15,15 +15,11 @@ namespace GameServer
 		public static Dictionary<int, Client> Clients = new Dictionary<int, Client>();
 
 		private static TcpListener tcpListener;
-
-		
-
 		private static UdpClient udpListener;
 
 		public static int MaxPlayers { get; set; }
 		public static int Port { get; set; }
 
-		#region Server Connectivity
 		public static void StartServer(int maxPlayers, int port)
 		{
 			MaxPlayers = maxPlayers;
@@ -115,15 +111,8 @@ namespace GameServer
 
 			PacketHandlers = new Dictionary<int, PacketHandler>();
 			PacketHandlers.Add((int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived);
+			PacketHandlers.Add((int)ClientPackets.playerMovement, ServerHandle.PlayerMovement);
 		}
-		#endregion
-
-		#region Game related
-		public static void SpawnPlayer(int id, Player player)
-		{
-
-		}
-		#endregion
 
 	}
 }

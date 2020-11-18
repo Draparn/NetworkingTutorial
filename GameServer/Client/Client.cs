@@ -20,15 +20,21 @@ namespace GameServer
 
 		public void SendIntoGame(string playerName)
 		{
-			player = new Player(Id, playerName, new Vector3(0, 0, 0));
+			player = new Player(Id, playerName, new Vector3(0, 0.5f, 0));
 
 			foreach (var client in Server.Clients.Values)
 			{
-				if (client.Id != Id)
+				if (client.player != null)
 				{
-					Server.SpawnPlayer(Id, client.player);
-					Server.SpawnPlayer(client.Id, player);
+					if (client.Id != Id)
+						ServerSend.SendSpawnPlayer(Id, client.player);
 				}
+			}
+
+			foreach (var client in Server.Clients.Values)
+			{
+				if (client.player != null)
+					ServerSend.SendSpawnPlayer(client.Id, player);
 			}
 
 		}

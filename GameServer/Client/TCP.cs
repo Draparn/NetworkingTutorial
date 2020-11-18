@@ -31,7 +31,7 @@ namespace GameServer
 
 			stream.BeginRead(receiveBuffer, 0, ConstantValues.DATABUFFER_SIZE, ReceiveCallback, null);
 
-			ServerSend.Welcome(id, "Welcome to the party, pal!");
+			ServerSend.SendWelcome(id, "Welcome to the party, pal!");
 		}
 
 		public void SendData(Packet packet)
