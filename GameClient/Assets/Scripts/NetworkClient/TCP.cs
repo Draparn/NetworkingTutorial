@@ -14,7 +14,7 @@ namespace Assets.Scripts.Client
 
 		byte[] receiveBuffer;
 
-		public void Connect()
+		public void Connect(string ip)
 		{
 			socket = new TcpClient
 			{
@@ -23,14 +23,13 @@ namespace Assets.Scripts.Client
 			};
 
 			receiveBuffer = new byte[ConstantValues.dataBufferSize];
-			socket.BeginConnect(ConstantValues.localHost, ConstantValues.Port, ConnectCallback, socket);
+			socket.BeginConnect(ip, ConstantValues.Port, ConnectCallback, socket);
 		}
 
 		public void InitializeClientData()
 		{
 			packethandlers = new Dictionary<int, PacketHandler>();
 			packethandlers.Add((int)ServerPackets.welcome, ClientHandle.Welcome);
-			packethandlers.Add((int)ServerPackets.udpTest, ClientHandle.UDPTest);
 		}
 
 		private void ConnectCallback(IAsyncResult result)

@@ -15,11 +15,15 @@ namespace GameServer
 		public static Dictionary<int, Client> Clients = new Dictionary<int, Client>();
 
 		private static TcpListener tcpListener;
+
+		
+
 		private static UdpClient udpListener;
 
 		public static int MaxPlayers { get; set; }
 		public static int Port { get; set; }
 
+		#region Server Connectivity
 		public static void StartServer(int maxPlayers, int port)
 		{
 			MaxPlayers = maxPlayers;
@@ -43,7 +47,6 @@ namespace GameServer
 			TcpClient client = tcpListener.EndAcceptTcpClient(result);
 			tcpListener.BeginAcceptTcpClient(new AsyncCallback(TCPConnectCallback), null);
 
-
 			Console.WriteLine($"Incoming connection attempt from {client.Client.RemoteEndPoint}");
 			for (int i = 1; i <= MaxPlayers; i++)
 			{
@@ -66,10 +69,7 @@ namespace GameServer
 				udpListener.BeginReceive(UDPReceiveCallback, null);
 
 				if (data.Length < 4)
-				{
-
 					return;
-				}
 
 				using (Packet packet = new Packet(data))
 				{
@@ -84,9 +84,7 @@ namespace GameServer
 					}
 
 					if (Clients[clientId].udp.endPoint.ToString() == endPoint.ToString())
-					{
 						Clients[clientId].udp.HandleData(packet);
-					}
 				}
 			}
 			catch (Exception ex)
@@ -117,8 +115,21 @@ namespace GameServer
 
 			PacketHandlers = new Dictionary<int, PacketHandler>();
 			PacketHandlers.Add((int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived);
-			PacketHandlers.Add((int)ClientPackets.udpTestReceived, ServerHandle.UDPTestReceived);
 		}
+		#endregion
+
+		#region Game related
+		public static void SpawnLocalPlayer(int id, Player player)
+		{
+
+		}
+
+		public static void SpawnRemotePlayer(int id, Player player)
+		{
+
+		}
+
+		#endregion
 
 	}
 }

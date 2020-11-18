@@ -30,10 +30,10 @@ namespace Assets.Scripts.Client
 			udp = new UDP();
 		}
 
-		public void ConnectToServer()
+		public void ConnectToServer(string ip)
 		{
 			tcp.InitializeClientData();
-			tcp.Connect();
+			tcp.Connect(ip);
 		}
 	}
 }

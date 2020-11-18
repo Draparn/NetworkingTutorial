@@ -13,15 +13,6 @@
 			}
 		}
 
-		public static void UDPTestReceived()
-		{
-			using (Packet packet = new Packet((int)ClientPackets.udpTestReceived))
-			{
-				packet.Write("UDP packet received.");
-				SendUDPData(packet);
-			}
-		}
-
 		private static void SendTCPData(Packet packet)
 		{
 			packet.WriteLength();

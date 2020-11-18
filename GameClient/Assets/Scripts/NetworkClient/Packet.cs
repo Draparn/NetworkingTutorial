@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
@@ -8,14 +9,16 @@ namespace Assets.Scripts
 	public enum ServerPackets
 	{
 		welcome = 1,
-		udpTest
+		spawnPlayer,
+		playerPosition,
+		playerRotation
 	}
 
 	/// <summary>Sent from client to server.</summary>
 	public enum ClientPackets
 	{
 		welcomeReceived = 1,
-		udpTestReceived
+		playerMovement
 	}
 
 	public class Packet : IDisposable
@@ -158,6 +161,23 @@ namespace Assets.Scripts
 		{
 			Write(_value.Length); // Add the length of the string to the packet
 			buffer.AddRange(Encoding.ASCII.GetBytes(_value)); // Add the string itself
+		}
+		/// <summary>Adds a Vector3 to the packet.</summary>
+		/// <param name="_value">The Vector3 to add.</param>
+		public void Write(Vector3 position)
+		{
+			Write(position.x);
+			Write(position.y);
+			Write(position.z);
+		}
+		/// <summary>Adds a Quaternion to the packet.</summary>
+		/// <param name="_value">The Quaternion to add.</param>
+		public void Write(Quaternion rotation)
+		{
+			Write(rotation.x);
+			Write(rotation.y);
+			Write(rotation.z);
+			Write(rotation.w);
 		}
 		#endregion
 

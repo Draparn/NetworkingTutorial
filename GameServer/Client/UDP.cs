@@ -19,7 +19,6 @@ namespace GameServer
 		public void Connect(IPEndPoint endPoint)
 		{
 			this.endPoint = endPoint;
-			ServerSend.UDPTest(id);
 		}
 
 		public void SendData(Packet packet)

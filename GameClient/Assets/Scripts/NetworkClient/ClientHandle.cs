@@ -16,13 +16,5 @@ namespace Assets.Scripts.Client
 
 			Client.Instance.udp.Connect(((IPEndPoint)Client.Instance.tcp.socket.Client.LocalEndPoint).Port);
 		}
-
-		public static void UDPTest(Packet packet)
-		{
-			string msg = packet.ReadString();
-			
-			Debug.Log($"Received packed via UDP from server. Contains message: {msg}");
-			ClientSend.UDPTestReceived();
-		}
 	}
 }
