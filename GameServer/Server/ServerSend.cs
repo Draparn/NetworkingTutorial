@@ -71,7 +71,10 @@
 			packet.WriteLength();
 			for (int i = 1; i <= Server.MaxPlayers; i++)
 			{
-				Server.Clients[i].udp.SendData(packet);
+				if (Server.Clients[i].udp != null)
+				{
+					Server.Clients[i].udp.SendData(packet);
+				}
 			}
 		}
 
