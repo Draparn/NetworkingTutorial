@@ -55,7 +55,7 @@ public class TCP : Client
 
 			if (byteLength <= 0)
 			{
-				//disconnect here
+				Instance.Disconnect();
 				return;
 			}
 
@@ -65,10 +65,9 @@ public class TCP : Client
 			receivedData.Reset(HandleData(data));
 			stream.BeginRead(receiveBuffer, 0, ConstantValues.dataBufferSize, ReceiveCallback, null);
 		}
-		catch (Exception ex)
+		catch
 		{
-			Console.WriteLine($"Error receiving TCP data: {ex}");
-			//disconnect here
+			Disconnect();
 		}
 	}
 
@@ -128,6 +127,16 @@ public class TCP : Client
 		{
 			Debug.Log($"Error sending data to server via TCP: {ex}");
 		}
+	}
+
+	public new void Disconnect()
+	{
+		Instance.Disconnect();
+
+		stream = null;
+		receivedData = null;
+		receiveBuffer = null;
+		socket = null;
 	}
 
 }

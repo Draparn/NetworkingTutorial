@@ -41,5 +41,10 @@ namespace GameServer
 			});
 		}
 
+		public void Disconnect()
+		{
+			endPoint = null;
+		}
+
 	}
 }

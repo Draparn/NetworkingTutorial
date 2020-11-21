@@ -55,7 +55,7 @@ namespace GameServer
 
 				if (byteLength <= 0)
 				{
-					//disconnect here
+					Server.Clients[id].Disconnect();
 					return;
 				}
 
@@ -69,7 +69,7 @@ namespace GameServer
 			catch (Exception ex)
 			{
 				Console.WriteLine($"Error receiving TCP data: {ex}");
-				//disconnect here
+				Server.Clients[id].Disconnect();
 			}
 		}
 
@@ -115,6 +115,15 @@ namespace GameServer
 				return true;
 
 			return false;
+		}
+
+		public void Disconnect()
+		{
+			socket.Close();
+			stream = null;
+			receivedData = null;
+			receiveBuffer = null;
+			socket = null;
 		}
 
 	}

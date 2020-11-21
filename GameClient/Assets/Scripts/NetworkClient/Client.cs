@@ -13,6 +13,7 @@ public class Client : MonoBehaviour
 
 	public int MyId = 0;
 
+	private bool isConnected = false;
 
 	private void Awake()
 	{
@@ -28,9 +29,28 @@ public class Client : MonoBehaviour
 		udp = new UDP();
 	}
 
+	private void OnApplicationQuit()
+	{
+		Disconnect();
+	}
+
 	public void ConnectToServer(string ip)
 	{
 		tcp.InitializeClientData();
+
+		isConnected = true;
 		tcp.Connect(ip);
+	}
+
+	public void Disconnect()
+	{
+		if (isConnected)
+		{
+			isConnected = false;
+			tcp.socket.Close();
+			udp.socket.Close();
+
+			Debug.Log($"Disconnected form server.");
+		}
 	}
 }

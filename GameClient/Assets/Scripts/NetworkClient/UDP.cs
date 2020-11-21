@@ -4,8 +4,8 @@ using System.Net.Sockets;
 
 public class UDP : Client
 {
-	UdpClient socket;
-	IPEndPoint endpoint;
+	public UdpClient socket;
+	private IPEndPoint endpoint;
 
 	public UDP()
 	{
@@ -50,15 +50,15 @@ public class UDP : Client
 
 			if (data.Length < 4)
 			{
-				//TODO: Disconnect
+				Instance.Disconnect();
 				return;
 			}
 
 			HandleData(data);
 		}
-		catch (Exception)
+		catch
 		{
-			//TOOD: Disconnect
+			Disconnect();
 		}
 	}
 
@@ -78,6 +78,14 @@ public class UDP : Client
 				packethandlers[packetId](packet);
 			}
 		});
+	}
+
+	private new void Disconnect()
+	{
+		Instance.Disconnect();
+
+		endpoint = null;
+		socket = null;
 	}
 
 }

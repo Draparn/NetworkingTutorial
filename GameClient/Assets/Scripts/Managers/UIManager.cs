@@ -17,7 +17,8 @@ public class UIManager : MonoBehaviour
 		else if (Instance != this)
 			Destroy(this);
 
-		ConnectToIPField.text = "192.168.0.11";
+		ConnectToIPField.text = "127.0.0.1";
+		UserNameField.text = "ClientName";
 	}
 
 	public void ConnectToServer()

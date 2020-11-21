@@ -2,8 +2,9 @@
 
 public class PlayerManager : MonoBehaviour
 {
-	public int PlayerId;
 	public string PlayerName;
+	public int PlayerId;
+
 
 	private void Awake()
 	{
@@ -11,4 +12,5 @@ public class PlayerManager : MonoBehaviour
 		if (menuCamera != null)
 			Destroy(menuCamera);
 	}
+
 }

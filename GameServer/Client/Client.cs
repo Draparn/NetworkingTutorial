@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
 namespace GameServer
 {
@@ -38,5 +39,14 @@ namespace GameServer
 			}
 
 		}
+
+		public void Disconnect()
+		{
+			Console.WriteLine($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
+			player = null;
+			tcp.Disconnect();
+			udp.Disconnect();
+		}
+
 	}
 }
