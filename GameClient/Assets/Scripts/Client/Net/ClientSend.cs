@@ -1,4 +1,5 @@
 ﻿using NetworkTutorial.Shared.Net;
+using UnityEngine;
 
 namespace NetworkTutorial.Client
 {
@@ -29,6 +30,18 @@ namespace NetworkTutorial.Client
 			}
 		}
 
+		public static void SendPlayerPrimaryFire(Vector3 facing)
+		{
+			using (Packet packet = new Packet((int)ClientPackets.playerPrimaryFire))
+			{
+				packet.Write(facing);
+
+				SendTCPData(packet);
+			}
+		}
+
+
+		#region SendToServerOptions
 		private static void SendTCPData(Packet packet)
 		{
 			packet.WriteLength();
@@ -40,6 +53,7 @@ namespace NetworkTutorial.Client
 			packet.WriteLength();
 			Client.Instance.udp.SendData(packet);
 		}
-
+		#endregion
 	}
 }
+

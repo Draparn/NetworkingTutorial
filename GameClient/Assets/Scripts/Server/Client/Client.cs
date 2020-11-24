@@ -30,15 +30,17 @@ namespace NetworkTutorial.Server.Client
 			{
 				if (client.player != null)
 				{
+					//ServerSend.SendPlayerConnected(client.Id, player);
+
 					if (client.Id != Id)
-						ServerSend.SendSpawnPlayer(Id, client.player);
+						ServerSend.SendPlayerConnected_TCP(Id, client.player);
 				}
 			}
 
 			foreach (var client in Server.Clients.Values)
 			{
 				if (client.player != null)
-					ServerSend.SendSpawnPlayer(client.Id, player);
+					ServerSend.SendPlayerConnected_TCP(client.Id, player);
 			}
 
 		}
@@ -55,6 +57,8 @@ namespace NetworkTutorial.Server.Client
 
 			tcp.Disconnect();
 			udp.Disconnect();
+
+			ServerSend.SendPlayerDisconnected_TCP(Id);
 		}
 
 	}

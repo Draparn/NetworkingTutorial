@@ -117,8 +117,9 @@ namespace NetworkTutorial.Server
 				Clients.Add(i, new Client.Client(i));
 
 			PacketHandlers = new Dictionary<int, PacketHandler>();
-			PacketHandlers.Add((int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived);
-			PacketHandlers.Add((int)ClientPackets.playerMovement, ServerHandle.PlayerMovement);
+			PacketHandlers.Add((int)ClientPackets.welcomeReceived, ServerHandle.OnWelcomeReceived);
+			PacketHandlers.Add((int)ClientPackets.playerMovement, ServerHandle.OnPlayerMovement);
+			PacketHandlers.Add((int)ClientPackets.playerPrimaryFire, ServerHandle.OnPlayerPrimaryFire);
 		}
 
 	}

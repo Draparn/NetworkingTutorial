@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5652717455127886392}
   m_Layer: 0
   m_Name: RemotePlayer
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,8 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c49ff19cb3cb354781520e390c90269, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerName: 
-  PlayerId: 0
+  PlayerMesh: {fileID: 6053186973800483832}
+  maxHealth: 100
 --- !u!1 &6053186973800483832
 GameObject:
   m_ObjectHideFlags: 0

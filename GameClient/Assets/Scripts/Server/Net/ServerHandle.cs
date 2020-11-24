@@ -5,7 +5,7 @@ namespace NetworkTutorial.Server.Net
 {
 	class ServerHandle
 	{
-		public static void WelcomeReceived(int clientId, Packet packet)
+		public static void OnWelcomeReceived(int clientId, Packet packet)
 		{
 			var claimedId = packet.ReadInt();
 			var userName = packet.ReadString();
@@ -18,7 +18,7 @@ namespace NetworkTutorial.Server.Net
 			Server.Clients[clientId].SendIntoGame(userName);
 		}
 
-		public static void PlayerMovement(int clientId, Packet packet)
+		public static void OnPlayerMovement(int clientId, Packet packet)
 		{
 			bool[] inputs = new bool[packet.ReadInt()];
 			for (int i = 0; i < inputs.Length; i++)
@@ -27,6 +27,13 @@ namespace NetworkTutorial.Server.Net
 			var rotation = packet.ReadQuaternion();
 
 			Server.Clients[clientId].player.UpdatePosAndRot(inputs, rotation);
+		}
+
+		public static void OnPlayerPrimaryFire(int clientId, Packet packet)
+		{
+			var viewDirection = packet.ReadVector3();
+
+			Server.Clients[clientId].player.PrimaryFire(viewDirection);
 		}
 
 	}

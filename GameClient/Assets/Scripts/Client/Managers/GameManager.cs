@@ -26,8 +26,7 @@ namespace NetworkTutorial.Client
 			var player = Instantiate(isLocal ? LocalPlayerPrefab : RemotePlayerPrefab, pos, rot);
 			var playManComp = player.GetComponent<PlayerManager>();
 
-			playManComp.PlayerId = playerId;
-			playManComp.PlayerName = playerName;
+			playManComp.Init(playerId, playerName);
 
 			Players.Add(playerId, playManComp);
 		}

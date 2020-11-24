@@ -11,14 +11,18 @@ namespace NetworkTutorial.Shared.Net
 		welcome = 1,
 		spawnPlayer,
 		playerPosition,
-		playerRotation
+		playerRotation,
+		playerDisconnected,
+		playerRespawn,
+		playerHealth
 	}
 
 	/// <summary>Sent from client to server.</summary>
 	public enum ClientPackets
 	{
 		welcomeReceived = 1,
-		playerMovement
+		playerMovement,
+		playerPrimaryFire
 	}
 
 	public class Packet : IDisposable

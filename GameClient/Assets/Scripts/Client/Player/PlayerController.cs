@@ -4,9 +4,22 @@ namespace NetworkTutorial.Client
 {
 	public class PlayerController : MonoBehaviour
 	{
+		private Transform cameraTransform;
+
+		private void Start()
+		{
+			cameraTransform = GetComponentInChildren<CameraController>().transform;
+		}
+
 		private void FixedUpdate()
 		{
 			SendInputToServer();
+		}
+
+		private void Update()
+		{
+			if (Input.GetKeyDown(KeyCode.Mouse0))
+				ClientSend.SendPlayerPrimaryFire(cameraTransform.forward);
 		}
 
 		public void SendInputToServer()

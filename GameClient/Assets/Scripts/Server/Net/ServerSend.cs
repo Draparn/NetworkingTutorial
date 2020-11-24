@@ -5,7 +5,7 @@ namespace NetworkTutorial.Server.Net
 {
 	public class ServerSend
 	{
-		public static void SendWelcome(int clientId, string msg)
+		public static void SendWelcome_TCP(int clientId, string msg)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.welcome))
 			{
@@ -16,7 +16,7 @@ namespace NetworkTutorial.Server.Net
 			}
 		}
 
-		public static void SendSpawnPlayer(int clientId, Player player)
+		public static void SendPlayerConnected_TCP(int clientId, Player player)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.spawnPlayer))
 			{
@@ -28,8 +28,27 @@ namespace NetworkTutorial.Server.Net
 				SendTCPDataToClient(clientId, packet);
 			}
 		}
+		public static void SendPlayerDisconnected_TCP(int clientId)
+		{
+			using (Packet packet = new Packet((int)ServerPackets.playerDisconnected))
+			{
+				packet.Write(clientId);
 
-		public static void SendUpdatePlayerPosition(Player player)
+				SendTCPDataToAllClients(packet);
+			}
+		}
+
+		public static void SendUpdatePlayerPosition_TCP(Player player)
+		{
+			using (Packet packet = new Packet((int)ServerPackets.playerPosition))
+			{
+				packet.Write(player.PlayerId);
+				packet.Write(player.transform.position);
+
+				SendTCPDataToAllClients(packet);
+			}
+		}
+		public static void SendUpdatePlayerPosition_UDP(Player player)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.playerPosition))
 			{
@@ -39,7 +58,7 @@ namespace NetworkTutorial.Server.Net
 				SendUDPDataToAllClients(packet);
 			}
 		}
-		public static void SendUpdatePlayerRotation(Player player)
+		public static void SendUpdatePlayerRotation_UDP(Player player)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.playerRotation))
 			{
@@ -50,6 +69,28 @@ namespace NetworkTutorial.Server.Net
 			}
 		}
 
+		public static void SendUpdatePlayerHealth_TCP(Player player)
+		{
+			using (Packet packet = new Packet((int)ServerPackets.playerHealth))
+			{
+				packet.Write(player.PlayerId);
+				packet.Write(player.CurrentHealth);
+
+				SendTCPDataToAllClients(packet);
+			}
+		}
+		public static void SendPlayerRespawned_TCP(Player player)
+		{
+			using (Packet packet = new Packet((int)ServerPackets.playerRespawn))
+			{
+				packet.Write(player.PlayerId);
+				packet.Write(player.transform.position);
+
+				SendTCPDataToAllClients(packet);
+			}
+		}
+
+		#region BroadcastOptions
 		private static void SendTCPDataToClient(int clientId, Packet packet)
 		{
 			packet.WriteLength();
@@ -103,6 +144,6 @@ namespace NetworkTutorial.Server.Net
 				Server.Clients[i].udp.SendData(packet);
 			}
 		}
-
+		#endregion
 	}
 }
