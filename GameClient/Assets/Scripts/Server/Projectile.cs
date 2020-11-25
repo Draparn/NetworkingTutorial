@@ -10,7 +10,7 @@ namespace NetworkTutorial.Server
 		public static Dictionary<ushort, Projectile> Projectiles = new Dictionary<ushort, Projectile>();
 		private static ushort nextProjectileId = 1;
 
-		private ushort id;
+		public ushort id;
 		private Rigidbody rb;
 		private Vector3 initialForce;
 		private float fuseTimer = 2;

@@ -16,7 +16,8 @@ namespace NetworkTutorial.Shared.Net
 		playerRespawn,
 		playerHealth,
 		projectileSpawn,
-		projectilePosition
+		projectilePosition,
+		projectileExplosion
 	}
 
 	/// <summary>Sent from client to server.</summary>
@@ -134,6 +135,12 @@ namespace NetworkTutorial.Shared.Net
 		/// <summary>Adds a short to the packet.</summary>
 		/// <param name="_value">The short to add.</param>
 		public void Write(short _value)
+		{
+			buffer.AddRange(BitConverter.GetBytes(_value));
+		}
+		/// <summary>Adds a ushort to the packet.</summary>
+		/// <param name="_value">The ushort to add.</param>
+		public void Write(ushort _value)
 		{
 			buffer.AddRange(BitConverter.GetBytes(_value));
 		}

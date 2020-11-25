@@ -5,7 +5,7 @@ namespace NetworkTutorial.Server.Net
 {
 	public class ServerSend
 	{
-		public static void SendWelcome_TCP(int clientId, string msg)
+		public static void SendWelcomeMessage_TCP(int clientId, string msg)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.welcome))
 			{
@@ -38,17 +38,7 @@ namespace NetworkTutorial.Server.Net
 			}
 		}
 
-		public static void SendUpdatePlayerPosition_TCP(Player player)
-		{
-			using (Packet packet = new Packet((int)ServerPackets.playerPosition))
-			{
-				packet.Write(player.PlayerId);
-				packet.Write(player.transform.position);
-
-				SendTCPDataToAllClients(packet);
-			}
-		}
-		public static void SendUpdatePlayerPosition_UDP(Player player)
+		public static void SendPlayerPositionUpdate_UDP(Player player)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.playerPosition))
 			{
@@ -58,7 +48,7 @@ namespace NetworkTutorial.Server.Net
 				SendUDPDataToAllClients(packet);
 			}
 		}
-		public static void SendUpdatePlayerRotation_UDP(Player player)
+		public static void SendPlayerRotationUpdate_UDP(Player player)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.playerRotation))
 			{
@@ -69,7 +59,7 @@ namespace NetworkTutorial.Server.Net
 			}
 		}
 
-		public static void SendUpdatePlayerHealth_TCP(Player player)
+		public static void SendPlayerHealthUpdate_TCP(Player player)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.playerHealth))
 			{
@@ -85,6 +75,37 @@ namespace NetworkTutorial.Server.Net
 			{
 				packet.Write(player.PlayerId);
 				packet.Write(player.transform.position);
+
+				SendTCPDataToAllClients(packet);
+			}
+		}
+
+		public static void SendProjectileSpawn_TCP(Projectile projectile)
+		{
+			using (Packet packet = new Packet((int)ServerPackets.projectileSpawn))
+			{
+				packet.Write(projectile.id);
+				packet.Write(projectile.transform.position);
+
+				SendTCPDataToAllClients(packet);
+			}
+		}
+		public static void SendProjectileUpdatePosition_UDP(Projectile projectile)
+		{
+			using (Packet packet = new Packet((int)ServerPackets.projectilePosition))
+			{
+				packet.Write(projectile.id);
+				packet.Write(projectile.transform.position);
+
+				SendUDPDataToAllClients(packet);
+			}
+		}
+		public static void SendProjectileExplosion_TCP(Projectile projectile)
+		{
+			using (Packet packet = new Packet((int)ServerPackets.projectileSpawn))
+			{
+				packet.Write(projectile.id);
+				packet.Write(projectile.transform.position);
 
 				SendTCPDataToAllClients(packet);
 			}
