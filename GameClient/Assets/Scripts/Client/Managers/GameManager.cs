@@ -35,8 +35,7 @@ namespace NetworkTutorial.Client
 
 		public void SpawnProjectile(ushort id, Vector3 position)
 		{
-			var projectile = Instantiate(ProjectilePrefab, position, Quaternion.identity);
-			var projectileManagerComponent = projectile.GetComponent<ProjectileManager>();
+			var projectileManagerComponent = Instantiate(ProjectilePrefab, position, Quaternion.identity).GetComponent<ProjectileManager>();
 			projectileManagerComponent.Init(id);
 
 			Projectiles.Add(id, projectileManagerComponent);
