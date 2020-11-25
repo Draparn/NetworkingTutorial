@@ -12,9 +12,9 @@ namespace NetworkTutorial.Client
 		public UdpClient socket;
 		private IPEndPoint endpoint;
 
-		public UDP()
+		public UDP(string ip)
 		{
-			endpoint = new IPEndPoint(IPAddress.Parse(ConstantValues.LOCAL_HOST), ConstantValues.SERVER_PORT);
+			endpoint = new IPEndPoint(IPAddress.Parse(ip), ConstantValues.SERVER_PORT);
 		}
 
 		public void Connect(int localPort)

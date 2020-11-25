@@ -26,12 +26,6 @@ namespace NetworkTutorial.Client
 				Destroy(this);
 		}
 
-		private void Start()
-		{
-			tcp = new TCP();
-			udp = new UDP();
-		}
-
 		private void OnApplicationQuit()
 		{
 			Disconnect();
@@ -39,10 +33,12 @@ namespace NetworkTutorial.Client
 
 		public void ConnectToServer(string ip)
 		{
-			tcp.InitializeClientData();
+			tcp = new TCP();
+			udp = new UDP(ip);
 
-			isConnected = true;
+			tcp.InitializeClientData();
 			tcp.Connect(ip);
+			isConnected = true;
 		}
 
 		public void Disconnect()
