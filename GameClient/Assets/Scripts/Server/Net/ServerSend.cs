@@ -102,7 +102,7 @@ namespace NetworkTutorial.Server.Net
 		}
 		public static void SendProjectileExplosion_TCP(Projectile projectile)
 		{
-			using (Packet packet = new Packet((int)ServerPackets.projectileSpawn))
+			using (Packet packet = new Packet((int)ServerPackets.projectileExplosion))
 			{
 				packet.Write(projectile.id);
 				packet.Write(projectile.transform.position);

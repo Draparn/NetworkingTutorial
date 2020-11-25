@@ -9,9 +9,11 @@ namespace NetworkTutorial.Client
 		public static GameManager Instance;
 
 		public Dictionary<int, PlayerManager> Players = new Dictionary<int, PlayerManager>();
+		public Dictionary<int, ProjectileManager> Projectiles = new Dictionary<int, ProjectileManager>();
 
 		public GameObject LocalPlayerPrefab;
 		public GameObject RemotePlayerPrefab;
+		public GameObject ProjectilePrefab;
 
 		private void Awake()
 		{
@@ -29,6 +31,15 @@ namespace NetworkTutorial.Client
 			playManComp.Init(playerId, playerName);
 
 			Players.Add(playerId, playManComp);
+		}
+
+		public void SpawnProjectile(ushort id, Vector3 position)
+		{
+			var projectile = Instantiate(ProjectilePrefab, position, Quaternion.identity);
+			var projectileManagerComponent = projectile.GetComponent<ProjectileManager>();
+			projectileManagerComponent.Init(id);
+
+			Projectiles.Add(id, projectileManagerComponent);
 		}
 
 	}

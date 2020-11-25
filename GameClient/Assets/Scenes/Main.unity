@@ -881,6 +881,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LocalPlayerPrefab: {fileID: 4591549347349979242, guid: 6b0eeaa04764f2540ad0715591dc953e, type: 3}
   RemotePlayerPrefab: {fileID: 4132987940020096212, guid: 6e72ac017ea0d694f8f81a4bf388399c, type: 3}
+  ProjectilePrefab: {fileID: 6634574407951403471, guid: 9e7cf42678fb4f748b4558c605abfe42, type: 3}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

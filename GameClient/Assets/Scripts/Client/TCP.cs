@@ -31,13 +31,16 @@ namespace NetworkTutorial.Client
 		public void InitializeClientData()
 		{
 			packethandlers = new Dictionary<int, PacketHandler>();
-			packethandlers.Add((int)ServerPackets.welcome, ClientHandle.OnWelcome);
+			packethandlers.Add((int)ServerPackets.welcome, ClientHandle.OnWelcomeMessage);
 			packethandlers.Add((int)ServerPackets.spawnPlayer, ClientHandle.OnPlayerConnected);
-			packethandlers.Add((int)ServerPackets.playerPosition, ClientHandle.OnUpdatePlayerPosition);
-			packethandlers.Add((int)ServerPackets.playerRotation, ClientHandle.OnUpdatePlayerRotation);
+			packethandlers.Add((int)ServerPackets.playerPosition, ClientHandle.OnPlayerPositionUpdate);
+			packethandlers.Add((int)ServerPackets.playerRotation, ClientHandle.OnPlayerRotationUpdate);
 			packethandlers.Add((int)ServerPackets.playerDisconnected, ClientHandle.OnPlayerDisconnected);
-			packethandlers.Add((int)ServerPackets.playerHealth, ClientHandle.OnPlayerHealth);
+			packethandlers.Add((int)ServerPackets.playerHealth, ClientHandle.OnPlayerHealthUpdate);
 			packethandlers.Add((int)ServerPackets.playerRespawn, ClientHandle.OnPlayerRespawn);
+			packethandlers.Add((int)ServerPackets.projectileSpawn, ClientHandle.OnProjectileSpawn);
+			packethandlers.Add((int)ServerPackets.projectilePosition, ClientHandle.OnProjectiePositionUpdate);
+			packethandlers.Add((int)ServerPackets.projectileExplosion, ClientHandle.OnProjectieExplosion);
 		}
 
 		private void ConnectCallback(IAsyncResult result)

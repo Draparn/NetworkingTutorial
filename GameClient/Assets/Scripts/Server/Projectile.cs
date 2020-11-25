@@ -13,16 +13,18 @@ namespace NetworkTutorial.Server
 		public ushort id;
 		private Rigidbody rb;
 		private Vector3 initialForce;
+		public int thrownByPlayer;
 		private float fuseTimer = 2;
 		private float explosionRadius = 1.5f;
 		private float explosionDamage = 25.0f;
-		private int thrownByPlayer;
 
 		private void Start()
 		{
 			id = nextProjectileId;
 			nextProjectileId++;
 			Projectiles.Add(id, this);
+
+			ServerSend.SendProjectileSpawn_TCP(this);
 
 			rb = GetComponent<Rigidbody>();
 			rb.AddForce(initialForce);
@@ -32,7 +34,7 @@ namespace NetworkTutorial.Server
 
 		private void FixedUpdate()
 		{
-
+			ServerSend.SendProjectileUpdatePosition_UDP(this);
 		}
 
 		public void Init(Vector3 viewDirection, float initialforceStrength, int thrownByPlayer)
@@ -43,6 +45,8 @@ namespace NetworkTutorial.Server
 
 		private void Explode()
 		{
+			ServerSend.SendProjectileExplosion_TCP(this);
+
 			var nearbyColliders = Physics.OverlapSphere(transform.position, explosionRadius);
 			foreach (var collider in nearbyColliders)
 			{
@@ -50,7 +54,8 @@ namespace NetworkTutorial.Server
 					collider.GetComponent<Player>().TakeDamage(explosionDamage);
 			}
 
-			Destroy(gameObject);
+			Projectiles.Remove(id);
+			Destroy(this);
 		}
 	}
 }

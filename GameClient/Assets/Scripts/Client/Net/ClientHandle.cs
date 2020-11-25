@@ -6,7 +6,7 @@ namespace NetworkTutorial.Client
 {
 	public class ClientHandle : MonoBehaviour
 	{
-		public static void OnWelcome(Packet packet)
+		public static void OnWelcomeMessage(Packet packet)
 		{
 			var message = packet.ReadString();
 			var id = packet.ReadInt();
@@ -35,14 +35,14 @@ namespace NetworkTutorial.Client
 			GameManager.Instance.Players.Remove(clientId);
 		}
 
-		public static void OnUpdatePlayerPosition(Packet packet)
+		public static void OnPlayerPositionUpdate(Packet packet)
 		{
 			var id = packet.ReadInt();
 			var position = packet.ReadVector3();
 
 			GameManager.Instance.Players[id].transform.position = position;
 		}
-		public static void OnUpdatePlayerRotation(Packet packet)
+		public static void OnPlayerRotationUpdate(Packet packet)
 		{
 			var id = packet.ReadInt();
 			var rotation = packet.ReadQuaternion();
@@ -50,7 +50,7 @@ namespace NetworkTutorial.Client
 			GameManager.Instance.Players[id].transform.rotation = rotation;
 		}
 
-		public static void OnPlayerHealth(Packet packet)
+		public static void OnPlayerHealthUpdate(Packet packet)
 		{
 			var clientId = packet.ReadInt();
 			var currentHealth = packet.ReadFloat();
@@ -63,6 +63,28 @@ namespace NetworkTutorial.Client
 			var pos = packet.ReadVector3();
 
 			GameManager.Instance.Players[id].Respawn(pos);
+		}
+
+		public static void OnProjectileSpawn(Packet packet)
+		{
+			var id = packet.ReadUShort();
+			var pos = packet.ReadVector3();
+
+			GameManager.Instance.SpawnProjectile(id, pos);
+		}
+		public static void OnProjectiePositionUpdate(Packet packet)
+		{
+			var id = packet.ReadUShort();
+			var pos = packet.ReadVector3();
+
+			GameManager.Instance.Projectiles[id].transform.position = pos;
+		}
+		public static void OnProjectieExplosion(Packet packet)
+		{
+			var id = packet.ReadUShort();
+			var pos = packet.ReadVector3();
+
+			GameManager.Instance.Projectiles[id].Explode(pos);
 		}
 
 	}

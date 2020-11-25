@@ -259,6 +259,27 @@ namespace NetworkTutorial.Shared.Net
 			}
 		}
 
+		/// <summary>Reads a ushort from the packet.</summary>
+		/// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
+		public ushort ReadUShort(bool _moveReadPos = true)
+		{
+			if (buffer.Count > readPos)
+			{
+				// If there are unread bytes
+				ushort _value = BitConverter.ToUInt16(readableBuffer, readPos); // Convert the bytes to a ushort
+				if (_moveReadPos)
+				{
+					// If _moveReadPos is true and there are unread bytes
+					readPos += 2; // Increase readPos by 2
+				}
+				return _value; // Return the ushort
+			}
+			else
+			{
+				throw new Exception("Could not read value of type 'ushort'!");
+			}
+		}
+
 		/// <summary>Reads an int from the packet.</summary>
 		/// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
 		public int ReadInt(bool _moveReadPos = true)
