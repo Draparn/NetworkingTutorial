@@ -30,17 +30,11 @@ namespace NetworkTutorial.Server.Client
 			{
 				if (client.player != null)
 				{
-					//ServerSend.SendPlayerConnected(client.Id, player);
+					ServerSend.SendPlayerConnected_TCP(client.Id, player);
 
 					if (client.Id != Id)
 						ServerSend.SendPlayerConnected_TCP(Id, client.player);
 				}
-			}
-
-			foreach (var client in Server.Clients.Values)
-			{
-				if (client.player != null)
-					ServerSend.SendPlayerConnected_TCP(client.Id, player);
 			}
 
 		}
