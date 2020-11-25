@@ -39,7 +39,7 @@ namespace NetworkTutorial.Server
 			Debug.Log($"Server started on port {Port}.");
 		}
 
-		public static void Stop()
+		public static void StopServer()
 		{
 			tcpListener.Stop();
 			udpListener.Close();

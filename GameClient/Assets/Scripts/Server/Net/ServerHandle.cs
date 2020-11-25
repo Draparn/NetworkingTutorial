@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NetworkTutorial.Server.Net
 {
-	class ServerHandle
+	public class ServerHandle
 	{
 		public static void OnWelcomeReceived(int clientId, Packet packet)
 		{

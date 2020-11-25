@@ -9,18 +9,15 @@ namespace NetworkTutorial.Server.Managers
 		public static NetworkManager instance;
 
 		public GameObject PlayerPrefab;
+		public GameObject ProjectilePrefab;
 
 
 		private void Awake()
 		{
 			if (instance == null)
-			{
 				instance = this;
-			}
 			else if (instance != this)
-			{
 				Destroy(this);
-			}
 		}
 
 		private void Start()
@@ -32,12 +29,17 @@ namespace NetworkTutorial.Server.Managers
 
 		private void OnApplicationQuit()
 		{
-			Server.Stop();
+			Server.StopServer();
 		}
 
 		public Player InstantiatePlayer()
 		{
 			return Instantiate(PlayerPrefab, new Vector3(0, 0.5f, 0), Quaternion.identity).GetComponent<Player>();
+		}
+
+		public Projectile InstantiateProjectile(Transform shootOrigin)
+		{
+			return Instantiate(ProjectilePrefab, shootOrigin.position + shootOrigin.forward * 0.7f, Quaternion.identity).GetComponent<Projectile>();
 		}
 
 	}

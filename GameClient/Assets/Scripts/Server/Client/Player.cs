@@ -1,4 +1,5 @@
-﻿using NetworkTutorial.Server.Net;
+﻿using NetworkTutorial.Server.Managers;
+using NetworkTutorial.Server.Net;
 using UnityEngine;
 
 namespace NetworkTutorial.Server.Client
@@ -12,13 +13,15 @@ namespace NetworkTutorial.Server.Client
 
 		public string PlayerName;
 
-		public float CurrentHealth = 100;
-		public float maxHealth = 100;
-		public float PrimaryFireDamage = 10f;
+		public float CurrentHealth = 100.0f;
+		public float maxHealth = 100.0f;
+		public float PrimaryFireDamage = 10.0f;
+		public float ThrowForce = 600.0f;
 		private float moveSpeed = 5.0f;
 		private float jumpSpeed = 9.0f;
 		private float gravity = -19.62f;
 		private float yVelocity = 0;
+		private bool hitScan = false;
 
 		public int PlayerId;
 
@@ -83,16 +86,26 @@ namespace NetworkTutorial.Server.Client
 
 		public void PrimaryFire(Vector3 viewDirection)
 		{
-			if (Physics.Raycast(ShootOrigin.position, viewDirection, out RaycastHit hit))
+			if (CurrentHealth <= 0)
+				return;
+
+			if (hitScan)
 			{
-				if (hit.collider.CompareTag("Player"))
+				if (Physics.Raycast(ShootOrigin.position, viewDirection, out RaycastHit hit))
 				{
-					hit.collider.GetComponent<Player>().TakeDamage(PrimaryFireDamage);
+					if (hit.collider.CompareTag("Player"))
+					{
+						hit.collider.GetComponent<Player>().TakeDamage(PrimaryFireDamage);
+					}
 				}
+			}
+			else
+			{
+				NetworkManager.instance.InstantiateProjectile(ShootOrigin).Init(viewDirection, ThrowForce, PlayerId);
 			}
 		}
 
-		private void TakeDamage(float damage)
+		public void TakeDamage(float damage)
 		{
 			if (CurrentHealth <= 0)
 				return;

@@ -14,7 +14,9 @@ namespace NetworkTutorial.Shared.Net
 		playerRotation,
 		playerDisconnected,
 		playerRespawn,
-		playerHealth
+		playerHealth,
+		projectileSpawn,
+		projectilePosition
 	}
 
 	/// <summary>Sent from client to server.</summary>
