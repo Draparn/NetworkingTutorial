@@ -48,8 +48,6 @@ namespace NetworkTutorial.Client
 				isConnected = false;
 				tcp.socket.Close();
 				udp.socket.Close();
-
-				Debug.Log($"Disconnected form server.");
 			}
 		}
 	}

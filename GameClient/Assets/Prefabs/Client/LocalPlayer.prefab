@@ -146,6 +146,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerMesh: {fileID: 8429729145368124170}
+  currentHealth: 100
+  maxHealth: 100
 --- !u!114 &8556820681935794717
 MonoBehaviour:
   m_ObjectHideFlags: 0

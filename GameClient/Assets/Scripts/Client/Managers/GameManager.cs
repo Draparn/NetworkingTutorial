@@ -26,11 +26,10 @@ namespace NetworkTutorial.Client
 		public void SpawnPlayer(bool isLocal, int playerId, string playerName, Vector3 pos, Quaternion rot)
 		{
 			var player = Instantiate(isLocal ? LocalPlayerPrefab : RemotePlayerPrefab, pos, rot);
-			var playManComp = player.GetComponent<PlayerManager>();
+			var playermanagerComponent = player.GetComponent<PlayerManager>();
+			playermanagerComponent.Init(playerId, playerName);
 
-			playManComp.Init(playerId, playerName);
-
-			Players.Add(playerId, playManComp);
+			Players.Add(playerId, playermanagerComponent);
 		}
 
 		public void SpawnProjectile(ushort id, Vector3 position)

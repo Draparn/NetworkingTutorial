@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerMesh: {fileID: 6053186973800483832}
+  currentHealth: 100
   maxHealth: 100
 --- !u!1 &6053186973800483832
 GameObject:

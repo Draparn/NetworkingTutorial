@@ -1,5 +1,5 @@
-﻿using System.Net;
-using NetworkTutorial.Shared.Net;
+﻿using NetworkTutorial.Shared.Net;
+using System.Net;
 using UnityEngine;
 
 namespace NetworkTutorial.Client
@@ -40,7 +40,8 @@ namespace NetworkTutorial.Client
 			var id = packet.ReadInt();
 			var position = packet.ReadVector3();
 
-			GameManager.Instance.Players[id].transform.position = position;
+			if (GameManager.Instance.Players.ContainsKey(id))
+				GameManager.Instance.Players[id].transform.position = position;
 		}
 		public static void OnPlayerRotationUpdate(Packet packet)
 		{
@@ -55,7 +56,7 @@ namespace NetworkTutorial.Client
 			var clientId = packet.ReadInt();
 			var currentHealth = packet.ReadFloat();
 
-			GameManager.Instance.Players[clientId].SetHealth(currentHealth);
+			GameManager.Instance.Players[clientId].SetHealth(clientId, currentHealth);
 		}
 		public static void OnPlayerRespawn(Packet packet)
 		{
@@ -77,7 +78,8 @@ namespace NetworkTutorial.Client
 			var id = packet.ReadUShort();
 			var pos = packet.ReadVector3();
 
-			GameManager.Instance.Projectiles[id].transform.position = pos;
+			if (GameManager.Instance.Projectiles.ContainsKey(id))
+				GameManager.Instance.Projectiles[id].transform.position = pos;
 		}
 		public static void OnProjectieExplosion(Packet packet)
 		{

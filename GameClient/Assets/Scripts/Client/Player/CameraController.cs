@@ -20,7 +20,8 @@ namespace NetworkTutorial.Client
 
 		private void Update()
 		{
-			Look();
+			if (player.currentHealth > 0)
+				Look();
 		}
 
 		private void Look()
