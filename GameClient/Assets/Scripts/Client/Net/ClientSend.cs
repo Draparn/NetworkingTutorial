@@ -10,8 +10,7 @@ namespace NetworkTutorial.Client
 			using (Packet packet = new Packet((int)ClientPackets.welcomeReceived))
 			{
 				packet.Write(Client.Instance.MyId);
-				packet.Write(UIManager.Instance.UserNameField.text);
-
+				packet.Write(GameObject.FindObjectOfType<UIManager>().UserNameField.text);
 				SendTCPData(packet);
 			}
 		}

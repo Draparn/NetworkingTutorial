@@ -7,6 +7,7 @@ namespace NetworkTutorial.Client
 	{
 		public GameObject PlayerMesh;
 		private MeshRenderer rend;
+
 		private Color originalColor;
 
 		private string PlayerName;
@@ -40,16 +41,17 @@ namespace NetworkTutorial.Client
 			{
 				if (!flickering)
 					StartCoroutine(Flicker());
-
-				if (PlayerId == clientId)
-					UIManager.Instance.TakeDamage(healthValue <= 0);
 			}
 
 			currentHealth = healthValue;
 
 			if (currentHealth <= 0)
 				Die();
-			
+		}
+
+		public void FlashUI()
+		{
+			UIManager.Instance.TakeDamage(currentHealth <= 0);
 		}
 
 		private void Die()

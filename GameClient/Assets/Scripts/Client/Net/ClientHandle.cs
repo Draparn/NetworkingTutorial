@@ -54,9 +54,11 @@ namespace NetworkTutorial.Client
 		public static void OnPlayerHealthUpdate(Packet packet)
 		{
 			var clientId = packet.ReadInt();
-			var currentHealth = packet.ReadFloat();
+			var newHealth = packet.ReadFloat();
+			GameManager.Instance.Players[clientId].SetHealth(clientId, newHealth);
 
-			GameManager.Instance.Players[clientId].SetHealth(clientId, currentHealth);
+			if (clientId == Client.Instance.MyId)
+				GameManager.Instance.Players[clientId].FlashUI();
 		}
 		public static void OnPlayerRespawn(Packet packet)
 		{
