@@ -23,7 +23,7 @@ namespace NetworkTutorial.Server
 			bool useNewId = true;
 			for (ushort i = 1; i <= nextProjectileId; i++)
 			{
-				if (!Projectiles.ContainsKey(i))
+				if (!Projectiles.ContainsKey(i) && i < nextProjectileId)
 				{
 					id = i;
 					Projectiles.Add(i, this);
