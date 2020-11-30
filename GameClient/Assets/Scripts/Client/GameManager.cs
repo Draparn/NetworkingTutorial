@@ -34,10 +34,18 @@ namespace NetworkTutorial.Client
 
 		public void SpawnProjectile(ushort id, Vector3 position)
 		{
-			var projectileManagerComponent = Instantiate(ProjectilePrefab, position, Quaternion.identity).GetComponent<ProjectileManager>();
-			projectileManagerComponent.Init(id);
+			if (Projectiles.ContainsKey(id))
+			{
+				Projectiles[id].transform.position = position;
+				Projectiles[id].gameObject.SetActive(true);
+			}
+			else
+			{
+				var projectileManagerComponent = Instantiate(ProjectilePrefab, position, Quaternion.identity, GameObject.Find("ProjectilePool").transform).GetComponent<ProjectileManager>();
+				projectileManagerComponent.Init(id);
 
-			Projectiles.Add(id, projectileManagerComponent);
+				Projectiles.Add(id, projectileManagerComponent);
+			}
 		}
 
 	}

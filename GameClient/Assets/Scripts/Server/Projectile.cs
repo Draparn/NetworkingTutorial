@@ -15,7 +15,7 @@ namespace NetworkTutorial.Server
 		private Vector3 initialForce;
 		public int thrownByPlayer;
 		private float fuseTimer = 1;
-		private float explosionRadius = 1.5f;
+		private float explosionRadius = 2.5f;
 		private float explosionDamage = 25.0f;
 
 		private void Start()
@@ -44,6 +44,8 @@ namespace NetworkTutorial.Server
 			rb = GetComponent<Rigidbody>();
 			rb.AddForce(initialForce);
 
+			Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), Server.Clients[thrownByPlayer].player.GetComponent<CharacterController>());
+
 			Invoke(nameof(Explode), fuseTimer);
 		}
 
@@ -51,10 +53,12 @@ namespace NetworkTutorial.Server
 		{
 			ServerSend.SendProjectileUpdatePosition_UDP(this);
 		}
+
 		private void OnCollisionEnter(Collision other)
 		{
 			var playerComp = other.transform.GetComponent<Player>();
-			if (other.transform.CompareTag("Player") && playerComp.PlayerId != thrownByPlayer && playerComp.CurrentHealth > 0)
+
+			if (playerComp != null && playerComp.PlayerId != thrownByPlayer && playerComp.CurrentHealth > 0)
 				Explode();
 		}
 
