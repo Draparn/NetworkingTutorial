@@ -53,7 +53,8 @@ namespace NetworkTutorial.Server
 		}
 		private void OnCollisionEnter(Collision other)
 		{
-			if (other.transform.CompareTag("Player") && other.transform.GetComponent<Player>().CurrentHealth > 0)
+			var playerComp = other.transform.GetComponent<Player>();
+			if (other.transform.CompareTag("Player") && playerComp.PlayerId != thrownByPlayer && playerComp.CurrentHealth > 0)
 				Explode();
 		}
 

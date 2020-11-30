@@ -79,8 +79,10 @@ MonoBehaviour:
   ShootOrigin: {fileID: 5078804295247396080}
   PlayerName: DefaultName
   CurrentHealth: 100
+  maxHealth: 100
+  PrimaryFireDamage: 10
+  ThrowForce: 600
   PlayerId: 0
-  IsDead: 0
 --- !u!143 &2212320931822615467
 CharacterController:
   m_ObjectHideFlags: 0
@@ -92,7 +94,7 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 2
+  m_Height: 1.75
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
