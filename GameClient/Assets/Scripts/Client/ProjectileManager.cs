@@ -18,8 +18,6 @@ namespace NetworkTutorial.Client
 		{
 			transform.position = pos;
 			Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
-			//GameManager.Instance.Projectiles.Remove(id);
-			//Destroy(gameObject);
 			gameObject.SetActive(false);
 		}
 	}
