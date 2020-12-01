@@ -35,7 +35,7 @@ public class GameManagerServer : MonoBehaviour
 	private static void ActivateHealthpack(HealthpackServer hp)
 	{
 		hp.IsActive = true;
-		ServerSend.SendHealthpackActive_TCP_ALL(hp.MyId);
+		ServerSend.SendHealthpackActivate_TCP_ALL(hp.MyId);
 	}
 
 }

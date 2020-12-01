@@ -5,7 +5,7 @@ using UnityEngine;
 public class HealthpackServer : MonoBehaviour
 {
 	public float HealthGain = 50.0f;
-	public float RespawnTime = 15.0f;
+	public float RespawnTime = 30.0f;
 	[HideInInspector] public float currentRespawnTime;
 
 	[HideInInspector] public byte MyId;
@@ -21,13 +21,15 @@ public class HealthpackServer : MonoBehaviour
 	{
 		if (other.CompareTag("Player") && IsActive)
 		{
+			var playerComp = other.GetComponent<Player>();
+			if (playerComp.CurrentHealth == playerComp.MaxHealth)
+				return;
+
+			playerComp.HealDamage(HealthGain);
+			ServerSend.SendPlayerHealthUpdate_TCP_ALL(playerComp);
+
 			currentRespawnTime = RespawnTime;
 			GameManagerServer.DeactivateHealthpack(MyId);
-
-			var playerComp = other.GetComponent<Player>();
-			playerComp.CurrentHealth += HealthGain;
-
-			ServerSend.SendPlayerHealthUpdate_TCP_ALL(playerComp);
 		}
 	}
 }

@@ -12,6 +12,7 @@ namespace NetworkTutorial.Client
 		public GameObject CrossHair;
 
 		public Image HurtScreen;
+		private Color healed = new Color(0, 1, 0, 0.2f);
 		private Color hurt = new Color(1, 0, 0, 0.2f);
 		private Color dead = new Color(0.5f, 0, 0, 0.8f);
 
@@ -43,16 +44,21 @@ namespace NetworkTutorial.Client
 		public void TakeDamage(bool isDead)
 		{
 			if (!isDead)
-				StartCoroutine(DamageTint());
+				StartCoroutine(DamageTint(hurt));
 			else
 			{
 				HurtScreen.color = dead;
 				HurtScreen.enabled = true;
 			}
 		}
-
-		private IEnumerator DamageTint()
+		public void HealDamage()
 		{
+			StartCoroutine(DamageTint(healed));
+		}
+
+		private IEnumerator DamageTint(Color color)
+		{
+			HurtScreen.color = color;
 			HurtScreen.enabled = true;
 			yield return new WaitForSeconds(0.5f);
 			HurtScreen.enabled = false;

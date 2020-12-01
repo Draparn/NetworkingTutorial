@@ -14,7 +14,7 @@ namespace NetworkTutorial.Server.Client
 		public string PlayerName;
 
 		public float CurrentHealth = 100.0f;
-		private float maxHealth = 100.0f;
+		public float MaxHealth = 100.0f;
 		private float PrimaryFireDamage = 10.0f;
 		private float ThrowForce = 600.0f;
 		private float moveSpeed = 5.0f;
@@ -57,7 +57,7 @@ namespace NetworkTutorial.Server.Client
 		{
 			PlayerName = name;
 			PlayerId = id;
-			CurrentHealth = maxHealth;
+			CurrentHealth = MaxHealth;
 
 			playerInput = new bool[5];
 		}
@@ -117,6 +117,10 @@ namespace NetworkTutorial.Server.Client
 
 			ServerSend.SendPlayerHealthUpdate_TCP_ALL(this);
 		}
+		public void HealDamage(float healing)
+		{
+			CurrentHealth = CurrentHealth + healing > MaxHealth ? MaxHealth : CurrentHealth + healing;
+		}
 
 		private void PlayerDied()
 		{
@@ -129,7 +133,7 @@ namespace NetworkTutorial.Server.Client
 		private void PlayerRespawn()
 		{
 			transform.position = new Vector3(0, 0.75f, 0);
-			CurrentHealth = maxHealth;
+			CurrentHealth = MaxHealth;
 			controller.enabled = true;
 
 			ServerSend.SendPlayerRespawned_TCP_ALL(this);

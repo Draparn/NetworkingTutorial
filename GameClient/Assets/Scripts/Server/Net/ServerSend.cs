@@ -90,7 +90,7 @@ namespace NetworkTutorial.Server.Net
 				SendTCPDataToAllClients(packet);
 			}
 		}
-		public static void SendHealthpackActive_TCP_ALL(byte healthpackId)
+		public static void SendHealthpackActivate_TCP_ALL(byte healthpackId)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.healthpackActivate))
 			{

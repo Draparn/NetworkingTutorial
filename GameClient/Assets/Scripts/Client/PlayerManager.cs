@@ -35,23 +35,29 @@ namespace NetworkTutorial.Client
 			originalColor = rend.material.color;
 		}
 
-		public void SetHealth(int clientId, float healthValue)
+		public void SetHealth(int clientId, float newHealthValue)
 		{
-			if (healthValue < currentHealth)
+			if (clientId == Client.Instance.MyId)
+				GameManager.Instance.Players[clientId].FlashUI(newHealthValue);
+
+			if (newHealthValue < currentHealth)
 			{
 				if (!flickering)
 					StartCoroutine(Flicker());
 			}
 
-			currentHealth = healthValue;
+			currentHealth = newHealthValue;
 
 			if (currentHealth <= 0)
 				Die();
 		}
 
-		public void FlashUI()
+		public void FlashUI(float newHealthValue)
 		{
-			UIManager.Instance.TakeDamage(currentHealth <= 0);
+			if (newHealthValue < currentHealth)
+				UIManager.Instance.TakeDamage(currentHealth <= 0);
+			else if(newHealthValue > currentHealth)
+				UIManager.Instance.HealDamage();
 		}
 
 		private void Die()

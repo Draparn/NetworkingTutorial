@@ -56,9 +56,6 @@ namespace NetworkTutorial.Client
 			var clientId = packet.ReadInt();
 			var newHealth = packet.ReadFloat();
 			GameManager.Instance.Players[clientId].SetHealth(clientId, newHealth);
-
-			if (clientId == Client.Instance.MyId)
-				GameManager.Instance.Players[clientId].FlashUI();
 		}
 		public static void OnPlayerRespawn(Packet packet)
 		{
