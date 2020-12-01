@@ -88,6 +88,8 @@ namespace NetworkTutorial.Client
 				packethandlers.Add((int)ServerPackets.projectileSpawn, ClientHandle.OnProjectileSpawn);
 				packethandlers.Add((int)ServerPackets.projectilePosition, ClientHandle.OnProjectiePositionUpdate);
 				packethandlers.Add((int)ServerPackets.projectileExplosion, ClientHandle.OnProjectieExplosion);
+				packethandlers.Add((int)ServerPackets.healthpackActivate, ClientHandle.OnHealthpackActivate);
+				packethandlers.Add((int)ServerPackets.healthpackDeactivate, ClientHandle.OnHealthpackDeactivate);
 			}
 
 			private void ConnectCallback(IAsyncResult result)

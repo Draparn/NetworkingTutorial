@@ -15,6 +15,7 @@ namespace NetworkTutorial.Client
 		public GameObject RemotePlayerPrefab;
 		public GameObject ProjectilePrefab;
 
+
 		private void Awake()
 		{
 			if (Instance == null)

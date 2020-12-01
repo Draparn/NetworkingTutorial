@@ -80,6 +80,25 @@ namespace NetworkTutorial.Server.Net
 			}
 		}
 
+		public static void SendHealthpackDeactivate_TCP(byte healthpackId)
+		{
+			using (Packet packet = new Packet((int)ServerPackets.healthpackDeactivate))
+			{
+				packet.Write(healthpackId);
+
+				SendTCPDataToAllClients(packet);
+			}
+		}
+		public static void SendHealthpackActive_TCP(byte healthpackId)
+		{
+			using (Packet packet = new Packet((int)ServerPackets.healthpackActivate))
+			{
+				packet.Write(healthpackId);
+
+				SendTCPDataToAllClients(packet);
+			}
+		}
+
 		public static void SendProjectileSpawn_TCP(Projectile projectile)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.projectileSpawn))

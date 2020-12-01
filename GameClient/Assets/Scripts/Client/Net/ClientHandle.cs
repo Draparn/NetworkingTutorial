@@ -68,6 +68,19 @@ namespace NetworkTutorial.Client
 			GameManager.Instance.Players[id].Respawn(pos);
 		}
 
+		public static void OnHealthpackActivate(Packet packet)
+		{
+
+		}
+		public static void OnHealthpackDeactivate(Packet packet)
+		{
+
+		}
+		public static void OnHealthpacksInitialize(Packet packet)
+		{
+
+		}
+
 		public static void OnProjectileSpawn(Packet packet)
 		{
 			var id = packet.ReadUShort();

@@ -17,7 +17,9 @@ namespace NetworkTutorial.Shared.Net
 		playerHealth,
 		projectileSpawn,
 		projectilePosition,
-		projectileExplosion
+		projectileExplosion,
+		healthpackActivate,
+		healthpackDeactivate
 	}
 
 	/// <summary>Sent from client to server.</summary>

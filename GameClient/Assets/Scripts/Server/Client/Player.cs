@@ -14,12 +14,12 @@ namespace NetworkTutorial.Server.Client
 		public string PlayerName;
 
 		public float CurrentHealth = 100.0f;
-		public float maxHealth = 100.0f;
-		public float PrimaryFireDamage = 10.0f;
-		public float ThrowForce = 600.0f;
-		public float gravity = -40f;
-		public float moveSpeed = 5.0f;
-		private float jumpSpeed = 8.0f;
+		private float maxHealth = 100.0f;
+		private float PrimaryFireDamage = 10.0f;
+		private float ThrowForce = 600.0f;
+		private float moveSpeed = 5.0f;
+		private float gravity = -30f;
+		private float jumpSpeed = 5.0f;
 		private float yVelocity = 0;
 		private bool hitScan = false;
 
