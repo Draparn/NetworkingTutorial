@@ -10,13 +10,17 @@ namespace NetworkTutorial.Server
 		public static Dictionary<ushort, Projectile> Projectiles = new Dictionary<ushort, Projectile>();
 		private static ushort nextProjectileId = 1;
 
-		public ushort id;
+		[HideInInspector] public ushort id;
+
 		private Rigidbody rb;
+
 		private Vector3 initialForce;
-		public int thrownByPlayer;
-		private float fuseTimer = 1;
-		private float explosionRadius = 2.5f;
-		private float explosionDamage = 25.0f;
+
+		private int thrownByPlayer;
+
+		[SerializeField] private float fuseTimer = 1;
+		[SerializeField] private float explosionRadius = 2.5f;
+		[SerializeField] private float explosionDamage = 15.0f;
 
 		private void Start()
 		{
@@ -39,7 +43,7 @@ namespace NetworkTutorial.Server
 				Projectiles.Add(id, this);
 			}
 
-			ServerSend.SendProjectileSpawn_TCP(this);
+			ServerSend.SendProjectileSpawn_TCP_ALL(this);
 
 			rb = GetComponent<Rigidbody>();
 			rb.AddForce(initialForce);
@@ -51,7 +55,7 @@ namespace NetworkTutorial.Server
 
 		private void FixedUpdate()
 		{
-			ServerSend.SendProjectileUpdatePosition_UDP(this);
+			ServerSend.SendProjectileUpdatePosition_UDP_ALL(this);
 		}
 
 		private void OnCollisionEnter(Collision other)
@@ -70,7 +74,7 @@ namespace NetworkTutorial.Server
 
 		private void Explode()
 		{
-			ServerSend.SendProjectileExplosion_TCP(this);
+			ServerSend.SendProjectileExplosion_TCP_ALL(this);
 
 			var nearbyColliders = Physics.OverlapSphere(transform.position, explosionRadius);
 			foreach (var collider in nearbyColliders)

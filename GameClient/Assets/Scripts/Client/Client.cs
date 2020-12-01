@@ -18,7 +18,7 @@ namespace NetworkTutorial.Client
 		public TCP tcp;
 		public UDP udp;
 
-		public int MyId = 0;
+		[HideInInspector] public int MyId = 0;
 
 		private bool isConnected = false;
 
@@ -90,6 +90,7 @@ namespace NetworkTutorial.Client
 				packethandlers.Add((int)ServerPackets.projectileExplosion, ClientHandle.OnProjectieExplosion);
 				packethandlers.Add((int)ServerPackets.healthpackActivate, ClientHandle.OnHealthpackActivate);
 				packethandlers.Add((int)ServerPackets.healthpackDeactivate, ClientHandle.OnHealthpackDeactivate);
+				packethandlers.Add((int)ServerPackets.healthpackSpawn, ClientHandle.OnHealthpackSpawn);
 			}
 
 			private void ConnectCallback(IAsyncResult result)

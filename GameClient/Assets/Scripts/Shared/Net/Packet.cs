@@ -18,6 +18,7 @@ namespace NetworkTutorial.Shared.Net
 		projectileSpawn,
 		projectilePosition,
 		projectileExplosion,
+		healthpackSpawn,
 		healthpackActivate,
 		healthpackDeactivate
 	}

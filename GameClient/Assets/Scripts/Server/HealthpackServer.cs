@@ -27,7 +27,7 @@ public class HealthpackServer : MonoBehaviour
 			var playerComp = other.GetComponent<Player>();
 			playerComp.CurrentHealth += HealthGain;
 
-			ServerSend.SendPlayerHealthUpdate_TCP(playerComp);
+			ServerSend.SendPlayerHealthUpdate_TCP_ALL(playerComp);
 		}
 	}
 }

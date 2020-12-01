@@ -1,11 +1,12 @@
 ﻿using NetworkTutorial.Server.Client;
 using NetworkTutorial.Shared.Net;
+using UnityEngine;
 
 namespace NetworkTutorial.Server.Net
 {
 	public class ServerSend
 	{
-		public static void SendWelcomeMessage_TCP(int clientId, string msg)
+		public static void SendWelcomeMessage_TCP_CLIENT(int clientId, string msg)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.welcome))
 			{
@@ -16,7 +17,7 @@ namespace NetworkTutorial.Server.Net
 			}
 		}
 
-		public static void SendPlayerConnected_TCP(int clientId, Player player)
+		public static void SendPlayerConnected_TCP_CLIENT(int clientId, Player player)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.spawnPlayer))
 			{
@@ -28,7 +29,7 @@ namespace NetworkTutorial.Server.Net
 				SendTCPDataToClient(clientId, packet);
 			}
 		}
-		public static void SendPlayerDisconnected_TCP(int clientId)
+		public static void SendPlayerDisconnected_TCP_ALL(int clientId)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.playerDisconnected))
 			{
@@ -38,7 +39,7 @@ namespace NetworkTutorial.Server.Net
 			}
 		}
 
-		public static void SendPlayerPositionUpdate_UDP(Player player)
+		public static void SendPlayerPositionUpdate_UDP_ALL(Player player)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.playerPosition))
 			{
@@ -48,7 +49,7 @@ namespace NetworkTutorial.Server.Net
 				SendUDPDataToAllClients(packet);
 			}
 		}
-		public static void SendPlayerRotationUpdate_UDP(Player player)
+		public static void SendPlayerRotationUpdate_UDP_ALLEXCEPT(Player player)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.playerRotation))
 			{
@@ -59,7 +60,7 @@ namespace NetworkTutorial.Server.Net
 			}
 		}
 
-		public static void SendPlayerHealthUpdate_TCP(Player player)
+		public static void SendPlayerHealthUpdate_TCP_ALL(Player player)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.playerHealth))
 			{
@@ -69,7 +70,7 @@ namespace NetworkTutorial.Server.Net
 				SendTCPDataToAllClients(packet);
 			}
 		}
-		public static void SendPlayerRespawned_TCP(Player player)
+		public static void SendPlayerRespawned_TCP_ALL(Player player)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.playerRespawn))
 			{
@@ -80,7 +81,7 @@ namespace NetworkTutorial.Server.Net
 			}
 		}
 
-		public static void SendHealthpackDeactivate_TCP(byte healthpackId)
+		public static void SendHealthpackDeactivate_TCP_ALL(byte healthpackId)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.healthpackDeactivate))
 			{
@@ -89,7 +90,7 @@ namespace NetworkTutorial.Server.Net
 				SendTCPDataToAllClients(packet);
 			}
 		}
-		public static void SendHealthpackActive_TCP(byte healthpackId)
+		public static void SendHealthpackActive_TCP_ALL(byte healthpackId)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.healthpackActivate))
 			{
@@ -98,8 +99,18 @@ namespace NetworkTutorial.Server.Net
 				SendTCPDataToAllClients(packet);
 			}
 		}
+		public static void SendHealthpackSpawn_TCP_CLIENT(int clientId, byte id, Vector3 position)
+		{
+			using (Packet packet = new Packet((int)ServerPackets.healthpackSpawn))
+			{
+				packet.Write(id);
+				packet.Write(position);
 
-		public static void SendProjectileSpawn_TCP(Projectile projectile)
+				SendTCPDataToClient(clientId, packet);
+			}
+		}
+
+		public static void SendProjectileSpawn_TCP_ALL(Projectile projectile)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.projectileSpawn))
 			{
@@ -109,7 +120,7 @@ namespace NetworkTutorial.Server.Net
 				SendTCPDataToAllClients(packet);
 			}
 		}
-		public static void SendProjectileUpdatePosition_UDP(Projectile projectile)
+		public static void SendProjectileUpdatePosition_UDP_ALL(Projectile projectile)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.projectilePosition))
 			{
@@ -119,7 +130,7 @@ namespace NetworkTutorial.Server.Net
 				SendUDPDataToAllClients(packet);
 			}
 		}
-		public static void SendProjectileExplosion_TCP(Projectile projectile)
+		public static void SendProjectileExplosion_TCP_ALL(Projectile projectile)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.projectileExplosion))
 			{

@@ -126,4 +126,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  thrownByPlayer: 0
+  fuseTimer: 1
+  explosionRadius: 2.5
+  explosionDamage: 15

@@ -35,7 +35,7 @@ namespace NetworkTutorial.Server.Client
 
 			stream.BeginRead(receiveBuffer, 0, ConstantValues.DATA_BUFFER_SIZE, ReceiveCallback, null);
 
-			ServerSend.SendWelcomeMessage_TCP(id, "Welcome to the party, pal!");
+			ServerSend.SendWelcomeMessage_TCP_CLIENT(id, "Welcome to the party, pal!");
 		}
 
 		public void SendData(Packet packet)

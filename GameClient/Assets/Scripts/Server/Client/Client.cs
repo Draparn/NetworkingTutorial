@@ -26,15 +26,22 @@ namespace NetworkTutorial.Server.Client
 			player = NetworkManager.instance.InstantiatePlayer();
 			player.Init(Id, playerName);
 
+			//Players
 			foreach (var client in Server.Clients.Values)
 			{
 				if (client.player != null)
 				{
-					ServerSend.SendPlayerConnected_TCP(client.Id, player);
+					ServerSend.SendPlayerConnected_TCP_CLIENT(client.Id, player);
 
 					if (client.Id != Id)
-						ServerSend.SendPlayerConnected_TCP(Id, client.player);
+						ServerSend.SendPlayerConnected_TCP_CLIENT(Id, client.player);
 				}
+			}
+
+			//Healthpacks
+			foreach (var kvp in GameManagerServer.healthpacks)
+			{
+				ServerSend.SendHealthpackSpawn_TCP_CLIENT(Id, kvp.Key, kvp.Value.gameObject.transform.position);
 			}
 
 		}
@@ -52,7 +59,7 @@ namespace NetworkTutorial.Server.Client
 			tcp.Disconnect();
 			udp.Disconnect();
 
-			ServerSend.SendPlayerDisconnected_TCP(Id);
+			ServerSend.SendPlayerDisconnected_TCP_ALL(Id);
 		}
 
 	}

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-
 namespace NetworkTutorial.Client
 {
 	public class GameManager : MonoBehaviour
@@ -10,11 +9,15 @@ namespace NetworkTutorial.Client
 
 		public Dictionary<int, PlayerManager> Players = new Dictionary<int, PlayerManager>();
 		public Dictionary<int, ProjectileManager> Projectiles = new Dictionary<int, ProjectileManager>();
+		public Dictionary<byte, GameObject> Healthpacks = new Dictionary<byte, GameObject>();
 
 		public GameObject LocalPlayerPrefab;
 		public GameObject RemotePlayerPrefab;
 		public GameObject ProjectilePrefab;
+		public GameObject HealthpackPrefab;
 
+		private Transform projectilePool;
+		private Transform pickups;
 
 		private void Awake()
 		{
@@ -22,6 +25,12 @@ namespace NetworkTutorial.Client
 				Instance = this;
 			else if (Instance != this)
 				Destroy(this);
+		}
+
+		private void Start()
+		{
+			projectilePool = GameObject.Find("ProjectilePool").transform;
+			pickups = GameObject.Find("Pickups").transform;
 		}
 
 		public void SpawnPlayer(bool isLocal, int playerId, string playerName, Vector3 pos, Quaternion rot)
@@ -42,11 +51,24 @@ namespace NetworkTutorial.Client
 			}
 			else
 			{
-				var projectileManagerComponent = Instantiate(ProjectilePrefab, position, Quaternion.identity, GameObject.Find("ProjectilePool").transform).GetComponent<ProjectileManager>();
+				var projectileManagerComponent = Instantiate(ProjectilePrefab, position, Quaternion.identity, projectilePool).GetComponent<ProjectileManager>();
 				projectileManagerComponent.Init(id);
 
 				Projectiles.Add(id, projectileManagerComponent);
 			}
+		}
+
+		public void SpawnHealthPack(byte id, Vector3 position)
+		{
+			Healthpacks.Add(id, Instantiate(HealthpackPrefab, position, Quaternion.identity, pickups));
+		}
+		public void HealthpackActivate(byte id)
+		{
+			Healthpacks[id].SetActive(true);
+		}
+		public void HealthpackDeactivate(byte id)
+		{
+			Healthpacks[id].SetActive(false);
 		}
 
 	}

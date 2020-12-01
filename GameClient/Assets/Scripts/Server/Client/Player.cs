@@ -80,8 +80,8 @@ namespace NetworkTutorial.Server.Client
 			moveDirection.y = yVelocity;
 			controller.Move(moveDirection);
 
-			ServerSend.SendPlayerPositionUpdate_UDP(this);
-			ServerSend.SendPlayerRotationUpdate_UDP(this);
+			ServerSend.SendPlayerPositionUpdate_UDP_ALL(this);
+			ServerSend.SendPlayerRotationUpdate_UDP_ALLEXCEPT(this);
 		}
 
 		public void PrimaryFire(Vector3 viewDirection)
@@ -115,7 +115,7 @@ namespace NetworkTutorial.Server.Client
 			if (CurrentHealth <= 0)
 				PlayerDied();
 
-			ServerSend.SendPlayerHealthUpdate_TCP(this);
+			ServerSend.SendPlayerHealthUpdate_TCP_ALL(this);
 		}
 
 		private void PlayerDied()
@@ -132,7 +132,7 @@ namespace NetworkTutorial.Server.Client
 			CurrentHealth = maxHealth;
 			controller.enabled = true;
 
-			ServerSend.SendPlayerRespawned_TCP(this);
+			ServerSend.SendPlayerRespawned_TCP_ALL(this);
 		}
 
 		public void UpdatePosAndRot(bool[] inputs, Quaternion rot)

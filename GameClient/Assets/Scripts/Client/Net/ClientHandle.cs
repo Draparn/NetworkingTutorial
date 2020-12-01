@@ -70,15 +70,18 @@ namespace NetworkTutorial.Client
 
 		public static void OnHealthpackActivate(Packet packet)
 		{
-
+			GameManager.Instance.HealthpackActivate(packet.ReadByte());
 		}
 		public static void OnHealthpackDeactivate(Packet packet)
 		{
-
+			GameManager.Instance.HealthpackDeactivate(packet.ReadByte());
 		}
-		public static void OnHealthpacksInitialize(Packet packet)
+		public static void OnHealthpackSpawn(Packet packet)
 		{
+			var id = packet.ReadByte();
+			var pos = packet.ReadVector3();
 
+			GameManager.Instance.SpawnHealthPack(id, pos);
 		}
 
 		public static void OnProjectileSpawn(Packet packet)

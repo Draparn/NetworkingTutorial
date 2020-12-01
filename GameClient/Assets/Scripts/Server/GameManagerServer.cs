@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManagerServer : MonoBehaviour
 {
-	private static Dictionary<byte, HealthpackServer> healthpacks = new Dictionary<byte, HealthpackServer>();
+	public static Dictionary<byte, HealthpackServer> healthpacks = new Dictionary<byte, HealthpackServer>();
 
 	private static byte nextHealthpackId = 0;
 
@@ -30,12 +30,12 @@ public class GameManagerServer : MonoBehaviour
 	public static void DeactivateHealthpack(byte id)
 	{
 		healthpacks[id].IsActive = false;
-		ServerSend.SendHealthpackDeactivate_TCP(id);
+		ServerSend.SendHealthpackDeactivate_TCP_ALL(id);
 	}
 	private static void ActivateHealthpack(HealthpackServer hp)
 	{
 		hp.IsActive = true;
-		ServerSend.SendHealthpackActive_TCP(hp.MyId);
+		ServerSend.SendHealthpackActive_TCP_ALL(hp.MyId);
 	}
 
 }
