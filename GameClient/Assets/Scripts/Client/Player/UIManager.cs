@@ -19,6 +19,8 @@ namespace NetworkTutorial.Client
 		public InputField ConnectToIPField;
 		public InputField UserNameField;
 
+		public Text HealthText;
+
 
 		private void Awake()
 		{
@@ -29,12 +31,15 @@ namespace NetworkTutorial.Client
 
 			ConnectToIPField.text = "127.0.0.1";
 			UserNameField.text = "ClientName";
+			HealthText.text = "100";
 		}
 
 		public void ConnectToServer()
 		{
 			StartMenu.SetActive(false);
 			CrossHair.SetActive(true);
+			HealthText.transform.parent.gameObject.SetActive(true);
+
 			ConnectToIPField.interactable = false;
 			UserNameField.interactable = false;
 
@@ -54,6 +59,18 @@ namespace NetworkTutorial.Client
 		public void HealDamage()
 		{
 			StartCoroutine(DamageTint(healed));
+		}
+
+		public void SetHealthText(float healthValue)
+		{
+			HealthText.text = healthValue.ToString();
+		}
+
+		public void SetHealthTextColor(float healthValue)
+		{
+			Color.RGBToHSV(HealthText.color, out float H, out float S, out float V);
+
+			HealthText.color = Color.HSVToRGB(healthValue / 360, S, V);
 		}
 
 		private IEnumerator DamageTint(Color color)

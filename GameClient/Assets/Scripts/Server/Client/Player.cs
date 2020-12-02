@@ -17,9 +17,9 @@ namespace NetworkTutorial.Server.Client
 		public float MaxHealth = 100.0f;
 		private float PrimaryFireDamage = 10.0f;
 		private float ThrowForce = 600.0f;
-		private float moveSpeed = 5.0f;
-		private float gravity = -30f;
-		private float jumpSpeed = 5.0f;
+		private float moveSpeed = 7.0f;
+		private float gravity = -12f;
+		private float jumpSpeed = 4.0f;
 		private float yVelocity = 0;
 		private bool hitScan = false;
 

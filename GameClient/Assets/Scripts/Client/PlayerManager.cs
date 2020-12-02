@@ -58,6 +58,9 @@ namespace NetworkTutorial.Client
 				UIManager.Instance.TakeDamage(currentHealth <= 0);
 			else if(newHealthValue > currentHealth)
 				UIManager.Instance.HealDamage();
+
+			UIManager.Instance.SetHealthText(newHealthValue);
+			UIManager.Instance.SetHealthTextColor(newHealthValue);
 		}
 
 		private void Die()
