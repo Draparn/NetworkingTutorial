@@ -52,6 +52,7 @@ namespace NetworkTutorial.Client
 				StartCoroutine(DamageTint(hurt));
 			else
 			{
+				StopAllCoroutines();
 				HurtScreen.color = dead;
 				HurtScreen.enabled = true;
 			}
@@ -68,7 +69,7 @@ namespace NetworkTutorial.Client
 
 		public void SetHealthTextColor(float healthValue)
 		{
-			Color.RGBToHSV(HealthText.color, out float H, out float S, out float V);
+			Color.RGBToHSV(HealthText.color, out _, out float S, out float V);
 
 			HealthText.color = Color.HSVToRGB(healthValue / 360, S, V);
 		}

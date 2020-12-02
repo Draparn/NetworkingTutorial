@@ -38,7 +38,7 @@ namespace NetworkTutorial.Client
 		public void SetHealth(int clientId, float newHealthValue)
 		{
 			if (clientId == Client.Instance.MyId)
-				GameManager.Instance.Players[clientId].FlashUI(newHealthValue);
+				FlashUI(newHealthValue);
 
 			if (newHealthValue < currentHealth)
 			{
@@ -52,10 +52,10 @@ namespace NetworkTutorial.Client
 				Die();
 		}
 
-		public void FlashUI(float newHealthValue)
+		private void FlashUI(float newHealthValue)
 		{
 			if (newHealthValue < currentHealth)
-				UIManager.Instance.TakeDamage(currentHealth <= 0);
+				UIManager.Instance.TakeDamage(newHealthValue <= 0);
 			else if(newHealthValue > currentHealth)
 				UIManager.Instance.HealDamage();
 
@@ -71,6 +71,8 @@ namespace NetworkTutorial.Client
 		public void Respawn(Vector3 position)
 		{
 			UIManager.Instance.Respawn();
+			UIManager.Instance.SetHealthText(maxHealth);
+			UIManager.Instance.SetHealthTextColor(maxHealth);
 			transform.position = position;
 			currentHealth = maxHealth;
 			rend.gameObject.SetActive(true);

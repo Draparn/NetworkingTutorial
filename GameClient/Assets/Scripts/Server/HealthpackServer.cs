@@ -32,4 +32,23 @@ public class HealthpackServer : MonoBehaviour
 			GameManagerServer.DeactivateHealthpack(MyId);
 		}
 	}
+
+	public bool RespawnCollisionCheck()
+	{
+		var overlappingColliders = Physics.OverlapSphere(transform.position, 1);
+		foreach (var col in overlappingColliders)
+		{
+			var playerComp = col.GetComponent<Player>();
+			if (playerComp != null && playerComp.CurrentHealth < playerComp.MaxHealth)
+			{
+				playerComp.HealDamage(HealthGain);
+				ServerSend.SendPlayerHealthUpdate_TCP_ALL(playerComp);
+
+				currentRespawnTime = RespawnTime;
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

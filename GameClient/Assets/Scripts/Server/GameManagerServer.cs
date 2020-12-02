@@ -34,8 +34,11 @@ public class GameManagerServer : MonoBehaviour
 	}
 	private static void ActivateHealthpack(HealthpackServer hp)
 	{
-		hp.IsActive = true;
-		ServerSend.SendHealthpackActivate_TCP_ALL(hp.MyId);
+		if (!hp.RespawnCollisionCheck())
+		{
+			hp.IsActive = true;
+			ServerSend.SendHealthpackActivate_TCP_ALL(hp.MyId);
+		}
 	}
 
 }

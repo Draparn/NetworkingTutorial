@@ -8,6 +8,13 @@ namespace NetworkTutorial.Server.Client
 	{
 		private Vector2 InputDirection;
 
+		private Vector3[] respawnPoints = new Vector3[3]
+		{
+			new Vector3(0, 0.75f, 0),
+			new Vector3(0, 2.5f, -18),
+			new Vector3(-5, 0.75f, 20)
+		};
+
 		public Transform ShootOrigin;
 		private CharacterController controller;
 
@@ -18,8 +25,8 @@ namespace NetworkTutorial.Server.Client
 		private float PrimaryFireDamage = 10.0f;
 		private float ThrowForce = 600.0f;
 		private float moveSpeed = 7.0f;
-		private float gravity = -12f;
-		private float jumpSpeed = 4.0f;
+		private float gravity = -15f;
+		private float jumpSpeed = 5.0f;
 		private float yVelocity = 0;
 		private bool hitScan = false;
 
@@ -132,7 +139,7 @@ namespace NetworkTutorial.Server.Client
 
 		private void PlayerRespawn()
 		{
-			transform.position = new Vector3(0, 0.75f, 0);
+			transform.position = respawnPoints[Random.Range(0, 3)];
 			CurrentHealth = MaxHealth;
 			controller.enabled = true;
 
