@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NetworkTutorial.Client
+namespace NetworkTutorial.Client.Player
 {
 	public class UIManager : MonoBehaviour
 	{

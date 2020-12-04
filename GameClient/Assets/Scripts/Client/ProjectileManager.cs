@@ -6,10 +6,10 @@ namespace NetworkTutorial.Client
 	{
 		public GameObject ExplosionPrefab;
 
-		private ushort id;
+		private int id;
 
 
-		public void Init(ushort id)
+		public void Init(int id)
 		{
 			this.id = id;
 		}

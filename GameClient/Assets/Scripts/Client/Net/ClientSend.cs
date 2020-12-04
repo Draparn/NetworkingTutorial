@@ -1,7 +1,8 @@
-﻿using NetworkTutorial.Shared.Net;
+﻿using NetworkTutorial.Client.Player;
+using NetworkTutorial.Shared.Net;
 using UnityEngine;
 
-namespace NetworkTutorial.Client
+namespace NetworkTutorial.Client.Net
 {
 	public class ClientSend
 	{
@@ -38,7 +39,6 @@ namespace NetworkTutorial.Client
 				SendTCPData(packet);
 			}
 		}
-
 
 		#region SendToServerOptions
 		private static void SendTCPData(Packet packet)

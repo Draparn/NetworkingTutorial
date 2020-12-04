@@ -1,4 +1,5 @@
 ﻿using NetworkTutorial.Server.Client;
+using NetworkTutorial.Server.Net;
 using NetworkTutorial.Shared;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace NetworkTutorial.Server.Managers
 		public GameObject PlayerPrefab;
 		public GameObject ProjectilePrefab;
 
+		private float snapshotTimer;
 
 		private void Awake()
 		{
@@ -22,9 +24,21 @@ namespace NetworkTutorial.Server.Managers
 
 		private void Start()
 		{
+			snapshotTimer = 0;
 			QualitySettings.vSyncCount = 0;
 			Application.targetFrameRate = 30;
 			Server.StartServer(ConstantValues.SERVER_MAX_PLAYERS, ConstantValues.SERVER_PORT);
+		}
+
+		private void Update()
+		{
+			snapshotTimer += Time.deltaTime;
+
+			if (snapshotTimer >= ConstantValues.SERVER_TICK_RATE)
+			{
+				ServerSend.SendSnapshot();
+				snapshotTimer = 0;
+			}
 		}
 
 		private void OnApplicationQuit()

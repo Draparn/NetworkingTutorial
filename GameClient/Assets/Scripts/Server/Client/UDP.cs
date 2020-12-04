@@ -34,7 +34,7 @@ namespace NetworkTutorial.Server.Client
 			{
 				using (Packet pkt = new Packet(packetBytes))
 				{
-					int packetId = pkt.ReadInt();
+					var packetId = pkt.ReadInt();
 					Server.PacketHandlers[packetId](id, pkt);
 				}
 			});

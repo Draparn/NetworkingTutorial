@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using NetworkTutorial.Client.Net;
+using UnityEngine;
 
-namespace NetworkTutorial.Client
+namespace NetworkTutorial.Client.Player
 {
 	public class PlayerController : MonoBehaviour
 	{

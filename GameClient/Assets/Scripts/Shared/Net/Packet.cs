@@ -20,7 +20,8 @@ namespace NetworkTutorial.Shared.Net
 		projectileExplosion,
 		healthpackSpawn,
 		healthpackActivate,
-		healthpackDeactivate
+		healthpackDeactivate,
+		serverSnapshot
 	}
 
 	/// <summary>Sent from client to server.</summary>

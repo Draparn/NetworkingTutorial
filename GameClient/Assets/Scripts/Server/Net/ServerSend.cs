@@ -17,6 +17,30 @@ namespace NetworkTutorial.Server.Net
 			}
 		}
 
+		public static void SendSnapshot()
+		{
+			using (Packet packet = new Packet((int)ServerPackets.serverSnapshot))
+			{
+				packet.Write(ServerSnapshot.currentSnapshot.PlayerPositions.Count);
+				foreach (var player in ServerSnapshot.currentSnapshot.PlayerPositions)
+				{
+					packet.Write(player.PlayerId);
+					packet.Write(player.transform.position);
+				}
+
+				packet.Write(ServerSnapshot.currentSnapshot.ProjectilePositions.Count);
+				foreach (var proj in ServerSnapshot.currentSnapshot.ProjectilePositions)
+				{
+					packet.Write(proj.id);
+					packet.Write(proj.transform.position);
+				}
+
+				SendUDPDataToAllClients(packet);
+			}
+
+			ServerSnapshot.ClearSnapshot();
+		}
+
 		public static void SendPlayerConnected_TCP_CLIENT(int clientId, Player player)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.spawnPlayer))
@@ -38,7 +62,8 @@ namespace NetworkTutorial.Server.Net
 				SendTCPDataToAllClients(packet);
 			}
 		}
-
+		
+		//obsolete since snapshot implementation
 		public static void SendPlayerPositionUpdate_UDP_ALL(Player player)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.playerPosition))
@@ -120,6 +145,7 @@ namespace NetworkTutorial.Server.Net
 				SendTCPDataToAllClients(packet);
 			}
 		}
+		//obsolete since snapshot implementation
 		public static void SendProjectileUpdatePosition_UDP_ALL(Projectile projectile)
 		{
 			using (Packet packet = new Packet((int)ServerPackets.projectilePosition))
@@ -156,7 +182,7 @@ namespace NetworkTutorial.Server.Net
 		private static void SendTCPDataToAllClients(Packet packet)
 		{
 			packet.WriteLength();
-			for (int i = 1; i <= Server.MaxPlayers; i++)
+			for (ushort i = 1; i <= Server.MaxPlayers; i++)
 			{
 				Server.Clients[i].tcp.SendData(packet);
 			}
@@ -164,7 +190,7 @@ namespace NetworkTutorial.Server.Net
 		private static void SendUDPDataToAllClients(Packet packet)
 		{
 			packet.WriteLength();
-			for (int i = 1; i <= Server.MaxPlayers; i++)
+			for (ushort i = 1; i <= Server.MaxPlayers; i++)
 			{
 				if (Server.Clients[i].udp != null)
 				{
@@ -176,7 +202,7 @@ namespace NetworkTutorial.Server.Net
 		private static void SendTCPDataToAllClientsExcept(int clientIdToExclude, Packet packet)
 		{
 			packet.WriteLength();
-			for (int i = 1; i <= Server.MaxPlayers; i++)
+			for (ushort i = 1; i <= Server.MaxPlayers; i++)
 			{
 				if (i == clientIdToExclude)
 					continue;
@@ -187,7 +213,7 @@ namespace NetworkTutorial.Server.Net
 		private static void SendUDPDataToAllClientsExcept(int clientIdToExclude, Packet packet)
 		{
 			packet.WriteLength();
-			for (int i = 1; i <= Server.MaxPlayers; i++)
+			for (ushort i = 1; i <= Server.MaxPlayers; i++)
 			{
 				if (i == clientIdToExclude)
 					continue;

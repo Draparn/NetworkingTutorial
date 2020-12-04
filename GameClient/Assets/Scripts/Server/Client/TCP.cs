@@ -99,7 +99,7 @@ namespace NetworkTutorial.Server.Client
 				{
 					using (Packet packet = new Packet(packetBytes))
 					{
-						int packetId = packet.ReadInt();
+						var packetId = packet.ReadInt();
 						Server.PacketHandlers[packetId](id, packet);
 					}
 				});

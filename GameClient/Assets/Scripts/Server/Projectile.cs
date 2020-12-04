@@ -7,10 +7,10 @@ namespace NetworkTutorial.Server
 {
 	public class Projectile : MonoBehaviour
 	{
-		public static Dictionary<ushort, Projectile> Projectiles = new Dictionary<ushort, Projectile>();
+		public static Dictionary<int, Projectile> Projectiles = new Dictionary<int, Projectile>();
 		private static ushort nextProjectileId = 1;
 
-		[HideInInspector] public ushort id;
+		[HideInInspector] public int id;
 
 		private Rigidbody rb;
 
@@ -55,7 +55,8 @@ namespace NetworkTutorial.Server
 
 		private void FixedUpdate()
 		{
-			ServerSend.SendProjectileUpdatePosition_UDP_ALL(this);
+			ServerSnapshot.AddProjectileMovement(this);
+			//ServerSend.SendProjectileUpdatePosition_UDP_ALL(this);
 		}
 
 		private void OnCollisionEnter(Collision other)
@@ -74,6 +75,7 @@ namespace NetworkTutorial.Server
 
 		private void Explode()
 		{
+			ServerSnapshot.RemoveProjectileMovement(this);
 			ServerSend.SendProjectileExplosion_TCP_ALL(this);
 
 			var nearbyColliders = Physics.OverlapSphere(transform.position, explosionRadius);

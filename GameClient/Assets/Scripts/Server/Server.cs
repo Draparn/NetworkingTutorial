@@ -76,7 +76,7 @@ namespace NetworkTutorial.Server
 
 				using (Packet packet = new Packet(data))
 				{
-					int clientId = packet.ReadInt();
+					var clientId = packet.ReadInt();
 					if (clientId == 0)
 						return;
 

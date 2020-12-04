@@ -5,6 +5,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
+using NetworkTutorial.Client.Net;
 
 namespace NetworkTutorial.Client
 {
@@ -80,17 +81,18 @@ namespace NetworkTutorial.Client
 				packethandlers = new Dictionary<int, PacketHandler>();
 				packethandlers.Add((int)ServerPackets.welcome, ClientHandle.OnWelcomeMessage);
 				packethandlers.Add((int)ServerPackets.spawnPlayer, ClientHandle.OnPlayerConnected);
-				packethandlers.Add((int)ServerPackets.playerPosition, ClientHandle.OnPlayerPositionUpdate);
+				packethandlers.Add((int)ServerPackets.playerPosition, ClientHandle.OnPlayerPositionUpdate); //obsolete since snapshot implementation
 				packethandlers.Add((int)ServerPackets.playerRotation, ClientHandle.OnPlayerRotationUpdate);
 				packethandlers.Add((int)ServerPackets.playerDisconnected, ClientHandle.OnPlayerDisconnected);
 				packethandlers.Add((int)ServerPackets.playerHealth, ClientHandle.OnPlayerHealthUpdate);
 				packethandlers.Add((int)ServerPackets.playerRespawn, ClientHandle.OnPlayerRespawn);
 				packethandlers.Add((int)ServerPackets.projectileSpawn, ClientHandle.OnProjectileSpawn);
-				packethandlers.Add((int)ServerPackets.projectilePosition, ClientHandle.OnProjectiePositionUpdate);
+				packethandlers.Add((int)ServerPackets.projectilePosition, ClientHandle.OnProjectilePositionUpdate); //obsolete since snapshot implementation
 				packethandlers.Add((int)ServerPackets.projectileExplosion, ClientHandle.OnProjectieExplosion);
 				packethandlers.Add((int)ServerPackets.healthpackActivate, ClientHandle.OnHealthpackActivate);
 				packethandlers.Add((int)ServerPackets.healthpackDeactivate, ClientHandle.OnHealthpackDeactivate);
 				packethandlers.Add((int)ServerPackets.healthpackSpawn, ClientHandle.OnHealthpackSpawn);
+				packethandlers.Add((int)ServerPackets.serverSnapshot, ClientHandle.OnNewSnapshot);
 			}
 
 			private void ConnectCallback(IAsyncResult result)

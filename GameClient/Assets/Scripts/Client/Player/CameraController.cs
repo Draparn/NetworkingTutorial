@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace NetworkTutorial.Client
+namespace NetworkTutorial.Client.Player
 {
 	public class CameraController : MonoBehaviour
 	{

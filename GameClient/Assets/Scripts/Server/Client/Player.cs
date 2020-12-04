@@ -87,7 +87,8 @@ namespace NetworkTutorial.Server.Client
 			moveDirection.y = yVelocity;
 			controller.Move(moveDirection);
 
-			ServerSend.SendPlayerPositionUpdate_UDP_ALL(this);
+
+			ServerSnapshot.AddPlayerMovement(this);
 			ServerSend.SendPlayerRotationUpdate_UDP_ALLEXCEPT(this);
 		}
 

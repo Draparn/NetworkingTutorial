@@ -53,6 +53,7 @@ namespace NetworkTutorial.Server.Client
 			ThreadManager.ExecuteOnMainThread(() =>
 			{
 				GameObject.Destroy(player.gameObject);
+				ServerSnapshot.RemovePlayerMovement(player);
 				player = null;
 			});
 

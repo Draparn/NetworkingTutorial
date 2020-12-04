@@ -1,8 +1,10 @@
 ﻿using NetworkTutorial.Shared.Net;
+using System;
+using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
 
-namespace NetworkTutorial.Client
+namespace NetworkTutorial.Client.Net
 {
 	public class ClientHandle : MonoBehaviour
 	{
@@ -16,6 +18,40 @@ namespace NetworkTutorial.Client
 			ClientSend.SendWelcomeReceived();
 
 			Client.Instance.udp.Connect(((IPEndPoint)Client.Instance.tcp.socket.Client.LocalEndPoint).Port);
+		}
+
+		public static void OnNewSnapshot(Packet packet)
+		{
+			int amount;
+			int id;
+			Vector3 position;
+			var players = new List<Tuple<int, Vector3>>();
+			var projectiles = new List<Tuple<int, Vector3>>();
+
+
+			//players
+			amount = packet.ReadInt();
+			for (int i = 0; i < amount; i++)
+			{
+				id = packet.ReadInt();
+				position = packet.ReadVector3();
+
+				if (GameManager.Instance.Players.ContainsKey(id))
+					players.Add(new Tuple<int, Vector3>(id, position));
+			}
+
+			//projcetiles
+			amount = packet.ReadInt();
+			for (int i = 0; i < amount; i++)
+			{
+				id = packet.ReadInt();
+				position = packet.ReadVector3();
+
+				if (GameManager.Instance.Projectiles.ContainsKey(id))
+					projectiles.Add(new Tuple<int, Vector3>(id, position));
+			}
+
+			ClientSnapshot.Snapshots.Add(new ClientSnapshot(players, projectiles));
 		}
 
 		public static void OnPlayerConnected(Packet packet)
@@ -35,6 +71,7 @@ namespace NetworkTutorial.Client
 			GameManager.Instance.Players.Remove(clientId);
 		}
 
+		//position update obsolete since snapshot implementation
 		public static void OnPlayerPositionUpdate(Packet packet)
 		{
 			var id = packet.ReadInt();
@@ -83,14 +120,16 @@ namespace NetworkTutorial.Client
 
 		public static void OnProjectileSpawn(Packet packet)
 		{
-			var id = packet.ReadUShort();
+			var id = packet.ReadInt();
 			var pos = packet.ReadVector3();
 
 			GameManager.Instance.SpawnProjectile(id, pos);
 		}
-		public static void OnProjectiePositionUpdate(Packet packet)
+
+		//position update obsolete since snapshot implementation
+		public static void OnProjectilePositionUpdate(Packet packet)
 		{
-			var id = packet.ReadUShort();
+			var id = packet.ReadInt();
 			var pos = packet.ReadVector3();
 
 			if (GameManager.Instance.Projectiles.ContainsKey(id))
@@ -98,7 +137,7 @@ namespace NetworkTutorial.Client
 		}
 		public static void OnProjectieExplosion(Packet packet)
 		{
-			var id = packet.ReadUShort();
+			var id = packet.ReadInt();
 			var pos = packet.ReadVector3();
 
 			GameManager.Instance.Projectiles[id].Explode(pos);
