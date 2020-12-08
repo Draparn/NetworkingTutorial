@@ -11,5 +11,10 @@ namespace NetworkTutorial.Shared
 
 		public const float SERVER_TICK_RATE = 1.0f / SERVER_TICKS_PER_SECOND;
 		public const float CLIENT_SNAPSHOT_BUFFER_LENGTH = SERVER_TICK_RATE * 2.0f;
+
+		public const float PLAYER_MOVE_SPEED = 7.0f;
+		public const float PLAYER_JUMP_SPEED = 5.0f;
+
+		public const float WORLD_GRAVITY = -15.0f;
 	}
 }

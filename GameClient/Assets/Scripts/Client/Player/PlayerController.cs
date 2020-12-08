@@ -7,6 +7,8 @@ namespace NetworkTutorial.Client.Player
 	{
 		private Transform cameraTransform;
 
+		bool[] inputs = new bool[5];
+
 		private void Start()
 		{
 			cameraTransform = GetComponentInChildren<CameraController>().transform;
@@ -15,6 +17,7 @@ namespace NetworkTutorial.Client.Player
 		private void FixedUpdate()
 		{
 			SendInputToServer();
+			UpdatePlayerPosition();
 		}
 
 		private void Update()
@@ -25,16 +28,18 @@ namespace NetworkTutorial.Client.Player
 
 		public void SendInputToServer()
 		{
-			bool[] inputs = new bool[]
-			{
-				Input.GetKey(KeyCode.W),
-				Input.GetKey(KeyCode.S),
-				Input.GetKey(KeyCode.A),
-				Input.GetKey(KeyCode.D),
-				Input.GetKey(KeyCode.Space)
-			};
+			inputs[0] = Input.GetKey(KeyCode.W);
+			inputs[1] = Input.GetKey(KeyCode.S);
+			inputs[2] = Input.GetKey(KeyCode.A);
+			inputs[3] = Input.GetKey(KeyCode.D);
+			inputs[4] = Input.GetKey(KeyCode.Space);
 
-			ClientSend.SendPlayerInputs(inputs);
+			ClientSend.SendPlayerInputs((uint)Time.frameCount, inputs);
+		}
+
+		private void UpdatePlayerPosition()
+		{
+			//TODO: Local player position update here
 		}
 	}
 }

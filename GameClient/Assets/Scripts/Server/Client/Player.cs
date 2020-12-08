@@ -1,5 +1,6 @@
 ﻿using NetworkTutorial.Server.Managers;
 using NetworkTutorial.Server.Net;
+using NetworkTutorial.Shared;
 using UnityEngine;
 
 namespace NetworkTutorial.Server.Client
@@ -24,22 +25,22 @@ namespace NetworkTutorial.Server.Client
 		public float MaxHealth = 100.0f;
 		private float PrimaryFireDamage = 10.0f;
 		private float ThrowForce = 600.0f;
-		private float moveSpeed = 7.0f;
-		private float gravity = -15f;
-		private float jumpSpeed = 5.0f;
-		private float yVelocity = 0;
+		private float jumpSpeed, gravity, moveSpeed, yVelocity;
+
 		private bool hitScan = false;
 
 		public int PlayerId;
+		private uint frameNumber;
 
 		private bool[] playerInput;
 
 		private void Start()
 		{
 			controller = gameObject.GetComponent<CharacterController>();
-			gravity *= Time.fixedDeltaTime * Time.fixedDeltaTime;
-			moveSpeed *= Time.fixedDeltaTime;
-			jumpSpeed *= Time.fixedDeltaTime;
+			gravity = ConstantValues.WORLD_GRAVITY * Time.fixedDeltaTime * Time.fixedDeltaTime;
+			moveSpeed = ConstantValues.PLAYER_MOVE_SPEED * Time.fixedDeltaTime;
+			jumpSpeed = ConstantValues.PLAYER_JUMP_SPEED * Time.fixedDeltaTime;
+			yVelocity = 0;
 		}
 
 		public void FixedUpdate()
@@ -88,7 +89,7 @@ namespace NetworkTutorial.Server.Client
 			controller.Move(moveDirection);
 
 
-			ServerSnapshot.AddPlayerMovement(this);
+			ServerSnapshot.AddPlayerMovement(frameNumber, this);
 			ServerSend.SendPlayerRotationUpdate_UDP_ALLEXCEPT(this);
 		}
 
@@ -147,8 +148,9 @@ namespace NetworkTutorial.Server.Client
 			ServerSend.SendPlayerRespawned_TCP_ALL(this);
 		}
 
-		public void UpdatePosAndRot(bool[] inputs, Quaternion rot)
+		public void UpdatePosAndRot(uint frameNumber, bool[] inputs, Quaternion rot)
 		{
+			this.frameNumber = frameNumber;
 			playerInput = inputs;
 			transform.rotation = rot;
 		}

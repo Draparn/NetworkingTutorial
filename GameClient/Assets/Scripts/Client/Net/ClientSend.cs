@@ -16,10 +16,12 @@ namespace NetworkTutorial.Client.Net
 			}
 		}
 
-		public static void SendPlayerInputs(bool[] inputs)
+		public static void SendPlayerInputs(uint frameNumber, bool[] inputs)
 		{
 			using (Packet packet = new Packet((int)ClientPackets.playerMovement))
 			{
+				packet.Write(frameNumber);
+
 				packet.Write(inputs.Length);
 				for (int i = 0; i < inputs.Length; i++)
 					packet.Write(inputs[i]);

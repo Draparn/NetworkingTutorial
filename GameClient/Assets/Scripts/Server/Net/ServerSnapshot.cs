@@ -1,6 +1,5 @@
 ﻿using NetworkTutorial.Server.Client;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace NetworkTutorial.Server.Net
 {
@@ -11,7 +10,7 @@ namespace NetworkTutorial.Server.Net
 		public List<Player> PlayerPositions = new List<Player>();
 		public List<Projectile> ProjectilePositions = new List<Projectile>();
 
-		public static void AddPlayerMovement(Player player)
+		public static void AddPlayerMovement(uint frameNumber, Player player)
 		{
 			if (currentSnapshot.PlayerPositions.Contains(player))
 				currentSnapshot.PlayerPositions[currentSnapshot.PlayerPositions.IndexOf(player)].transform.position = player.transform.position;

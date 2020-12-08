@@ -154,6 +154,12 @@ namespace NetworkTutorial.Shared.Net
 		{
 			buffer.AddRange(BitConverter.GetBytes(_value));
 		}
+		/// <summary>Adds a uint to the packet.</summary>
+		/// <param name="_value">The uint to add.</param>
+		public void Write(uint _value)
+		{
+			buffer.AddRange(BitConverter.GetBytes(_value));
+		}
 		/// <summary>Adds a long to the packet.</summary>
 		/// <param name="_value">The long to add.</param>
 		public void Write(long _value)
@@ -302,6 +308,27 @@ namespace NetworkTutorial.Shared.Net
 			else
 			{
 				throw new Exception("Could not read value of type 'int'!");
+			}
+		}
+
+		/// <summary>Reads a uint from the packet.</summary>
+		/// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
+		public uint ReadUInt(bool _moveReadPos = true)
+		{
+			if (buffer.Count > readPos)
+			{
+				// If there are unread bytes
+				uint _value = BitConverter.ToUInt32(readableBuffer, readPos); // Convert the bytes to a uint
+				if (_moveReadPos)
+				{
+					// If _moveReadPos is true
+					readPos += 4; // Increase readPos by 4
+				}
+				return _value; // Return the uint
+			}
+			else
+			{
+				throw new Exception("Could not read value of type 'uint'!");
 			}
 		}
 
