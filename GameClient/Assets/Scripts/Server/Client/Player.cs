@@ -48,16 +48,6 @@ namespace NetworkTutorial.Server.Client
 			if (CurrentHealth <= 0)
 				return;
 
-			inputDirection = Vector2.zero;
-			if (playerInput[0])         //W
-				inputDirection.y += 1;
-			if (playerInput[1])         //S
-				inputDirection.y -= 1;
-			if (playerInput[2])         //A
-				inputDirection.x -= 1;
-			if (playerInput[3])         //D
-				inputDirection.x += 1;
-
 			MovePlayer();
 		}
 
@@ -72,6 +62,16 @@ namespace NetworkTutorial.Server.Client
 
 		private void MovePlayer()
 		{
+			inputDirection = Vector2.zero;
+			if (playerInput[0])         //W
+				inputDirection.y += 1;
+			if (playerInput[1])         //S
+				inputDirection.y -= 1;
+			if (playerInput[2])         //A
+				inputDirection.x -= 1;
+			if (playerInput[3])         //D
+				inputDirection.x += 1;
+
 			var moveDirection = transform.right * inputDirection.x + transform.forward * inputDirection.y;
 			moveDirection *= moveSpeed;
 
