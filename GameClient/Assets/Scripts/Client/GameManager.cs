@@ -6,6 +6,18 @@ using UnityEngine;
 
 namespace NetworkTutorial.Client
 {
+	public struct LocalPosPrediction
+	{
+		public uint frameNumber;
+		public Vector3 position;
+
+		public LocalPosPrediction(uint frameNumber, Vector3 position)
+		{
+			this.frameNumber = frameNumber;
+			this.position = position;
+		}
+	}
+
 	public class GameManager : MonoBehaviour
 	{
 		public static GameManager Instance;
@@ -13,8 +25,10 @@ namespace NetworkTutorial.Client
 		public Dictionary<int, PlayerManager> Players = new Dictionary<int, PlayerManager>();
 		public Dictionary<int, ProjectileManager> Projectiles = new Dictionary<int, ProjectileManager>();
 		public Dictionary<byte, GameObject> Healthpacks = new Dictionary<byte, GameObject>();
-		private Dictionary<int, Vector3> playersOriginalPositions = new Dictionary<int, Vector3>();
 		private Dictionary<int, Vector3> projectilesOriginalPositions = new Dictionary<int, Vector3>();
+		private Dictionary<int, Vector3> playersOriginalPositions = new Dictionary<int, Vector3>();
+
+		public List<LocalPosPrediction> LocalPositionPredictions = new List<LocalPosPrediction>();
 
 		public GameObject LocalPlayerPrefab;
 		public GameObject RemotePlayerPrefab;
@@ -24,7 +38,7 @@ namespace NetworkTutorial.Client
 		private Transform projectilePool;
 		private Transform pickups;
 
-		private float snapshotBufferTimer;
+		private float snapshotBufferTimer = ConstantValues.CLIENT_SNAPSHOT_BUFFER_LENGTH;
 		private float lerpValue = 0;
 		private float bufferTimeMultiplier = 1;
 
@@ -40,7 +54,6 @@ namespace NetworkTutorial.Client
 		{
 			projectilePool = GameObject.Find("ProjectilePool").transform;
 			pickups = GameObject.Find("Pickups").transform;
-			snapshotBufferTimer = ConstantValues.CLIENT_SNAPSHOT_BUFFER_LENGTH;
 		}
 
 		private void Update()
@@ -48,26 +61,47 @@ namespace NetworkTutorial.Client
 			if (snapshotBufferTimer <= 0)
 			{
 				//players
-				foreach (var tuple in ClientSnapshot.Snapshots[0].players)
+				foreach (var playerData in ClientSnapshot.Snapshots[0].players)
 				{
-					if (Players.ContainsKey(tuple.Item1))
+					if (Client.Instance.MyId == playerData.PlayerId)
 					{
-						if (!playersOriginalPositions.ContainsKey(tuple.Item1))
-							playersOriginalPositions.Add(tuple.Item1, Players[tuple.Item1].transform.position);
+						for (int i = 0; i < LocalPositionPredictions.Count; i++)
+						{
+							if (LocalPositionPredictions[i].frameNumber == playerData.FrameNumber)
+							{
+								if (Vector3.Distance(LocalPositionPredictions[i].position, playerData.Position) > 1.4f)
+								{
+									Players[playerData.PlayerId].gameObject.GetComponent<PlayerController>().correctPos = playerData.Position;
+									break;
+								}
 
-						Players[tuple.Item1].transform.position = Vector3.Lerp(playersOriginalPositions[tuple.Item1], tuple.Item2, lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier));
+								LocalPositionPredictions.RemoveRange(0, i + 1);
+								break;
+							}
+						}
+
+						continue;
+					}
+
+					if (Players.ContainsKey(playerData.PlayerId))
+					{
+						if (!playersOriginalPositions.ContainsKey(playerData.PlayerId))
+							playersOriginalPositions.Add(playerData.PlayerId, Players[playerData.PlayerId].transform.position);
+
+						Players[playerData.PlayerId].transform.position =
+							Vector3.Lerp(playersOriginalPositions[playerData.PlayerId], playerData.Position, lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier));
 					}
 				}
 
 				//projectiles
-				foreach (var tuple in ClientSnapshot.Snapshots[0].projectiles)
+				foreach (var projData in ClientSnapshot.Snapshots[0].projectiles)
 				{
-					if (Projectiles.ContainsKey(tuple.Item1))
+					if (Projectiles.ContainsKey(projData.ProjectileId))
 					{
-						if (!projectilesOriginalPositions.ContainsKey(tuple.Item1))
-							projectilesOriginalPositions.Add(tuple.Item1, Projectiles[tuple.Item1].transform.position);
+						if (!projectilesOriginalPositions.ContainsKey(projData.ProjectileId))
+							projectilesOriginalPositions.Add(projData.ProjectileId, Projectiles[projData.ProjectileId].transform.position);
 
-						Projectiles[tuple.Item1].transform.position = Vector3.Lerp(projectilesOriginalPositions[tuple.Item1], tuple.Item2, lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier));
+						Projectiles[projData.ProjectileId].transform.position = Vector3.Lerp(projectilesOriginalPositions[projData.ProjectileId], projData.Position, lerpValue / (ConstantValues.SERVER_TICK_RATE));
 					}
 				}
 
@@ -79,22 +113,17 @@ namespace NetworkTutorial.Client
 					ClientSnapshot.Snapshots.RemoveAt(0);
 
 					if (ClientSnapshot.Snapshots.Count < 2)
-					{
 						bufferTimeMultiplier = 2.5f;
-					}
 					else if (ClientSnapshot.Snapshots.Count <= 3)
-					{
 						bufferTimeMultiplier = 1.0f;
-					}
 					else
-					{
 						bufferTimeMultiplier = 0.5f;
-					}
 
 					playersOriginalPositions.Clear();
 					projectilesOriginalPositions.Clear();
 				}
 			}
+
 			else if (ClientSnapshot.Snapshots.Count > 0)
 				snapshotBufferTimer -= Time.deltaTime;
 		}

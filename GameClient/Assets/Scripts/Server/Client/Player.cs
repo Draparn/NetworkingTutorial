@@ -7,7 +7,7 @@ namespace NetworkTutorial.Server.Client
 {
 	public class Player : MonoBehaviour
 	{
-		private Vector2 InputDirection;
+		private Vector2 inputDirection;
 
 		private Vector3[] respawnPoints = new Vector3[3]
 		{
@@ -30,7 +30,7 @@ namespace NetworkTutorial.Server.Client
 		private bool hitScan = false;
 
 		public int PlayerId;
-		private uint frameNumber;
+		public uint FrameNumber;
 
 		private bool[] playerInput;
 
@@ -48,17 +48,17 @@ namespace NetworkTutorial.Server.Client
 			if (CurrentHealth <= 0)
 				return;
 
-			InputDirection = Vector2.zero;
+			inputDirection = Vector2.zero;
 			if (playerInput[0])         //W
-				InputDirection.y += 1;
+				inputDirection.y += 1;
 			if (playerInput[1])         //S
-				InputDirection.y -= 1;
+				inputDirection.y -= 1;
 			if (playerInput[2])         //A
-				InputDirection.x -= 1;
+				inputDirection.x -= 1;
 			if (playerInput[3])         //D
-				InputDirection.x += 1;
+				inputDirection.x += 1;
 
-			MovePlayer(InputDirection);
+			MovePlayer();
 		}
 
 		public void Init(int id, string name)
@@ -70,7 +70,7 @@ namespace NetworkTutorial.Server.Client
 			playerInput = new bool[5];
 		}
 
-		private void MovePlayer(Vector2 inputDirection)
+		private void MovePlayer()
 		{
 			var moveDirection = transform.right * inputDirection.x + transform.forward * inputDirection.y;
 			moveDirection *= moveSpeed;
@@ -88,8 +88,7 @@ namespace NetworkTutorial.Server.Client
 			moveDirection.y = yVelocity;
 			controller.Move(moveDirection);
 
-
-			ServerSnapshot.AddPlayerMovement(frameNumber, this);
+			ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, FrameNumber);
 			ServerSend.SendPlayerRotationUpdate_UDP_ALLEXCEPT(this);
 		}
 
@@ -150,7 +149,7 @@ namespace NetworkTutorial.Server.Client
 
 		public void UpdatePosAndRot(uint frameNumber, bool[] inputs, Quaternion rot)
 		{
-			this.frameNumber = frameNumber;
+			FrameNumber = frameNumber;
 			playerInput = inputs;
 			transform.rotation = rot;
 		}

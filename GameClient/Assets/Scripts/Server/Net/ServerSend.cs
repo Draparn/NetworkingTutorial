@@ -21,11 +21,12 @@ namespace NetworkTutorial.Server.Net
 		{
 			using (Packet packet = new Packet((int)ServerPackets.serverSnapshot))
 			{
-				packet.Write(ServerSnapshot.currentSnapshot.PlayerPositions.Count);
-				foreach (var player in ServerSnapshot.currentSnapshot.PlayerPositions)
+				packet.Write(ServerSnapshot.currentSnapshot.PlayerPositionAndRotation.Count);
+				foreach (var data in ServerSnapshot.currentSnapshot.PlayerPositionAndRotation)
 				{
-					packet.Write(player.PlayerId);
-					packet.Write(player.transform.position);
+					packet.Write(data.Id);
+					packet.Write(data.FrameNumber);
+					packet.Write(data.Position);
 				}
 
 				packet.Write(ServerSnapshot.currentSnapshot.ProjectilePositions.Count);

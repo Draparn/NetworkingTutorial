@@ -1,11 +1,35 @@
 ﻿using NetworkTutorial.Shared.Net;
-using System;
 using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
 
 namespace NetworkTutorial.Client.Net
 {
+	public struct PlayerData
+	{
+		public int PlayerId;
+		public uint FrameNumber;
+		public Vector3 Position;
+
+		public PlayerData(int playerId, uint frameNumber, Vector3 position)
+		{
+			PlayerId = playerId;
+			FrameNumber = frameNumber;
+			Position = position;
+		}
+	}
+	public struct ProjectileData
+	{
+		public int ProjectileId;
+		public Vector3 Position;
+
+		public ProjectileData(int projectileId, Vector3 position)
+		{
+			ProjectileId = projectileId;
+			Position = position;
+		}
+	}
+
 	public class ClientHandle : MonoBehaviour
 	{
 		public static void OnWelcomeMessage(Packet packet)
@@ -24,9 +48,10 @@ namespace NetworkTutorial.Client.Net
 		{
 			int amount;
 			int id;
+			uint frameNumber;
 			Vector3 position;
-			var players = new List<Tuple<int, Vector3>>();
-			var projectiles = new List<Tuple<int, Vector3>>();
+			var players = new List<PlayerData>();
+			var projectiles = new List<ProjectileData>();
 
 
 			//players
@@ -34,10 +59,11 @@ namespace NetworkTutorial.Client.Net
 			for (int i = 0; i < amount; i++)
 			{
 				id = packet.ReadInt();
+				frameNumber = packet.ReadUInt();
 				position = packet.ReadVector3();
 
 				if (GameManager.Instance.Players.ContainsKey(id))
-					players.Add(new Tuple<int, Vector3>(id, position));
+					players.Add(new PlayerData(id, frameNumber, position));
 			}
 
 			//projcetiles
@@ -48,7 +74,7 @@ namespace NetworkTutorial.Client.Net
 				position = packet.ReadVector3();
 
 				if (GameManager.Instance.Projectiles.ContainsKey(id))
-					projectiles.Add(new Tuple<int, Vector3>(id, position));
+					projectiles.Add(new ProjectileData(id, position));
 			}
 
 			ClientSnapshot.Snapshots.Add(new ClientSnapshot(players, projectiles));

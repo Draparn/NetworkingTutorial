@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 namespace NetworkTutorial.Client.Net
 {
@@ -8,10 +6,10 @@ namespace NetworkTutorial.Client.Net
 	{
 		public static List<ClientSnapshot> Snapshots = new List<ClientSnapshot>();
 
-		internal List<Tuple<int, Vector3>> players = new List<Tuple<int, Vector3>>();
-		internal List<Tuple<int, Vector3>> projectiles = new List<Tuple<int, Vector3>>();
+		internal List<PlayerData> players = new List<PlayerData>();
+		internal List<ProjectileData> projectiles = new List<ProjectileData>();
 
-		public ClientSnapshot(List<Tuple<int, Vector3>> players, List<Tuple<int, Vector3>> projectiles)
+		public ClientSnapshot(List<PlayerData> players, List<ProjectileData> projectiles)
 		{
 			this.players = players;
 			this.projectiles = projectiles;
