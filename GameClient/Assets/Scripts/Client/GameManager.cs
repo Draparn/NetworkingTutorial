@@ -71,7 +71,8 @@ namespace NetworkTutorial.Client
 							{
 								if (Vector3.Distance(LocalPositionPredictions[i].position, playerData.Position) > 1.4f)
 								{
-									Players[playerData.PlayerId].gameObject.GetComponent<PlayerController>().correctPos = playerData.Position;
+									//THIS NEEDS WORK!!
+									PlayerController.correctPos = playerData.Position;
 									break;
 								}
 

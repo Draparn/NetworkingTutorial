@@ -10,10 +10,12 @@ namespace NetworkTutorial.Client.Player
 		private CharacterController controller;
 		private PlayerManager playerManager;
 
-		public Vector3 correctPos = Vector3.zero;
+		public static Vector3 correctPos = Vector3.zero;
 		private Vector2 inputDirection = new Vector2();
 
 		private float moveSpeed, gravity, jumpSpeed, yVelocity;
+
+		private uint frameNumber = 0;
 
 		private bool forward, back, left, right, jump;
 
@@ -40,8 +42,9 @@ namespace NetworkTutorial.Client.Player
 				return;
 			}
 
-			ClientSend.SendPlayerInputs((uint)Time.frameCount, new bool[] { forward, back, left, right, jump });
+			ClientSend.SendPlayerInputs(frameNumber, new bool[] { forward, back, left, right, jump });
 			UpdatePlayerPosition();
+			frameNumber++;
 		}
 
 		private void Update()
@@ -84,7 +87,7 @@ namespace NetworkTutorial.Client.Player
 			moveDirection.y = yVelocity;
 			controller.Move(moveDirection);
 
-			GameManager.Instance.LocalPositionPredictions.Add(new LocalPosPrediction((uint)Time.frameCount, gameObject.transform.position));
+			GameManager.Instance.LocalPositionPredictions.Add(new LocalPosPrediction(frameNumber, gameObject.transform.position));
 		}
 
 	}
