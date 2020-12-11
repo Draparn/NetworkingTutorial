@@ -6,15 +6,21 @@ using UnityEngine;
 
 namespace NetworkTutorial.Client
 {
-	public struct LocalPosPrediction
+	public struct LocalPredictionData
 	{
-		public uint frameNumber;
-		public Vector3 position;
+		public uint FrameNumber;
+		public Transform TransformAfterMove;
+		public float yVelocityPreMove;
+		public bool IsGroundedPreMove;
+		public bool[] Inputs;
 
-		public LocalPosPrediction(uint frameNumber, Vector3 position)
+		public LocalPredictionData(uint frameNumber, bool[] inputs, float yVelocityPreMove, bool isGroundedPreMove, Transform transformAfterMove)
 		{
-			this.frameNumber = frameNumber;
-			this.position = position;
+			FrameNumber = frameNumber;
+			Inputs = inputs;
+			this.yVelocityPreMove = yVelocityPreMove;
+			IsGroundedPreMove = isGroundedPreMove;
+			TransformAfterMove = transformAfterMove;
 		}
 	}
 
@@ -28,7 +34,7 @@ namespace NetworkTutorial.Client
 		private Dictionary<int, Vector3> projectilesOriginalPositions = new Dictionary<int, Vector3>();
 		private Dictionary<int, Vector3> playersOriginalPositions = new Dictionary<int, Vector3>();
 
-		public List<LocalPosPrediction> LocalPositionPredictions = new List<LocalPosPrediction>();
+		public List<LocalPredictionData> LocalPositionPredictions = new List<LocalPredictionData>();
 
 		public GameObject LocalPlayerPrefab;
 		public GameObject RemotePlayerPrefab;
@@ -67,12 +73,30 @@ namespace NetworkTutorial.Client
 					{
 						for (int i = 0; i < LocalPositionPredictions.Count; i++)
 						{
-							if (LocalPositionPredictions[i].frameNumber == playerData.FrameNumber)
+							if (LocalPositionPredictions[i].FrameNumber == playerData.FrameNumber)
 							{
-								if (Vector3.Distance(LocalPositionPredictions[i].position, playerData.Position) > 1.4f)
+								if (Vector3.Distance(LocalPositionPredictions[i].TransformAfterMove.position, playerData.Position) > 1.4f)
 								{
-									//THIS NEEDS WORK!!
-									PlayerController.correctPos = playerData.Position;
+									Debug.LogError("Correcting...");
+									LocalPositionPredictions.RemoveRange(0, i);
+
+									for (int j = 0; j < LocalPositionPredictions.Count; j++)
+									{
+										if (j == 0)
+											LocalPositionPredictions[j].TransformAfterMove.position = playerData.Position;
+										else
+										{
+											LocalPositionPredictions[j].TransformAfterMove.position += PlayerMovementCalculations.CalculatePlayerPosition(
+												LocalPositionPredictions[j].Inputs,
+												LocalPositionPredictions[j - 1].TransformAfterMove,
+												LocalPositionPredictions[j].yVelocityPreMove,
+												LocalPositionPredictions[j].IsGroundedPreMove
+												);
+										}
+
+										PlayerController.correctPos = LocalPositionPredictions[j].TransformAfterMove.position;
+									}
+
 									break;
 								}
 

@@ -11,23 +11,20 @@ namespace NetworkTutorial.Client.Player
 		private PlayerManager playerManager;
 
 		public static Vector3 correctPos = Vector3.zero;
-		private Vector2 inputDirection = new Vector2();
+		//private Vector2 inputDirection = new Vector2();
 
-		private float moveSpeed, gravity, jumpSpeed, yVelocity;
+		private float yVelocity = 0;
 
 		private uint frameNumber = 0;
 
 		private bool forward, back, left, right, jump;
+		private bool[] inputs = new bool[5];
 
 		private void Start()
 		{
 			cameraTransform = GetComponentInChildren<CameraController>().transform;
 			playerManager = GetComponent<PlayerManager>();
 			controller = GetComponent<CharacterController>();
-			gravity = ConstantValues.WORLD_GRAVITY * Time.fixedDeltaTime * Time.fixedDeltaTime;
-			moveSpeed = ConstantValues.PLAYER_MOVE_SPEED * Time.fixedDeltaTime;
-			jumpSpeed = ConstantValues.PLAYER_JUMP_SPEED * Time.fixedDeltaTime;
-			yVelocity = 0;
 		}
 
 		private void FixedUpdate()
@@ -42,7 +39,13 @@ namespace NetworkTutorial.Client.Player
 				return;
 			}
 
-			ClientSend.SendPlayerInputs(frameNumber, new bool[] { forward, back, left, right, jump });
+			inputs[0] = forward;
+			inputs[1] = back;
+			inputs[2] = left;
+			inputs[3] = right;
+			inputs[4] = jump;
+
+			ClientSend.SendPlayerInputs(frameNumber, inputs);
 			UpdatePlayerPosition();
 			frameNumber++;
 		}
@@ -61,33 +64,12 @@ namespace NetworkTutorial.Client.Player
 
 		private void UpdatePlayerPosition()
 		{
-			inputDirection = Vector2.zero;
-			if (forward)  //W
-				inputDirection.y += 1;
-			if (back)  //S
-				inputDirection.y -= 1;
-			if (left)  //A
-				inputDirection.x -= 1;
-			if (right)  //D
-				inputDirection.x += 1;
+			var yVelocityPreMove = yVelocity;
+			var isGroundedPreMove = controller.isGrounded;
 
-			var moveDirection = transform.right * inputDirection.x + transform.forward * inputDirection.y;
-			moveDirection *= moveSpeed;
+			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(inputs, transform, ref yVelocity, controller.isGrounded));
 
-			if (controller.isGrounded)
-			{
-				yVelocity = 0;
-
-				if (jump) //Spacebar
-					yVelocity = jumpSpeed;
-			}
-			else
-				yVelocity += gravity;
-
-			moveDirection.y = yVelocity;
-			controller.Move(moveDirection);
-
-			GameManager.Instance.LocalPositionPredictions.Add(new LocalPosPrediction(frameNumber, gameObject.transform.position));
+			GameManager.Instance.LocalPositionPredictions.Add(new LocalPredictionData(frameNumber, inputs, yVelocityPreMove, isGroundedPreMove, transform));
 		}
 
 	}

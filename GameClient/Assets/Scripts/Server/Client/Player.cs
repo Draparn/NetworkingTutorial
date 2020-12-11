@@ -25,7 +25,7 @@ namespace NetworkTutorial.Server.Client
 		public float MaxHealth = 100.0f;
 		private float PrimaryFireDamage = 10.0f;
 		private float ThrowForce = 600.0f;
-		private float jumpSpeed, gravity, moveSpeed, yVelocity;
+		private float yVelocity = 0;
 
 		private bool hitScan = false;
 
@@ -37,10 +37,6 @@ namespace NetworkTutorial.Server.Client
 		private void Start()
 		{
 			controller = gameObject.GetComponent<CharacterController>();
-			gravity = ConstantValues.WORLD_GRAVITY * Time.fixedDeltaTime * Time.fixedDeltaTime;
-			moveSpeed = ConstantValues.PLAYER_MOVE_SPEED * Time.fixedDeltaTime;
-			jumpSpeed = ConstantValues.PLAYER_JUMP_SPEED * Time.fixedDeltaTime;
-			yVelocity = 0;
 		}
 
 		public void FixedUpdate()
@@ -62,31 +58,7 @@ namespace NetworkTutorial.Server.Client
 
 		private void MovePlayer()
 		{
-			inputDirection = Vector2.zero;
-			if (playerInput[0])         //W
-				inputDirection.y += 1;
-			if (playerInput[1])         //S
-				inputDirection.y -= 1;
-			if (playerInput[2])         //A
-				inputDirection.x -= 1;
-			if (playerInput[3])         //D
-				inputDirection.x += 1;
-
-			var moveDirection = transform.right * inputDirection.x + transform.forward * inputDirection.y;
-			moveDirection *= moveSpeed;
-
-			if (controller.isGrounded)
-			{
-				yVelocity = 0;
-
-				if (playerInput[4]) //Spacebar
-					yVelocity = jumpSpeed;
-			}
-			else
-				yVelocity += gravity;
-
-			moveDirection.y = yVelocity;
-			controller.Move(moveDirection);
+			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(playerInput, transform, ref yVelocity, controller.isGrounded));
 
 			ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, FrameNumber);
 			ServerSend.SendPlayerRotationUpdate_UDP_ALLEXCEPT(this);
