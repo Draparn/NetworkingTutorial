@@ -2,66 +2,82 @@
 
 namespace NetworkTutorial.Shared
 {
+	public struct InputsStruct
+	{
+		public bool Forward;
+		public bool Back;
+		public bool Left;
+		public bool Right;
+		public bool Jump;
+
+		public InputsStruct(bool forward, bool back, bool left, bool right, bool jump)
+		{
+			Forward = forward;
+			Back = back;
+			Left = left;
+			Right = right;
+			Jump = jump;
+		}
+	}
+
 	public class PlayerMovementCalculations : MonoBehaviour
 	{
-		private static float moveSpeed = ConstantValues.PLAYER_MOVE_SPEED * Time.fixedDeltaTime;
-		private static float jumpSpeed = ConstantValues.PLAYER_JUMP_SPEED * Time.fixedDeltaTime;
-		private static float gravity = ConstantValues.WORLD_GRAVITY * Time.fixedDeltaTime * Time.fixedDeltaTime;
-
-		public static Vector3 CalculatePlayerPosition(bool[] inputs, Transform transform, float yVelocity, bool isGrounded)
+		public static Vector3 CalculatePlayerPosition(InputsStruct inputs, Vector3 transformRight, Vector3 transformForward, float yVelocity, bool isGrounded)
 		{
-			var inputDirection = Vector2.zero;
-			if (inputs[0])  //W
-				inputDirection.y += 1;
-			if (inputs[1])  //S
-				inputDirection.y -= 1;
-			if (inputs[2])  //A
+			var inputDirection = Vector3.zero;
+			if (inputs.Forward)  //W
+				inputDirection.z += 1;
+			if (inputs.Back)  //S
+				inputDirection.z -= 1;
+			if (inputs.Left)  //A
 				inputDirection.x -= 1;
-			if (inputs[3])  //D
+			if (inputs.Right)  //D
 				inputDirection.x += 1;
 
-			var moveDirection = transform.right * inputDirection.x + transform.forward * inputDirection.y;
-			moveDirection *= moveSpeed;
+			var moveDirection = transformRight * inputDirection.x + transformForward * inputDirection.z;
+			moveDirection.Normalize();
+			moveDirection *= ConstantValues.PLAYER_MOVE_SPEED * Time.fixedDeltaTime;
 
 			if (isGrounded)
 			{
 				yVelocity = 0;
 
-				if (inputs[4]) //Spacebar
-					yVelocity = jumpSpeed;
+				if (inputs.Jump) //Spacebar
+					yVelocity = ConstantValues.PLAYER_JUMP_SPEED * Time.fixedDeltaTime;
 			}
 			else
-				yVelocity += gravity;
+				yVelocity += ConstantValues.WORLD_GRAVITY * Time.fixedDeltaTime * Time.fixedDeltaTime;
 
 			moveDirection.y = yVelocity;
 
 			return moveDirection;
 		}
 
-		public static Vector3 CalculatePlayerPosition(bool[] inputs, Transform transform, ref float yVelocity, bool isGrounded)
+		public static Vector3 CalculatePlayerPosition(InputsStruct inputs, Vector3 transformRight, Vector3 transformForward, ref float yVelocity, bool isGrounded)
 		{
-			var inputDirection = Vector2.zero;
-			if (inputs[0])  //W
-				inputDirection.y += 1;
-			if (inputs[1])  //S
-				inputDirection.y -= 1;
-			if (inputs[2])  //A
+			var inputDirection = Vector3.zero;
+			if (inputs.Forward)  //W
+				inputDirection.z += 1;
+			if (inputs.Back)  //S
+				inputDirection.z -= 1;
+			if (inputs.Left)  //A
 				inputDirection.x -= 1;
-			if (inputs[3])  //D
+			if (inputs.Right)  //D
 				inputDirection.x += 1;
 
-			var moveDirection = transform.right * inputDirection.x + transform.forward * inputDirection.y;
-			moveDirection *= moveSpeed;
+			var moveDirection = transformRight * inputDirection.x + transformForward * inputDirection.z;
+			moveDirection.Normalize();
+			moveDirection *= ConstantValues.PLAYER_MOVE_SPEED * Time.fixedDeltaTime;
 
 			if (isGrounded)
 			{
 				yVelocity = 0;
 
-				if (inputs[4]) //Spacebar
-					yVelocity = jumpSpeed;
+				if (inputs.Jump) //Spacebar
+					yVelocity = ConstantValues.PLAYER_JUMP_SPEED * Time.fixedDeltaTime;
 			}
 			else
-				yVelocity += gravity;
+				yVelocity += ConstantValues.WORLD_GRAVITY * Time.fixedDeltaTime * Time.fixedDeltaTime;
 
 			moveDirection.y = yVelocity;
 

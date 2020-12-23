@@ -6,19 +6,25 @@ namespace NetworkTutorial.Client.Player
 {
 	public class PlayerController : MonoBehaviour
 	{
+		public static PlayerController Instance;
+
 		private Transform cameraTransform;
 		private CharacterController controller;
 		private PlayerManager playerManager;
+		private InputsStruct inputs = new InputsStruct();
 
-		public static Vector3 correctPos = Vector3.zero;
-		//private Vector2 inputDirection = new Vector2();
-
-		private float yVelocity = 0;
+		private float yVelocity, yVelocityPreMove;
+		private bool isGroundedPreMove;
 
 		private uint frameNumber = 0;
 
-		private bool forward, back, left, right, jump;
-		private bool[] inputs = new bool[5];
+		private void Awake()
+		{
+			if (Instance == null)
+				Instance = this;
+			else if (Instance != this)
+				Destroy(this);
+		}
 
 		private void Start()
 		{
@@ -29,47 +35,48 @@ namespace NetworkTutorial.Client.Player
 
 		private void FixedUpdate()
 		{
-			if (playerManager.currentHealth <= 0)
-				return;
-			else if (correctPos != Vector3.zero)
-			{
-				gameObject.transform.position = correctPos;
-				GameManager.Instance.LocalPositionPredictions.Clear();
-				correctPos = Vector3.zero;
-				return;
-			}
-
-			inputs[0] = forward;
-			inputs[1] = back;
-			inputs[2] = left;
-			inputs[3] = right;
-			inputs[4] = jump;
-
 			ClientSend.SendPlayerInputs(frameNumber, inputs);
-			UpdatePlayerPosition();
+			PredictPlayerPosition();
 			frameNumber++;
 		}
 
 		private void Update()
 		{
-			forward = Input.GetKey(KeyCode.W);
-			back = Input.GetKey(KeyCode.S);
-			left = Input.GetKey(KeyCode.A);
-			right = Input.GetKey(KeyCode.D);
-			jump = Input.GetKey(KeyCode.Space);
+			if (playerManager.currentHealth <= 0)
+				return;
 
 			if (Input.GetKeyDown(KeyCode.Mouse0))
 				ClientSend.SendPlayerPrimaryFire(cameraTransform.forward);
+
+			inputs.Forward = Input.GetKey(KeyCode.W);
+			inputs.Back = Input.GetKey(KeyCode.S);
+			inputs.Left = Input.GetKey(KeyCode.A);
+			inputs.Right = Input.GetKey(KeyCode.D);
+			inputs.Jump = Input.GetKey(KeyCode.Space);
 		}
 
-		private void UpdatePlayerPosition()
+		private void PredictPlayerPosition()
 		{
-			var yVelocityPreMove = yVelocity;
-			var isGroundedPreMove = controller.isGrounded;
+			yVelocityPreMove = yVelocity;
+			isGroundedPreMove = controller.isGrounded;
 
-			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(inputs, transform, ref yVelocity, controller.isGrounded));
+			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(inputs, gameObject.transform.right, gameObject.transform.forward, ref yVelocity, isGroundedPreMove));
+			GameManager.Instance.LocalPositionPredictions.Add(new LocalPredictionData(
+				frameNumber,
+				inputs,
+				gameObject.transform.position,
+				gameObject.transform.right,
+				gameObject.transform.forward,
+				yVelocityPreMove,
+				isGroundedPreMove)
+				);
+		}
 
-			GameManager.Instance.LocalPositionPredictions.Add(new LocalPredictionData(frameNumber, inputs, yVelocityPreMove, isGroundedPreMove, transform));
+		public void CorrectPredictedPosition(Vector3 correctPos)
+		{
+			controller.enabled = false;
+			gameObject.transform.position = correctPos;
+			controller.enabled = true;
 		}
 
 	}

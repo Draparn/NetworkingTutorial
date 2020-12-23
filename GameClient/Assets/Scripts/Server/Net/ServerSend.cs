@@ -21,12 +21,12 @@ namespace NetworkTutorial.Server.Net
 		{
 			using (Packet packet = new Packet((int)ServerPackets.serverSnapshot))
 			{
-				packet.Write(ServerSnapshot.currentSnapshot.PlayerPositionAndRotation.Count);
-				foreach (var data in ServerSnapshot.currentSnapshot.PlayerPositionAndRotation)
+				packet.Write(ServerSnapshot.currentSnapshot.PlayerPosition.Count);
+				foreach (var data in ServerSnapshot.currentSnapshot.PlayerPosition)
 				{
-					packet.Write(data.Id);
-					packet.Write(data.FrameNumber);
-					packet.Write(data.Position);
+					packet.Write(data.Value.Id);
+					packet.Write(data.Value.FrameNumber);
+					packet.Write(data.Value.Position);
 				}
 
 				packet.Write(ServerSnapshot.currentSnapshot.ProjectilePositions.Count);
@@ -63,7 +63,7 @@ namespace NetworkTutorial.Server.Net
 				SendTCPDataToAllClients(packet);
 			}
 		}
-		
+
 		//obsolete since snapshot implementation
 		public static void SendPlayerPositionUpdate_UDP_ALL(Player player)
 		{

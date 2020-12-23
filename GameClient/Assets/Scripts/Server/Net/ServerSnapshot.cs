@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace NetworkTutorial.Server.Net
 {
-	public struct PlayerPosRotData
+	public struct PlayerPosData
 	{
-		public Vector3 Position;
 		public int Id;
+		public Vector3 Position;
 		public uint FrameNumber;
 
-		public PlayerPosRotData(int id, Vector3 pos, uint frameNumber)
+		public PlayerPosData(int id, Vector3 pos, uint frameNumber)
 		{
 			Id = id;
 			Position = pos;
@@ -23,29 +23,23 @@ namespace NetworkTutorial.Server.Net
 	{
 		public static ServerSnapshot currentSnapshot = new ServerSnapshot();
 
-		public List<PlayerPosRotData> PlayerPositionAndRotation = new List<PlayerPosRotData>();
+		public Dictionary<int, PlayerPosData> PlayerPosition = new Dictionary<int, PlayerPosData>();
 		public List<Projectile> ProjectilePositions = new List<Projectile>();
 
 		public static void AddPlayerMovement(int id, Vector3 pos, uint frameNumber)
 		{
-			if (currentSnapshot.PlayerPositionAndRotation.Exists(entry => entry.Id == id))
-			{
-				var index = currentSnapshot.PlayerPositionAndRotation.FindIndex(entry => entry.Id == id);
-				var data = currentSnapshot.PlayerPositionAndRotation[index];
+			if (frameNumber == uint.MaxValue)
+				return;
 
-				data.Position = pos;
-				data.FrameNumber = frameNumber;
-			}
+			if (currentSnapshot.PlayerPosition.ContainsKey(id))
+				currentSnapshot.PlayerPosition[id] = new PlayerPosData(id, pos, frameNumber);
 			else
-				currentSnapshot.PlayerPositionAndRotation.Add(new PlayerPosRotData(id, pos, frameNumber));
+				currentSnapshot.PlayerPosition.Add(id, new PlayerPosData(id, pos, frameNumber));
 		}
 		public static void RemovePlayerMovement(Player player)
 		{
-			if (currentSnapshot.PlayerPositionAndRotation.Exists(entry => entry.Id == player.PlayerId))
-			{
-				var index = currentSnapshot.PlayerPositionAndRotation.FindIndex(entry => entry.Id == player.PlayerId);
-				currentSnapshot.PlayerPositionAndRotation.RemoveAt(index);
-			}
+			if (currentSnapshot.PlayerPosition.ContainsKey(player.PlayerId))
+				currentSnapshot.PlayerPosition.Remove(player.PlayerId);
 		}
 
 		public static void AddProjectileMovement(Projectile proj)
@@ -62,8 +56,9 @@ namespace NetworkTutorial.Server.Net
 
 		public static void ClearSnapshot()
 		{
-			currentSnapshot.PlayerPositionAndRotation.Clear();
+			currentSnapshot.PlayerPosition.Clear();
 			currentSnapshot.ProjectilePositions.Clear();
 		}
+
 	}
 }

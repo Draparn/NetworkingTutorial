@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetworkTutorial.Client.Player;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -201,6 +202,16 @@ namespace NetworkTutorial.Shared.Net
 			Write(rotation.y);
 			Write(rotation.z);
 			Write(rotation.w);
+		}
+		/// <summary>Adds player inputs struct to the packet.</summary>
+		/// <param name="_value">The struct to add.</param>
+		public void Write(InputsStruct inputs)
+		{
+			Write(inputs.Forward);
+			Write(inputs.Back);
+			Write(inputs.Left);
+			Write(inputs.Right);
+			Write(inputs.Jump);
 		}
 		#endregion
 
@@ -426,6 +437,13 @@ namespace NetworkTutorial.Shared.Net
 		public Quaternion ReadQuaternion(bool _moveReadPos = true)
 		{
 			return new Quaternion(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
+		}
+
+		/// <summary>Reads an InputsStruct from the packet.</summary>
+		/// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
+		public InputsStruct ReadInputs(bool _moveReadPos = true)
+		{
+			return new InputsStruct(ReadBool(_moveReadPos), ReadBool(_moveReadPos), ReadBool(_moveReadPos), ReadBool(_moveReadPos), ReadBool(_moveReadPos));
 		}
 		#endregion
 

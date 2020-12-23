@@ -11,9 +11,9 @@ namespace NetworkTutorial.Server.Client
 
 		private Vector3[] respawnPoints = new Vector3[3]
 		{
-			new Vector3(0, 0.75f, 0),
-			new Vector3(0, 2.5f, -18),
-			new Vector3(-5, 0.75f, 20)
+			new Vector3(0, 0, 0),
+			new Vector3(0, 2.4f, -18),
+			new Vector3(-5, 0, 20)
 		};
 
 		public Transform ShootOrigin;
@@ -30,21 +30,20 @@ namespace NetworkTutorial.Server.Client
 		private bool hitScan = false;
 
 		public int PlayerId;
-		public uint FrameNumber;
+		public uint FrameNumber = uint.MaxValue;
 
-		private bool[] playerInput;
+		private InputsStruct playerInput;
 
 		private void Start()
 		{
 			controller = gameObject.GetComponent<CharacterController>();
 		}
 
-		public void FixedUpdate()
+		private void FixedUpdate()
 		{
-			if (CurrentHealth <= 0)
-				return;
-
-			MovePlayer();
+			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(playerInput, transform.right, transform.forward, ref yVelocity, controller.isGrounded));
+			ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, FrameNumber);
+			ServerSend.SendPlayerRotationUpdate_UDP_ALLEXCEPT(this);
 		}
 
 		public void Init(int id, string name)
@@ -53,15 +52,7 @@ namespace NetworkTutorial.Server.Client
 			PlayerId = id;
 			CurrentHealth = MaxHealth;
 
-			playerInput = new bool[5];
-		}
-
-		private void MovePlayer()
-		{
-			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(playerInput, transform, ref yVelocity, controller.isGrounded));
-
-			ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, FrameNumber);
-			ServerSend.SendPlayerRotationUpdate_UDP_ALLEXCEPT(this);
+			playerInput = new InputsStruct();
 		}
 
 		public void PrimaryFire(Vector3 viewDirection)
@@ -119,12 +110,14 @@ namespace NetworkTutorial.Server.Client
 			ServerSend.SendPlayerRespawned_TCP_ALL(this);
 		}
 
-		public void UpdatePosAndRot(uint frameNumber, bool[] inputs, Quaternion rot)
+		public void UpdatePosAndRot(uint frameNumber, InputsStruct inputs, Quaternion rot)
 		{
+			if (frameNumber < FrameNumber)
+				return;
+
 			FrameNumber = frameNumber;
 			playerInput = inputs;
 			transform.rotation = rot;
 		}
-
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using NetworkTutorial.Client.Player;
+using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Net;
 using UnityEngine;
 
@@ -16,16 +17,12 @@ namespace NetworkTutorial.Client.Net
 			}
 		}
 
-		public static void SendPlayerInputs(uint frameNumber, bool[] inputs)
+		public static void SendPlayerInputs(uint frameNumber, InputsStruct inputs)
 		{
 			using (Packet packet = new Packet((int)ClientPackets.playerMovement))
 			{
 				packet.Write(frameNumber);
-
-				packet.Write(inputs.Length);
-				for (int i = 0; i < inputs.Length; i++)
-					packet.Write(inputs[i]);
-
+				packet.Write(inputs);
 				packet.Write(GameManager.Instance.Players[Client.Instance.MyId].transform.rotation);
 
 				SendUDPData(packet);

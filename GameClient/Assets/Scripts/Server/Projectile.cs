@@ -48,12 +48,12 @@ namespace NetworkTutorial.Server
 			rb = GetComponent<Rigidbody>();
 			rb.AddForce(initialForce);
 
-			Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), Server.Clients[thrownByPlayer].player.GetComponent<CharacterController>());
+			Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), Server.Clients[thrownByPlayer].Player.GetComponent<CharacterController>());
 
 			Invoke(nameof(Explode), fuseTimer);
 		}
 
-		private void FixedUpdate()
+		private void Update()
 		{
 			ServerSnapshot.AddProjectileMovement(this);
 			//ServerSend.SendProjectileUpdatePosition_UDP_ALL(this);

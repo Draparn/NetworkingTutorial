@@ -9,18 +9,26 @@ namespace NetworkTutorial.Client
 	public struct LocalPredictionData
 	{
 		public uint FrameNumber;
-		public Transform TransformAfterMove;
+		public Vector3 Position;
+		public Vector3 TransformRight;
+		public Vector3 TransformForward;
 		public float yVelocityPreMove;
 		public bool IsGroundedPreMove;
-		public bool[] Inputs;
+		public InputsStruct Inputs;
 
-		public LocalPredictionData(uint frameNumber, bool[] inputs, float yVelocityPreMove, bool isGroundedPreMove, Transform transformAfterMove)
+		public LocalPredictionData(uint frameNumber, InputsStruct inputs, Vector3 position, Vector3 transformRight, Vector3 transformForward, float yVelocityPreMove, bool isGroundedPreMove)
 		{
 			FrameNumber = frameNumber;
 			Inputs = inputs;
+			Position = position;
+			TransformRight = transformRight;
+			TransformForward = transformForward;
 			this.yVelocityPreMove = yVelocityPreMove;
 			IsGroundedPreMove = isGroundedPreMove;
-			TransformAfterMove = transformAfterMove;
+		}
+		public LocalPredictionData(LocalPredictionData prediction)
+		{
+			this = prediction;
 		}
 	}
 
@@ -44,7 +52,6 @@ namespace NetworkTutorial.Client
 		private Transform projectilePool;
 		private Transform pickups;
 
-		private float snapshotBufferTimer = ConstantValues.CLIENT_SNAPSHOT_BUFFER_LENGTH;
 		private float lerpValue = 0;
 		private float bufferTimeMultiplier = 1;
 
@@ -64,69 +71,43 @@ namespace NetworkTutorial.Client
 
 		private void Update()
 		{
-			if (snapshotBufferTimer <= 0)
+			if (ClientSnapshot.Snapshots.Count > 0)
 			{
 				//players
-				foreach (var playerData in ClientSnapshot.Snapshots[0].players)
+				if (ClientSnapshot.Snapshots[0].players != null)
 				{
-					if (Client.Instance.MyId == playerData.PlayerId)
+					foreach (var playerData in ClientSnapshot.Snapshots[0].players)
 					{
-						for (int i = 0; i < LocalPositionPredictions.Count; i++)
+						if (Players.ContainsKey(playerData.PlayerId))
 						{
-							if (LocalPositionPredictions[i].FrameNumber == playerData.FrameNumber)
+							if (!playersOriginalPositions.ContainsKey(playerData.PlayerId))
+								playersOriginalPositions.Add(playerData.PlayerId, Players[playerData.PlayerId].transform.position);
+
+							if (Client.Instance.MyId == playerData.PlayerId)
+								continue;
+							else
 							{
-								if (Vector3.Distance(LocalPositionPredictions[i].TransformAfterMove.position, playerData.Position) > 1.4f)
-								{
-									Debug.LogError("Correcting...");
-									LocalPositionPredictions.RemoveRange(0, i);
-
-									for (int j = 0; j < LocalPositionPredictions.Count; j++)
-									{
-										if (j == 0)
-											LocalPositionPredictions[j].TransformAfterMove.position = playerData.Position;
-										else
-										{
-											LocalPositionPredictions[j].TransformAfterMove.position += PlayerMovementCalculations.CalculatePlayerPosition(
-												LocalPositionPredictions[j].Inputs,
-												LocalPositionPredictions[j - 1].TransformAfterMove,
-												LocalPositionPredictions[j].yVelocityPreMove,
-												LocalPositionPredictions[j].IsGroundedPreMove
-												);
-										}
-
-										PlayerController.correctPos = LocalPositionPredictions[j].TransformAfterMove.position;
-									}
-
-									break;
-								}
-
-								LocalPositionPredictions.RemoveRange(0, i + 1);
-								break;
+								Players[playerData.PlayerId].transform.position = Vector3.Lerp(
+										playersOriginalPositions[playerData.PlayerId],
+										playerData.Position,
+										lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier));
 							}
 						}
-
-						continue;
-					}
-
-					if (Players.ContainsKey(playerData.PlayerId))
-					{
-						if (!playersOriginalPositions.ContainsKey(playerData.PlayerId))
-							playersOriginalPositions.Add(playerData.PlayerId, Players[playerData.PlayerId].transform.position);
-
-						Players[playerData.PlayerId].transform.position =
-							Vector3.Lerp(playersOriginalPositions[playerData.PlayerId], playerData.Position, lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier));
 					}
 				}
 
 				//projectiles
-				foreach (var projData in ClientSnapshot.Snapshots[0].projectiles)
+				if (ClientSnapshot.Snapshots[0].projectiles != null)
 				{
-					if (Projectiles.ContainsKey(projData.ProjectileId))
+					foreach (var projData in ClientSnapshot.Snapshots[0].projectiles)
 					{
-						if (!projectilesOriginalPositions.ContainsKey(projData.ProjectileId))
-							projectilesOriginalPositions.Add(projData.ProjectileId, Projectiles[projData.ProjectileId].transform.position);
+						if (Projectiles.ContainsKey(projData.ProjectileId))
+						{
+							if (!projectilesOriginalPositions.ContainsKey(projData.ProjectileId))
+								projectilesOriginalPositions.Add(projData.ProjectileId, Projectiles[projData.ProjectileId].transform.position);
 
-						Projectiles[projData.ProjectileId].transform.position = Vector3.Lerp(projectilesOriginalPositions[projData.ProjectileId], projData.Position, lerpValue / (ConstantValues.SERVER_TICK_RATE));
+							Projectiles[projData.ProjectileId].transform.position = Vector3.Lerp(projectilesOriginalPositions[projData.ProjectileId], projData.Position, lerpValue / (ConstantValues.SERVER_TICK_RATE));
+						}
 					}
 				}
 
@@ -137,20 +118,15 @@ namespace NetworkTutorial.Client
 					lerpValue = 0;
 					ClientSnapshot.Snapshots.RemoveAt(0);
 
-					if (ClientSnapshot.Snapshots.Count < 2)
-						bufferTimeMultiplier = 2.5f;
-					else if (ClientSnapshot.Snapshots.Count <= 3)
-						bufferTimeMultiplier = 1.0f;
-					else
+					if (ClientSnapshot.Snapshots.Count > 1)
 						bufferTimeMultiplier = 0.5f;
+					else
+						bufferTimeMultiplier = 1.0f;
 
 					playersOriginalPositions.Clear();
 					projectilesOriginalPositions.Clear();
 				}
 			}
-
-			else if (ClientSnapshot.Snapshots.Count > 0)
-				snapshotBufferTimer -= Time.deltaTime;
 		}
 
 		public void SpawnPlayer(bool isLocal, int playerId, string playerName, Vector3 pos, Quaternion rot)
@@ -190,6 +166,55 @@ namespace NetworkTutorial.Client
 		{
 			Healthpacks[id].SetActive(false);
 		}
+
+		/*
+		private void CheckPosAndReconcile(PlayerPosData playerData)
+		{
+			for (int i = 0; i < LocalPositionPredictions.Count; i++)
+			{
+				if (LocalPositionPredictions[i].FrameNumber == playerData.FrameNumber)
+				{
+					if (Vector3.Distance(LocalPositionPredictions[i].Position, playerData.Position) > 0.5f)
+					{
+						Debug.LogError($"Correcting. Index:{i}. Frame:{playerData.FrameNumber}, Predicted pos was: {LocalPositionPredictions[i].Position} and should be: {playerData.Position}");
+						LocalPositionPredictions.RemoveRange(0, i);
+
+						for (int j = 0; j < LocalPositionPredictions.Count; j++)
+						{
+							var prediction = LocalPositionPredictions[j];
+
+							if (j == 0)
+							{
+								prediction.Position = playerData.Position;
+								LocalPositionPredictions[j] = new LocalPredictionData(prediction);
+							}
+							else
+							{
+								prediction.Position = LocalPositionPredictions[j - 1].Position +
+									PlayerMovementCalculations.CalculatePlayerPosition(
+									LocalPositionPredictions[j].Inputs,
+									LocalPositionPredictions[j].TransformRight,
+									LocalPositionPredictions[j].TransformForward,
+									LocalPositionPredictions[j].yVelocityPreMove,
+									LocalPositionPredictions[j].IsGroundedPreMove
+									);
+
+								LocalPositionPredictions[j] = new LocalPredictionData(prediction);
+							}
+
+							//Players[playerData.PlayerId].gameObject.transform.position = LocalPositionPredictions[j].Position;
+						}
+
+						break;
+					}
+
+					LocalPositionPredictions.RemoveRange(0, i + 1);
+					break;
+				}
+			}
+
+		}
+		*/
 
 	}
 }

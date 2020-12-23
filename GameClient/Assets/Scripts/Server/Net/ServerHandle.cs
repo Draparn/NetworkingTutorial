@@ -21,21 +21,17 @@ namespace NetworkTutorial.Server.Net
 		public static void OnPlayerMovement(int clientId, Packet packet)
 		{
 			var frameNumber = packet.ReadUInt();
-
-			bool[] inputs = new bool[packet.ReadInt()];
-			for (int i = 0; i < inputs.Length; i++)
-				inputs[i] = packet.ReadBool();
-
+			var inputs = packet.ReadInputs();
 			var rotation = packet.ReadQuaternion();
 
-			Server.Clients[clientId].player.UpdatePosAndRot(frameNumber, inputs, rotation);
+			Server.Clients[clientId].Player.UpdatePosAndRot(frameNumber, inputs, rotation);
 		}
 
 		public static void OnPlayerPrimaryFire(int clientId, Packet packet)
 		{
 			var viewDirection = packet.ReadVector3();
 
-			Server.Clients[clientId].player.PrimaryFire(viewDirection);
+			Server.Clients[clientId].Player.PrimaryFire(viewDirection);
 		}
 
 	}

@@ -9,7 +9,7 @@ namespace NetworkTutorial.Server.Client
 	{
 		public int Id;
 
-		public Player player;
+		public Player Player;
 
 		public TCP tcp;
 		public UDP udp;
@@ -23,18 +23,18 @@ namespace NetworkTutorial.Server.Client
 
 		public void SendIntoGame(string playerName)
 		{
-			player = NetworkManager.instance.InstantiatePlayer();
-			player.Init(Id, playerName);
+			Player = NetworkManager.instance.InstantiatePlayer();
+			Player.Init(Id, playerName);
 
 			//Players
 			foreach (var client in Server.Clients.Values)
 			{
-				if (client.player != null)
+				if (client.Player != null)
 				{
-					ServerSend.SendPlayerConnected_TCP_CLIENT(client.Id, player);
+					ServerSend.SendPlayerConnected_TCP_CLIENT(client.Id, Player);
 
 					if (client.Id != Id)
-						ServerSend.SendPlayerConnected_TCP_CLIENT(Id, client.player);
+						ServerSend.SendPlayerConnected_TCP_CLIENT(Id, client.Player);
 				}
 			}
 
@@ -52,9 +52,9 @@ namespace NetworkTutorial.Server.Client
 
 			ThreadManager.ExecuteOnMainThread(() =>
 			{
-				GameObject.Destroy(player.gameObject);
-				ServerSnapshot.RemovePlayerMovement(player);
-				player = null;
+				GameObject.Destroy(Player.gameObject);
+				ServerSnapshot.RemovePlayerMovement(Player);
+				Player = null;
 			});
 
 			tcp.Disconnect();

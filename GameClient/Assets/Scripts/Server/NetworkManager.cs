@@ -12,6 +12,8 @@ namespace NetworkTutorial.Server.Managers
 		public GameObject PlayerPrefab;
 		public GameObject ProjectilePrefab;
 
+		private float snapshotInterval;
+
 		private void Awake()
 		{
 			if (instance == null)
@@ -23,13 +25,19 @@ namespace NetworkTutorial.Server.Managers
 		private void Start()
 		{
 			QualitySettings.vSyncCount = 0;
-			Application.targetFrameRate = 30;
+			Application.targetFrameRate = 60;
 			Server.StartServer(ConstantValues.SERVER_MAX_PLAYERS, ConstantValues.SERVER_PORT);
 		}
 
-		private void FixedUpdate()
+		private void Update()
 		{
-			ServerSend.SendSnapshot();
+			snapshotInterval -= Time.deltaTime;
+
+			if (snapshotInterval <= 0)
+			{
+				snapshotInterval = ConstantValues.SERVER_TICK_RATE;
+				ServerSend.SendSnapshot();
+			}
 		}
 
 		private void OnApplicationQuit()
@@ -39,7 +47,7 @@ namespace NetworkTutorial.Server.Managers
 
 		public Player InstantiatePlayer()
 		{
-			return Instantiate(PlayerPrefab, new Vector3(0, 0.5f, 0), Quaternion.identity).GetComponent<Player>();
+			return Instantiate(PlayerPrefab, new Vector3(0, 0, 0), Quaternion.identity).GetComponent<Player>();
 		}
 
 		public Projectile InstantiateProjectile(Transform shootOrigin)

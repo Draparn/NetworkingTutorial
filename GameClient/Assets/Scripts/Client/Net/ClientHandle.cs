@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace NetworkTutorial.Client.Net
 {
-	public struct PlayerData
+	public struct PlayerPosData
 	{
 		public int PlayerId;
 		public uint FrameNumber;
 		public Vector3 Position;
 
-		public PlayerData(int playerId, uint frameNumber, Vector3 position)
+		public PlayerPosData(int playerId, uint frameNumber, Vector3 position)
 		{
 			PlayerId = playerId;
 			FrameNumber = frameNumber;
@@ -50,7 +50,7 @@ namespace NetworkTutorial.Client.Net
 			int id;
 			uint frameNumber;
 			Vector3 position;
-			var players = new List<PlayerData>();
+			var players = new List<PlayerPosData>();
 			var projectiles = new List<ProjectileData>();
 
 
@@ -63,7 +63,9 @@ namespace NetworkTutorial.Client.Net
 				position = packet.ReadVector3();
 
 				if (GameManager.Instance.Players.ContainsKey(id))
-					players.Add(new PlayerData(id, frameNumber, position));
+				{
+					players.Add(new PlayerPosData(id, frameNumber, position));
+				}
 			}
 
 			//projcetiles
