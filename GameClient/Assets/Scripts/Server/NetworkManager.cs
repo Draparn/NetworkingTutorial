@@ -29,13 +29,13 @@ namespace NetworkTutorial.Server.Managers
 			Server.StartServer(ConstantValues.SERVER_MAX_PLAYERS, ConstantValues.SERVER_PORT);
 		}
 
-		private void Update()
+		private void LateUpdate()
 		{
-			snapshotInterval -= Time.deltaTime;
+			snapshotInterval += Time.deltaTime;
 
-			if (snapshotInterval <= 0)
+			if (snapshotInterval >= ConstantValues.SERVER_TICK_RATE)
 			{
-				snapshotInterval = ConstantValues.SERVER_TICK_RATE;
+				snapshotInterval = 0;
 				ServerSend.SendSnapshot();
 			}
 		}

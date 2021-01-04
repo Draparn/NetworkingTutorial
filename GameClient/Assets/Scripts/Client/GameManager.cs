@@ -52,7 +52,7 @@ namespace NetworkTutorial.Client
 		private Transform projectilePool;
 		private Transform pickups;
 
-		private float lerpValue = 0;
+		private float lerpValue;
 		private float bufferTimeMultiplier = 1;
 
 		private void Awake()
@@ -83,14 +83,15 @@ namespace NetworkTutorial.Client
 							if (!playersOriginalPositions.ContainsKey(playerData.PlayerId))
 								playersOriginalPositions.Add(playerData.PlayerId, Players[playerData.PlayerId].transform.position);
 
-							if (Client.Instance.MyId == playerData.PlayerId)
+							if (playerData.PlayerId == Client.Instance.MyId)
 								continue;
 							else
 							{
 								Players[playerData.PlayerId].transform.position = Vector3.Lerp(
-										playersOriginalPositions[playerData.PlayerId],
-										playerData.Position,
-										lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier));
+									playersOriginalPositions[playerData.PlayerId],
+									playerData.Position,
+									lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier)
+									);
 							}
 						}
 					}
@@ -127,6 +128,14 @@ namespace NetworkTutorial.Client
 					projectilesOriginalPositions.Clear();
 				}
 			}
+		}
+
+		public Vector3 GetLastPredictedPos()
+		{
+			if (LocalPositionPredictions.Count < 1)
+				return Vector3.zero;
+
+			return LocalPositionPredictions[LocalPositionPredictions.Count - 1].Position;
 		}
 
 		public void SpawnPlayer(bool isLocal, int playerId, string playerName, Vector3 pos, Quaternion rot)

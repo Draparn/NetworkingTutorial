@@ -1,5 +1,4 @@
-﻿using NetworkTutorial.Client.Player;
-using NetworkTutorial.Shared;
+﻿using NetworkTutorial.Shared;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,8 +11,6 @@ namespace NetworkTutorial.Client.Net
 		internal List<PlayerPosData> players;
 		internal List<ProjectileData> projectiles;
 
-		private PlayerController localPlayer;
-
 		public ClientSnapshot(List<PlayerPosData> players, List<ProjectileData> projectiles)
 		{
 			this.players = players.Count > 0 ? players : null;
@@ -23,16 +20,10 @@ namespace NetworkTutorial.Client.Net
 			{
 				if (Client.Instance.MyId == playerData.PlayerId)
 				{
-					if (localPlayer == null)
-					{
-						localPlayer = GameManager.Instance.Players[playerData.PlayerId].gameObject.GetComponent<PlayerController>();
-						CheckPosAndReconcile(playerData);
-					}
-					else
-						CheckPosAndReconcile(playerData);
+					CheckPosAndReconcile(playerData);
+					break;
 				}
 			}
-
 		}
 
 		private void CheckPosAndReconcile(PlayerPosData playerData)
@@ -41,9 +32,9 @@ namespace NetworkTutorial.Client.Net
 			{
 				if (GameManager.Instance.LocalPositionPredictions[i].FrameNumber == playerData.FrameNumber)
 				{
-					if (Vector3.Distance(GameManager.Instance.LocalPositionPredictions[i].Position, playerData.Position) > 0.5f)
+					if (Vector3.Distance(GameManager.Instance.LocalPositionPredictions[i].Position, playerData.Position) > 0.2f)
 					{
-						Debug.LogError($"Correcting. Index:{i}. Frame:{playerData.FrameNumber}, Predicted pos was: {GameManager.Instance.LocalPositionPredictions[i].Position} and should be: {playerData.Position}");
+						//Debug.LogError($"Correcting. Index:{i}. Frame:{playerData.FrameNumber}, Predicted pos was: {GameManager.Instance.LocalPositionPredictions[i].Position} and should be: {playerData.Position}");
 						GameManager.Instance.LocalPositionPredictions.RemoveRange(0, i);
 
 						for (int j = 0; j < GameManager.Instance.LocalPositionPredictions.Count; j++)
@@ -58,7 +49,7 @@ namespace NetworkTutorial.Client.Net
 							else
 							{
 								prediction.Position = GameManager.Instance.LocalPositionPredictions[j - 1].Position +
-									PlayerMovementCalculations.CalculatePlayerPosition(
+									PlayerMovementCalculations.ReCalculatePlayerPosition(
 									GameManager.Instance.LocalPositionPredictions[j].Inputs,
 									GameManager.Instance.LocalPositionPredictions[j].TransformRight,
 									GameManager.Instance.LocalPositionPredictions[j].TransformForward,
@@ -68,10 +59,7 @@ namespace NetworkTutorial.Client.Net
 
 								GameManager.Instance.LocalPositionPredictions[j] = new LocalPredictionData(prediction);
 							}
-
 						}
-
-						localPlayer.CorrectPredictedPosition(GameManager.Instance.LocalPositionPredictions[GameManager.Instance.LocalPositionPredictions.Count - 1].Position);
 
 						break;
 					}

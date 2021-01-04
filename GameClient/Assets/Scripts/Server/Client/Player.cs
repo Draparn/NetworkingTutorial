@@ -25,7 +25,7 @@ namespace NetworkTutorial.Server.Client
 		public float MaxHealth = 100.0f;
 		private float PrimaryFireDamage = 10.0f;
 		private float ThrowForce = 600.0f;
-		private float yVelocity = 0;
+		private float yVelocity;
 
 		private bool hitScan = false;
 
@@ -37,13 +37,6 @@ namespace NetworkTutorial.Server.Client
 		private void Start()
 		{
 			controller = gameObject.GetComponent<CharacterController>();
-		}
-
-		private void FixedUpdate()
-		{
-			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(playerInput, transform.right, transform.forward, ref yVelocity, controller.isGrounded));
-			ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, FrameNumber);
-			ServerSend.SendPlayerRotationUpdate_UDP_ALLEXCEPT(this);
 		}
 
 		public void Init(int id, string name)
@@ -112,12 +105,16 @@ namespace NetworkTutorial.Server.Client
 
 		public void UpdatePosAndRot(uint frameNumber, InputsStruct inputs, Quaternion rot)
 		{
-			if (frameNumber < FrameNumber)
+			if (frameNumber < FrameNumber && FrameNumber != uint.MaxValue)
 				return;
 
 			FrameNumber = frameNumber;
 			playerInput = inputs;
 			transform.rotation = rot;
+
+			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(playerInput, transform.right, transform.forward, ref yVelocity, controller.isGrounded));
+			ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, FrameNumber);
+			ServerSend.SendPlayerRotationUpdate_UDP_ALLEXCEPT(this);
 		}
 	}
 }

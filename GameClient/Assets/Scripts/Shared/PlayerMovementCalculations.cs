@@ -22,7 +22,7 @@ namespace NetworkTutorial.Shared
 
 	public class PlayerMovementCalculations : MonoBehaviour
 	{
-		public static Vector3 CalculatePlayerPosition(InputsStruct inputs, Vector3 transformRight, Vector3 transformForward, float yVelocity, bool isGrounded)
+		public static Vector3 ReCalculatePlayerPosition(InputsStruct inputs, Vector3 transformRight, Vector3 transformForward, float yVelocity, bool isGrounded)
 		{
 			var inputDirection = Vector3.zero;
 			if (inputs.Forward)  //W
@@ -36,17 +36,17 @@ namespace NetworkTutorial.Shared
 
 			var moveDirection = transformRight * inputDirection.x + transformForward * inputDirection.z;
 			moveDirection.Normalize();
-			moveDirection *= ConstantValues.PLAYER_MOVE_SPEED * Time.fixedDeltaTime;
+			moveDirection *= ConstantValues.PLAYER_MOVE_SPEED * ConstantValues.SERVER_TICK_RATE;
 
 			if (isGrounded)
 			{
 				yVelocity = 0;
 
 				if (inputs.Jump) //Spacebar
-					yVelocity = ConstantValues.PLAYER_JUMP_SPEED * Time.fixedDeltaTime;
+					yVelocity = ConstantValues.PLAYER_JUMP_SPEED * ConstantValues.SERVER_TICK_RATE;
 			}
 			else
-				yVelocity += ConstantValues.WORLD_GRAVITY * Time.fixedDeltaTime * Time.fixedDeltaTime;
+				yVelocity += ConstantValues.WORLD_GRAVITY * ConstantValues.SERVER_TICK_RATE * ConstantValues.SERVER_TICK_RATE;
 
 			moveDirection.y = yVelocity;
 
@@ -67,17 +67,17 @@ namespace NetworkTutorial.Shared
 
 			var moveDirection = transformRight * inputDirection.x + transformForward * inputDirection.z;
 			moveDirection.Normalize();
-			moveDirection *= ConstantValues.PLAYER_MOVE_SPEED * Time.fixedDeltaTime;
+			moveDirection *= ConstantValues.PLAYER_MOVE_SPEED * ConstantValues.SERVER_TICK_RATE;
 
 			if (isGrounded)
 			{
 				yVelocity = 0;
 
 				if (inputs.Jump) //Spacebar
-					yVelocity = ConstantValues.PLAYER_JUMP_SPEED * Time.fixedDeltaTime;
+					yVelocity = ConstantValues.PLAYER_JUMP_SPEED * ConstantValues.SERVER_TICK_RATE;
 			}
 			else
-				yVelocity += ConstantValues.WORLD_GRAVITY * Time.fixedDeltaTime * Time.fixedDeltaTime;
+				yVelocity += ConstantValues.WORLD_GRAVITY * ConstantValues.SERVER_TICK_RATE * ConstantValues.SERVER_TICK_RATE;
 
 			moveDirection.y = yVelocity;
 

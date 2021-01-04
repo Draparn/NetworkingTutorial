@@ -12,8 +12,9 @@ namespace NetworkTutorial.Client.Player
 		private CharacterController controller;
 		private PlayerManager playerManager;
 		private InputsStruct inputs = new InputsStruct();
+		private Vector3 prevPos, nextPos;
 
-		private float yVelocity, yVelocityPreMove;
+		private float yVelocity, yVelocityPreMove, clientTickRate;
 		private bool isGroundedPreMove;
 
 		private uint frameNumber = 0;
@@ -33,13 +34,6 @@ namespace NetworkTutorial.Client.Player
 			controller = GetComponent<CharacterController>();
 		}
 
-		private void FixedUpdate()
-		{
-			ClientSend.SendPlayerInputs(frameNumber, inputs);
-			PredictPlayerPosition();
-			frameNumber++;
-		}
-
 		private void Update()
 		{
 			if (playerManager.currentHealth <= 0)
@@ -53,14 +47,43 @@ namespace NetworkTutorial.Client.Player
 			inputs.Left = Input.GetKey(KeyCode.A);
 			inputs.Right = Input.GetKey(KeyCode.D);
 			inputs.Jump = Input.GetKey(KeyCode.Space);
+
+			clientTickRate += Time.deltaTime;
+
+			nextPos = GameManager.Instance.GetLastPredictedPos();
+			if (nextPos != Vector3.zero)
+			{
+				gameObject.transform.position = Vector3.Lerp(
+					prevPos,
+					nextPos,
+					clientTickRate / ConstantValues.SERVER_TICK_RATE
+					);
+			}
+
+			if (clientTickRate >= ConstantValues.SERVER_TICK_RATE)
+			{
+				SendAndPredict();
+				clientTickRate = 0;
+				frameNumber++;
+			}
+		}
+
+		private void SendAndPredict()
+		{
+			ClientSend.SendPlayerInputs(frameNumber, inputs);
+			PredictPlayerPosition();
 		}
 
 		private void PredictPlayerPosition()
 		{
+			prevPos = gameObject.transform.position;
+
 			yVelocityPreMove = yVelocity;
 			isGroundedPreMove = controller.isGrounded;
 
-			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(inputs, gameObject.transform.right, gameObject.transform.forward, ref yVelocity, isGroundedPreMove));
+			controller.enabled = true;
+			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(inputs, gameObject.transform.right, gameObject.transform.forward, ref yVelocity, controller.isGrounded));
+			controller.enabled = false;
 			GameManager.Instance.LocalPositionPredictions.Add(new LocalPredictionData(
 				frameNumber,
 				inputs,
@@ -68,15 +91,10 @@ namespace NetworkTutorial.Client.Player
 				gameObject.transform.right,
 				gameObject.transform.forward,
 				yVelocityPreMove,
-				isGroundedPreMove)
-				);
-		}
+				isGroundedPreMove
+				));
 
-		public void CorrectPredictedPosition(Vector3 correctPos)
-		{
-			controller.enabled = false;
-			gameObject.transform.position = correctPos;
-			controller.enabled = true;
+			gameObject.transform.position = prevPos;
 		}
 
 	}
