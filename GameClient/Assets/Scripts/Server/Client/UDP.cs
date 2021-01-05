@@ -8,9 +8,9 @@ namespace NetworkTutorial.Server.Client
 	{
 		public IPEndPoint endPoint;
 
-		private int id;
+		private byte id;
 
-		public UDP(int id)
+		public UDP(byte id)
 		{
 			this.id = id;
 		}
@@ -34,7 +34,7 @@ namespace NetworkTutorial.Server.Client
 			{
 				using (Packet pkt = new Packet(packetBytes))
 				{
-					var packetId = pkt.ReadInt();
+					var packetId = pkt.ReadByte();
 					Server.PacketHandlers[packetId](id, pkt);
 				}
 			});

@@ -7,17 +7,15 @@ namespace NetworkTutorial.Server.Client
 {
 	public class Client
 	{
-		public int Id;
+		public byte Id;
 
 		public Player Player;
 
-		public TCP tcp;
 		public UDP udp;
 
-		public Client(int id)
+		public Client(byte id)
 		{
 			Id = id;
-			tcp = new TCP(Id);
 			udp = new UDP(Id);
 		}
 
@@ -31,24 +29,24 @@ namespace NetworkTutorial.Server.Client
 			{
 				if (client.Player != null)
 				{
-					ServerSend.SendPlayerConnected_TCP_CLIENT(client.Id, Player);
+					ServerSend.SendPlayerConnected_CLIENT(client.Id, Player);
 
 					if (client.Id != Id)
-						ServerSend.SendPlayerConnected_TCP_CLIENT(Id, client.Player);
+						ServerSend.SendPlayerConnected_CLIENT(Id, client.Player);
 				}
 			}
 
 			//Healthpacks
 			foreach (var kvp in GameManagerServer.healthpacks)
 			{
-				ServerSend.SendHealthpackSpawn_TCP_CLIENT(Id, kvp.Key, kvp.Value.gameObject.transform.position);
+				ServerSend.SendHealthpackSpawn_CLIENT(Id, kvp.Key, kvp.Value.gameObject.transform.position);
 			}
 
 		}
 
 		public void Disconnect()
 		{
-			Debug.Log($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
+			Debug.Log($"{udp.endPoint.Address /*tcp.socket.Client.RemoteEndPoint*/} has disconnected.");
 
 			ThreadManager.ExecuteOnMainThread(() =>
 			{
@@ -57,10 +55,9 @@ namespace NetworkTutorial.Server.Client
 				Player = null;
 			});
 
-			tcp.Disconnect();
 			udp.Disconnect();
 
-			ServerSend.SendPlayerDisconnected_TCP_ALL(Id);
+			ServerSend.SendPlayerDisconnected_ALL(Id);
 		}
 
 	}

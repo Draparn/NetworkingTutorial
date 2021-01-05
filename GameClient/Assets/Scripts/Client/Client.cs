@@ -1,11 +1,13 @@
-﻿using NetworkTutorial.Shared;
+﻿using NetworkTutorial.Client.Net;
+using NetworkTutorial.Client.Player;
+using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Net;
-using System.Collections.Generic;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
-using NetworkTutorial.Client.Net;
 
 namespace NetworkTutorial.Client
 {
@@ -16,10 +18,9 @@ namespace NetworkTutorial.Client
 		protected delegate void PacketHandler(Packet packet);
 		protected static Dictionary<int, PacketHandler> packethandlers;
 
-		public TCP tcp;
 		public UDP udp;
 
-		[HideInInspector] public int MyId = 0;
+		[HideInInspector] public byte MyId = 0;
 
 		private bool isConnected = false;
 
@@ -38,170 +39,22 @@ namespace NetworkTutorial.Client
 
 		public void ConnectToServer(string ip)
 		{
-			tcp = new TCP();
 			udp = new UDP(ip);
-			tcp.InitializeClientData();
-			tcp.Connect(ip);
-			isConnected = true;
+			udp.InitializeClientData();
+			udp.Connect();
+			StartCoroutine(ConnectTimer());
 		}
 
 		public void Disconnect()
 		{
 			if (isConnected)
 			{
+				ClientSend.SendDisconnect();
 				isConnected = false;
-				tcp.socket.Close();
 				udp.socket.Close();
 			}
 		}
 
-		public class TCP
-		{
-			public TcpClient socket;
-
-			private NetworkStream stream;
-			private Packet receivedData;
-
-			byte[] receiveBuffer;
-
-			public void Connect(string ip)
-			{
-				socket = new TcpClient
-				{
-					ReceiveBufferSize = ConstantValues.DATA_BUFFER_SIZE,
-					SendBufferSize = ConstantValues.DATA_BUFFER_SIZE
-				};
-
-				receiveBuffer = new byte[ConstantValues.DATA_BUFFER_SIZE];
-				socket.BeginConnect(ip, ConstantValues.SERVER_PORT, ConnectCallback, socket);
-			}
-
-			public void InitializeClientData()
-			{
-				packethandlers = new Dictionary<int, PacketHandler>();
-				packethandlers.Add((int)ServerPackets.welcome, ClientHandle.OnWelcomeMessage);
-				packethandlers.Add((int)ServerPackets.spawnPlayer, ClientHandle.OnPlayerConnected);
-				packethandlers.Add((int)ServerPackets.playerPosition, ClientHandle.OnPlayerPositionUpdate); //obsolete since snapshot implementation
-				packethandlers.Add((int)ServerPackets.playerRotation, ClientHandle.OnPlayerRotationUpdate);
-				packethandlers.Add((int)ServerPackets.playerDisconnected, ClientHandle.OnPlayerDisconnected);
-				packethandlers.Add((int)ServerPackets.playerHealth, ClientHandle.OnPlayerHealthUpdate);
-				packethandlers.Add((int)ServerPackets.playerRespawn, ClientHandle.OnPlayerRespawn);
-				packethandlers.Add((int)ServerPackets.projectileSpawn, ClientHandle.OnProjectileSpawn);
-				packethandlers.Add((int)ServerPackets.projectilePosition, ClientHandle.OnProjectilePositionUpdate); //obsolete since snapshot implementation
-				packethandlers.Add((int)ServerPackets.projectileExplosion, ClientHandle.OnProjectieExplosion);
-				packethandlers.Add((int)ServerPackets.healthpackActivate, ClientHandle.OnHealthpackActivate);
-				packethandlers.Add((int)ServerPackets.healthpackDeactivate, ClientHandle.OnHealthpackDeactivate);
-				packethandlers.Add((int)ServerPackets.healthpackSpawn, ClientHandle.OnHealthpackSpawn);
-				packethandlers.Add((int)ServerPackets.serverSnapshot, ClientHandle.OnNewSnapshot);
-			}
-
-			private void ConnectCallback(IAsyncResult result)
-			{
-				socket.EndConnect(result);
-
-				if (!socket.Connected)
-					return;
-
-				stream = socket.GetStream();
-
-				receivedData = new Packet();
-
-				stream.BeginRead(receiveBuffer, 0, ConstantValues.DATA_BUFFER_SIZE, ReceiveCallback, null);
-			}
-
-			private void ReceiveCallback(IAsyncResult result)
-			{
-				try
-				{
-					int byteLength = stream.EndRead(result);
-
-					if (byteLength <= 0)
-					{
-						Instance.Disconnect();
-						return;
-					}
-
-					var data = new byte[byteLength];
-					Array.Copy(receiveBuffer, data, byteLength);
-
-					receivedData.Reset(HandleData(data));
-					stream.BeginRead(receiveBuffer, 0, ConstantValues.DATA_BUFFER_SIZE, ReceiveCallback, null);
-				}
-				catch
-				{
-					Disconnect();
-				}
-			}
-
-			private bool HandleData(byte[] data)
-			{
-				int packetLength = 0;
-
-				receivedData.SetBytes(data);
-
-				if (receivedData.UnreadLength() >= 4)
-				{
-					packetLength = receivedData.ReadInt();
-
-					if (packetLength <= 0)
-						return true;
-				}
-
-				while (packetLength > 0 && packetLength <= receivedData.UnreadLength())
-				{
-					byte[] packetBytes = receivedData.ReadBytes(packetLength);
-					ThreadManager.ExecuteOnMainThread(() =>
-					{
-						using (Packet packet = new Packet(packetBytes))
-						{
-							int packetId = packet.ReadInt();
-							packethandlers[packetId](packet);
-						}
-					});
-
-					packetLength = 0;
-
-					if (receivedData.UnreadLength() >= 4)
-					{
-						packetLength = receivedData.ReadInt();
-
-						if (packetLength <= 0)
-							return true;
-					}
-				}
-
-				if (packetLength <= 1)
-					return true;
-
-				return false;
-			}
-
-			public void SendData(Packet packet)
-			{
-				try
-				{
-					if (socket != null)
-					{
-						stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
-					}
-				}
-				catch (Exception ex)
-				{
-					Debug.Log($"Error sending data to server via TCP: {ex}");
-				}
-			}
-
-			public void Disconnect()
-			{
-				Instance.Disconnect();
-
-				stream = null;
-				receivedData = null;
-				receiveBuffer = null;
-				socket = null;
-			}
-
-		}
 		public class UDP
 		{
 			public UdpClient socket;
@@ -209,27 +62,40 @@ namespace NetworkTutorial.Client
 
 			public UDP(string ip)
 			{
-				endpoint = new IPEndPoint(IPAddress.Parse(ip), ConstantValues.SERVER_PORT);
+				endpoint = new IPEndPoint(IPAddress.Parse(ip), ConstantValues.PORT);
 			}
 
-			public void Connect(int localPort)
+			public void Connect()
 			{
-				socket = new UdpClient(localPort);
+				socket = new UdpClient(ConstantValues.PORT + 1);
 				socket.Connect(endpoint);
-
 				socket.BeginReceive(ReceiveCallback, null);
 
-				using (Packet packet = new Packet())
-				{
-					SendData(packet);
-				}
+				ClientSend.SendConnectRequest();
+			}
+
+			public void InitializeClientData()
+			{
+				packethandlers = new Dictionary<int, PacketHandler>();
+				packethandlers.Add((int)ServerPackets.welcome, ClientHandle.OnWelcomeMessage);
+				packethandlers.Add((int)ServerPackets.spawnPlayer, ClientHandle.OnPlayerConnected);
+				packethandlers.Add((int)ServerPackets.playerRotation, ClientHandle.OnPlayerRotationUpdate);
+				packethandlers.Add((int)ServerPackets.playerDisconnected, ClientHandle.OnPlayerDisconnected);
+				packethandlers.Add((int)ServerPackets.playerHealth, ClientHandle.OnPlayerHealthUpdate);
+				packethandlers.Add((int)ServerPackets.playerRespawn, ClientHandle.OnPlayerRespawn);
+				packethandlers.Add((int)ServerPackets.projectileSpawn, ClientHandle.OnProjectileSpawn);
+				packethandlers.Add((int)ServerPackets.projectileExplosion, ClientHandle.OnProjectieExplosion);
+				packethandlers.Add((int)ServerPackets.healthpackActivate, ClientHandle.OnHealthpackActivate);
+				packethandlers.Add((int)ServerPackets.healthpackDeactivate, ClientHandle.OnHealthpackDeactivate);
+				packethandlers.Add((int)ServerPackets.healthpackSpawn, ClientHandle.OnHealthpackSpawn);
+				packethandlers.Add((int)ServerPackets.serverSnapshot, ClientHandle.OnNewSnapshot);
 			}
 
 			public void SendData(Packet packet)
 			{
 				try
 				{
-					packet.InsertInt(Instance.MyId);
+					packet.InsertByte(Instance.MyId);
 					if (socket != null)
 					{
 						socket.BeginSend(packet.ToArray(), packet.Length(), null, null);
@@ -237,7 +103,7 @@ namespace NetworkTutorial.Client
 				}
 				catch (Exception ex)
 				{
-					Debug.Log($"Error sending data to server vis UDP: {ex}");
+					Debug.Log($"Error sending data to server via UDP: {ex}");
 				}
 			}
 
@@ -274,7 +140,7 @@ namespace NetworkTutorial.Client
 				{
 					using (Packet packet = new Packet(data))
 					{
-						int packetId = packet.ReadInt();
+						int packetId = packet.ReadByte();
 						packethandlers[packetId](packet);
 					}
 				});
@@ -288,6 +154,18 @@ namespace NetworkTutorial.Client
 				socket = null;
 			}
 
+		}
+
+		private IEnumerator ConnectTimer()
+		{
+			yield return new WaitForSeconds(10);
+			UIManager.Instance.ConnectionTimedOut();
+		}
+
+		public void StopConnectionTimer()
+		{
+			StopAllCoroutines();
+			isConnected = true;
 		}
 	}
 }

@@ -30,14 +30,14 @@ public class GameManagerServer : MonoBehaviour
 	public static void DeactivateHealthpack(byte id)
 	{
 		healthpacks[id].IsActive = false;
-		ServerSend.SendHealthpackDeactivate_TCP_ALL(id);
+		ServerSend.SendHealthpackDeactivate_ALL(id);
 	}
 	private static void ActivateHealthpack(HealthpackServer hp)
 	{
 		if (!hp.RespawnCollisionCheck())
 		{
 			hp.IsActive = true;
-			ServerSend.SendHealthpackActivate_TCP_ALL(hp.MyId);
+			ServerSend.SendHealthpackActivate_ALL(hp.MyId);
 		}
 	}
 

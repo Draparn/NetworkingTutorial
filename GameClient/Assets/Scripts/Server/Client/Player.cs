@@ -29,7 +29,7 @@ namespace NetworkTutorial.Server.Client
 
 		private bool hitScan = false;
 
-		public int PlayerId;
+		public byte PlayerId;
 		public uint FrameNumber = uint.MaxValue;
 
 		private InputsStruct playerInput;
@@ -39,7 +39,7 @@ namespace NetworkTutorial.Server.Client
 			controller = gameObject.GetComponent<CharacterController>();
 		}
 
-		public void Init(int id, string name)
+		public void Init(byte id, string name)
 		{
 			PlayerName = name;
 			PlayerId = id;
@@ -79,7 +79,7 @@ namespace NetworkTutorial.Server.Client
 			if (CurrentHealth <= 0)
 				PlayerDied();
 
-			ServerSend.SendPlayerHealthUpdate_TCP_ALL(this);
+			ServerSend.SendPlayerHealthUpdate_ALL(this);
 		}
 		public void HealDamage(float healing)
 		{
@@ -100,7 +100,7 @@ namespace NetworkTutorial.Server.Client
 			CurrentHealth = MaxHealth;
 			controller.enabled = true;
 
-			ServerSend.SendPlayerRespawned_TCP_ALL(this);
+			ServerSend.SendPlayerRespawned_ALL(this);
 		}
 
 		public void UpdatePosAndRot(uint frameNumber, InputsStruct inputs, Quaternion rot)
@@ -114,7 +114,7 @@ namespace NetworkTutorial.Server.Client
 
 			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(playerInput, transform.right, transform.forward, ref yVelocity, controller.isGrounded));
 			ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, FrameNumber);
-			ServerSend.SendPlayerRotationUpdate_UDP_ALLEXCEPT(this);
+			ServerSend.SendPlayerRotationUpdate_ALLEXCEPT(this);
 		}
 	}
 }

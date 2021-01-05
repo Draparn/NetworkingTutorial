@@ -46,6 +46,16 @@ namespace NetworkTutorial.Client.Player
 			Client.Instance.ConnectToServer(ConnectToIPField.text);
 		}
 
+		public void ConnectionTimedOut()
+		{
+			StartMenu.SetActive(true);
+			CrossHair.SetActive(false);
+			HealthText.transform.parent.gameObject.SetActive(false);
+
+			ConnectToIPField.interactable = true;
+			UserNameField.interactable = true;
+		}
+
 		public void TakeDamage(bool isDead)
 		{
 			if (!isDead)

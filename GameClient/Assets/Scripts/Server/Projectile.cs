@@ -16,7 +16,7 @@ namespace NetworkTutorial.Server
 
 		private Vector3 initialForce;
 
-		private int thrownByPlayer;
+		private byte thrownByPlayer;
 
 		[SerializeField] private float fuseTimer = 1;
 		[SerializeField] private float explosionRadius = 2.5f;
@@ -43,7 +43,7 @@ namespace NetworkTutorial.Server
 				Projectiles.Add(id, this);
 			}
 
-			ServerSend.SendProjectileSpawn_TCP_ALL(this);
+			ServerSend.SendProjectileSpawn_ALL(this);
 
 			rb = GetComponent<Rigidbody>();
 			rb.AddForce(initialForce);
@@ -56,7 +56,6 @@ namespace NetworkTutorial.Server
 		private void Update()
 		{
 			ServerSnapshot.AddProjectileMovement(this);
-			//ServerSend.SendProjectileUpdatePosition_UDP_ALL(this);
 		}
 
 		private void OnCollisionEnter(Collision other)
@@ -67,7 +66,7 @@ namespace NetworkTutorial.Server
 				Explode();
 		}
 
-		public void Init(Vector3 viewDirection, float initialforceStrength, int thrownByPlayer)
+		public void Init(Vector3 viewDirection, float initialforceStrength, byte thrownByPlayer)
 		{
 			initialForce = viewDirection * initialforceStrength;
 			this.thrownByPlayer = thrownByPlayer;
@@ -76,7 +75,7 @@ namespace NetworkTutorial.Server
 		private void Explode()
 		{
 			ServerSnapshot.RemoveProjectileMovement(this);
-			ServerSend.SendProjectileExplosion_TCP_ALL(this);
+			ServerSend.SendProjectileExplosion_ALL(this);
 
 			var nearbyColliders = Physics.OverlapSphere(transform.position, explosionRadius);
 			foreach (var collider in nearbyColliders)

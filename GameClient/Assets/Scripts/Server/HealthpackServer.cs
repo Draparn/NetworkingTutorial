@@ -26,7 +26,7 @@ public class HealthpackServer : MonoBehaviour
 				return;
 
 			playerComp.HealDamage(HealthGain);
-			ServerSend.SendPlayerHealthUpdate_TCP_ALL(playerComp);
+			ServerSend.SendPlayerHealthUpdate_ALL(playerComp);
 
 			currentRespawnTime = RespawnTime;
 			GameManagerServer.DeactivateHealthpack(MyId);
@@ -42,7 +42,7 @@ public class HealthpackServer : MonoBehaviour
 			if (playerComp != null && playerComp.CurrentHealth < playerComp.MaxHealth)
 			{
 				playerComp.HealDamage(HealthGain);
-				ServerSend.SendPlayerHealthUpdate_TCP_ALL(playerComp);
+				ServerSend.SendPlayerHealthUpdate_ALL(playerComp);
 
 				currentRespawnTime = RespawnTime;
 				return true;

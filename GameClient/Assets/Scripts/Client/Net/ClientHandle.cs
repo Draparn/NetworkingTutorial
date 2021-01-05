@@ -1,6 +1,5 @@
 ﻿using NetworkTutorial.Shared.Net;
 using System.Collections.Generic;
-using System.Net;
 using UnityEngine;
 
 namespace NetworkTutorial.Client.Net
@@ -35,13 +34,13 @@ namespace NetworkTutorial.Client.Net
 		public static void OnWelcomeMessage(Packet packet)
 		{
 			var message = packet.ReadString();
-			var id = packet.ReadInt();
+			var id = packet.ReadByte();
 
 			Debug.Log($"Message from server: {message}");
 			Client.Instance.MyId = id;
-			ClientSend.SendWelcomeReceived();
+			Client.Instance.StopConnectionTimer();
 
-			Client.Instance.udp.Connect(((IPEndPoint)Client.Instance.tcp.socket.Client.LocalEndPoint).Port);
+			ClientSend.SendWelcomeReceived();
 		}
 
 		public static void OnNewSnapshot(Packet packet)
@@ -84,7 +83,7 @@ namespace NetworkTutorial.Client.Net
 
 		public static void OnPlayerConnected(Packet packet)
 		{
-			var id = packet.ReadInt();
+			var id = packet.ReadByte();
 			var playerName = packet.ReadString();
 			var position = packet.ReadVector3();
 			var rotation = packet.ReadQuaternion();
@@ -99,15 +98,6 @@ namespace NetworkTutorial.Client.Net
 			GameManager.Instance.Players.Remove(clientId);
 		}
 
-		//position update obsolete since snapshot implementation
-		public static void OnPlayerPositionUpdate(Packet packet)
-		{
-			var id = packet.ReadInt();
-			var position = packet.ReadVector3();
-
-			if (GameManager.Instance.Players.ContainsKey(id))
-				GameManager.Instance.Players[id].transform.position = position;
-		}
 		public static void OnPlayerRotationUpdate(Packet packet)
 		{
 			var id = packet.ReadInt();
@@ -154,15 +144,6 @@ namespace NetworkTutorial.Client.Net
 			GameManager.Instance.SpawnProjectile(id, pos);
 		}
 
-		//position update obsolete since snapshot implementation
-		public static void OnProjectilePositionUpdate(Packet packet)
-		{
-			var id = packet.ReadInt();
-			var pos = packet.ReadVector3();
-
-			if (GameManager.Instance.Projectiles.ContainsKey(id))
-				GameManager.Instance.Projectiles[id].transform.position = pos;
-		}
 		public static void OnProjectieExplosion(Packet packet)
 		{
 			var id = packet.ReadInt();
