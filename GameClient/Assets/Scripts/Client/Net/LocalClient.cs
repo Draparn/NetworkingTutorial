@@ -1,4 +1,4 @@
-﻿using NetworkTutorial.Client.Net;
+﻿using NetworkTutorial.Client.Gameplay;
 using NetworkTutorial.Client.Player;
 using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Net;
@@ -9,16 +9,18 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
-namespace NetworkTutorial.Client
+namespace NetworkTutorial.Client.Net
 {
-	public class Client : MonoBehaviour
+	public class LocalClient : MonoBehaviour
 	{
-		public static Client Instance;
+		public static LocalClient Instance;
 
 		protected delegate void PacketHandler(Packet packet);
 		protected static Dictionary<int, PacketHandler> packethandlers;
 
-		public UDP udp;
+		public UDP Connection;
+
+		private float disconnectTimer;
 
 		[HideInInspector] public byte MyId = 0;
 
@@ -32,6 +34,22 @@ namespace NetworkTutorial.Client
 				Destroy(this);
 		}
 
+		private void Update()
+		{
+			if (isConnected)
+			{
+				disconnectTimer += Time.deltaTime;
+
+				if (disconnectTimer >= 10.0)
+				{
+					Instance.Disconnect();
+					GameObject.Destroy(GameManagerClient.Instance.Players[Instance.MyId].gameObject);
+					GameManagerClient.Instance.Players.Remove(Instance.MyId);
+					UIManager.Instance.ConnectionTimedOut();
+				}
+			}
+		}
+
 		private void OnApplicationQuit()
 		{
 			Disconnect();
@@ -39,10 +57,10 @@ namespace NetworkTutorial.Client
 
 		public void ConnectToServer(string ip)
 		{
-			udp = new UDP(ip);
-			udp.InitializeClientData();
-			udp.Connect();
-			StartCoroutine(ConnectTimer());
+			Connection = new UDP(ip);
+			Connection.InitializeClientData();
+			Connection.Connect();
+			StartCoroutine(SendConnectAndWait());
 		}
 
 		public void Disconnect()
@@ -50,8 +68,9 @@ namespace NetworkTutorial.Client
 			if (isConnected)
 			{
 				ClientSend.SendDisconnect();
+
 				isConnected = false;
-				udp.socket.Close();
+				Connection.socket.Close();
 			}
 		}
 
@@ -63,15 +82,13 @@ namespace NetworkTutorial.Client
 			public UDP(string ip)
 			{
 				endpoint = new IPEndPoint(IPAddress.Parse(ip), ConstantValues.PORT);
+				socket = new UdpClient();
 			}
 
 			public void Connect()
 			{
-				socket = new UdpClient(ConstantValues.PORT + 1);
 				socket.Connect(endpoint);
 				socket.BeginReceive(ReceiveCallback, null);
-
-				ClientSend.SendConnectRequest();
 			}
 
 			public void InitializeClientData()
@@ -114,13 +131,14 @@ namespace NetworkTutorial.Client
 					byte[] data = socket.EndReceive(result, ref endpoint);
 					socket.BeginReceive(ReceiveCallback, null);
 
-					if (data.Length < 4)
+					if (data.Length < 1)
 					{
 						Instance.Disconnect();
 						return;
 					}
 
 					HandleData(data);
+					Instance.disconnectTimer = 0;
 				}
 				catch
 				{
@@ -156,9 +174,17 @@ namespace NetworkTutorial.Client
 
 		}
 
-		private IEnumerator ConnectTimer()
+		private IEnumerator SendConnectAndWait()
 		{
-			yield return new WaitForSeconds(10);
+			byte ticker = 0;
+
+			do
+			{
+				ClientSend.SendConnectRequest();
+				yield return new WaitForSeconds(2);
+				ticker++;
+			} while (ticker < 5);
+
 			UIManager.Instance.ConnectionTimedOut();
 		}
 

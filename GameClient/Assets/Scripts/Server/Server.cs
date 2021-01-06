@@ -1,4 +1,5 @@
-﻿using NetworkTutorial.Server.Net;
+﻿using NetworkTutorial.Server.Client;
+using NetworkTutorial.Server.Net;
 using NetworkTutorial.Shared.Net;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace NetworkTutorial.Server
 		public delegate void PacketHandler(byte clientId, Packet packet);
 
 		public static Dictionary<byte, PacketHandler> PacketHandlers;
-		public static Dictionary<byte, Client.Client> Clients = new Dictionary<byte, Client.Client>();
+		public static Dictionary<byte, ClientServer> Clients = new Dictionary<byte, ClientServer>();
 
 		private static UdpClient udpListener;
 
@@ -63,8 +64,8 @@ namespace NetworkTutorial.Server
 						return;
 					}
 
-					if (Clients[clientId].udp.endPoint.ToString() == endPoint.ToString())
-						Clients[clientId].udp.HandleData(packet);
+					if (Clients[clientId].Connection.endPoint.ToString() == endPoint.ToString())
+						Clients[clientId].Connection.HandleData(packet);
 				}
 			}
 			catch (Exception ex)
@@ -91,7 +92,7 @@ namespace NetworkTutorial.Server
 		private static void InitializeServerData()
 		{
 			for (byte i = 1; i <= MaxPlayers; i++)
-				Clients.Add(i, new Client.Client(i));
+				Clients.Add(i, new Client.ClientServer(i));
 
 			PacketHandlers = new Dictionary<byte, PacketHandler>();
 			PacketHandlers.Add((byte)ClientPackets.welcomeReceived, ServerHandle.OnWelcomeReceived);
@@ -104,7 +105,7 @@ namespace NetworkTutorial.Server
 		{
 			foreach (var client in Clients.Values)
 			{
-				if (client.udp.endPoint != null && client.udp.endPoint.ToString() == endPoint.ToString())
+				if (client.Connection.endPoint != null && client.Connection.endPoint.ToString() == endPoint.ToString())
 					return true;
 			}
 
@@ -115,9 +116,9 @@ namespace NetworkTutorial.Server
 		{
 			for (byte i = 1; i <= MaxPlayers; i++)
 			{
-				if (Clients[i].udp.endPoint == null)
+				if (Clients[i].Connection.endPoint == null)
 				{
-					Clients[i].udp.Connect(endPoint);
+					Clients[i].Connection.Connect(endPoint);
 					ServerSend.SendWelcomeMessage_CLIENT(i, "Welcome to the party, pal!");
 					return true;
 				}

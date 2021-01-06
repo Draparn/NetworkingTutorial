@@ -10,7 +10,7 @@ namespace NetworkTutorial.Server.Net
 			var claimedId = packet.ReadByte();
 			var userName = packet.ReadString();
 
-			Debug.Log($"{Server.Clients[clientId].udp.endPoint} connected successfully and is now player {clientId}.");
+			Debug.Log($"{Server.Clients[clientId].Connection.endPoint} connected successfully and is now player {clientId}.");
 
 			if (clientId != claimedId)
 				Debug.Log($"Player \"{userName}\" (ID: {clientId} has assumed the wrong client ID ({claimedId})!");
@@ -29,14 +29,14 @@ namespace NetworkTutorial.Server.Net
 			var inputs = packet.ReadInputs();
 			var rotation = packet.ReadQuaternion();
 
-			Server.Clients[clientId].Player.UpdatePosAndRot(frameNumber, inputs, rotation);
+			Server.Clients[clientId].PlayerObject.UpdatePosAndRot(frameNumber, inputs, rotation);
 		}
 
 		public static void OnPlayerPrimaryFire(byte clientId, Packet packet)
 		{
 			var viewDirection = packet.ReadVector3();
 
-			Server.Clients[clientId].Player.PrimaryFire(viewDirection);
+			Server.Clients[clientId].PlayerObject.PrimaryFire(viewDirection);
 		}
 
 	}

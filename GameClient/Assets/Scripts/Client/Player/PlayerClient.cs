@@ -1,12 +1,14 @@
-﻿using System.Collections;
+﻿using NetworkTutorial.Client.Net;
+using System.Collections;
 using UnityEngine;
 
 namespace NetworkTutorial.Client.Player
 {
-	public class PlayerManager : MonoBehaviour
+	public class PlayerClient : MonoBehaviour
 	{
 		public GameObject PlayerMesh;
 		private MeshRenderer rend;
+		private Camera menuCamera;
 
 		private Color originalColor;
 
@@ -21,9 +23,13 @@ namespace NetworkTutorial.Client.Player
 
 		private void Awake()
 		{
-			var menuCamera = GameObject.FindGameObjectWithTag("MainCamera");
-			if (menuCamera != null)
-				Destroy(menuCamera);
+			menuCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+			menuCamera.enabled = false;
+		}
+
+		private void OnDestroy()
+		{
+			menuCamera.enabled = true;
 		}
 
 		public void Init(int id, string playerName)
@@ -37,7 +43,7 @@ namespace NetworkTutorial.Client.Player
 
 		public void SetHealth(int clientId, float newHealthValue)
 		{
-			if (clientId == Client.Instance.MyId)
+			if (clientId == LocalClient.Instance.MyId)
 				FlashUI(newHealthValue);
 
 			if (newHealthValue < currentHealth)
@@ -56,7 +62,7 @@ namespace NetworkTutorial.Client.Player
 		{
 			if (newHealthValue < currentHealth)
 				UIManager.Instance.TakeDamage(newHealthValue <= 0);
-			else if(newHealthValue > currentHealth)
+			else if (newHealthValue > currentHealth)
 				UIManager.Instance.HealDamage();
 
 			UIManager.Instance.SetHealthText(newHealthValue);

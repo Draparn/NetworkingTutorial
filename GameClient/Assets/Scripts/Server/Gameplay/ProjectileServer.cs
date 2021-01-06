@@ -3,14 +3,14 @@ using NetworkTutorial.Server.Net;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NetworkTutorial.Server
+namespace NetworkTutorial.Server.Gameplay
 {
-	public class Projectile : MonoBehaviour
+	public class ProjectileServer : MonoBehaviour
 	{
-		public static Dictionary<int, Projectile> Projectiles = new Dictionary<int, Projectile>();
+		public static Dictionary<int, ProjectileServer> Projectiles = new Dictionary<int, ProjectileServer>();
 		private static ushort nextProjectileId = 1;
 
-		[HideInInspector] public int id;
+		[HideInInspector] public ushort id;
 
 		private Rigidbody rb;
 
@@ -48,7 +48,7 @@ namespace NetworkTutorial.Server
 			rb = GetComponent<Rigidbody>();
 			rb.AddForce(initialForce);
 
-			Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), Server.Clients[thrownByPlayer].Player.GetComponent<CharacterController>());
+			Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), Server.Clients[thrownByPlayer].PlayerObject.GetComponent<CharacterController>());
 
 			Invoke(nameof(Explode), fuseTimer);
 		}
@@ -60,7 +60,7 @@ namespace NetworkTutorial.Server
 
 		private void OnCollisionEnter(Collision other)
 		{
-			var playerComp = other.transform.GetComponent<Player>();
+			var playerComp = other.transform.GetComponent<PlayerServer>();
 
 			if (playerComp != null && playerComp.PlayerId != thrownByPlayer && playerComp.CurrentHealth > 0)
 				Explode();
@@ -81,7 +81,7 @@ namespace NetworkTutorial.Server
 			foreach (var collider in nearbyColliders)
 			{
 				if (collider.CompareTag("Player"))
-					collider.GetComponent<Player>().TakeDamage(explosionDamage);
+					collider.GetComponent<PlayerServer>().TakeDamage(explosionDamage);
 			}
 
 			Projectiles.Remove(id);

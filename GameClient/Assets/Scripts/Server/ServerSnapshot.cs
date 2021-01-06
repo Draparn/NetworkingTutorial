@@ -1,16 +1,17 @@
 ﻿using NetworkTutorial.Server.Client;
+using NetworkTutorial.Server.Gameplay;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NetworkTutorial.Server.Net
+namespace NetworkTutorial.Server
 {
 	public struct PlayerPosData
 	{
-		public int Id;
+		public byte Id;
 		public Vector3 Position;
 		public uint FrameNumber;
 
-		public PlayerPosData(int id, Vector3 pos, uint frameNumber)
+		public PlayerPosData(byte id, Vector3 pos, uint frameNumber)
 		{
 			Id = id;
 			Position = pos;
@@ -24,9 +25,9 @@ namespace NetworkTutorial.Server.Net
 		public static ServerSnapshot currentSnapshot = new ServerSnapshot();
 
 		public Dictionary<int, PlayerPosData> PlayerPosition = new Dictionary<int, PlayerPosData>();
-		public List<Projectile> ProjectilePositions = new List<Projectile>();
+		public List<ProjectileServer> ProjectilePositions = new List<ProjectileServer>();
 
-		public static void AddPlayerMovement(int id, Vector3 pos, uint frameNumber)
+		public static void AddPlayerMovement(byte id, Vector3 pos, uint frameNumber)
 		{
 			if (frameNumber == uint.MaxValue)
 				return;
@@ -36,20 +37,20 @@ namespace NetworkTutorial.Server.Net
 			else
 				currentSnapshot.PlayerPosition.Add(id, new PlayerPosData(id, pos, frameNumber));
 		}
-		public static void RemovePlayerMovement(Player player)
+		public static void RemovePlayerMovement(PlayerServer player)
 		{
 			if (currentSnapshot.PlayerPosition.ContainsKey(player.PlayerId))
 				currentSnapshot.PlayerPosition.Remove(player.PlayerId);
 		}
 
-		public static void AddProjectileMovement(Projectile proj)
+		public static void AddProjectileMovement(ProjectileServer proj)
 		{
 			if (currentSnapshot.ProjectilePositions.Contains(proj))
 				currentSnapshot.ProjectilePositions[currentSnapshot.ProjectilePositions.IndexOf(proj)].transform.position = proj.transform.position;
 			else
 				currentSnapshot.ProjectilePositions.Add(proj);
 		}
-		public static void RemoveProjectileMovement(Projectile proj)
+		public static void RemoveProjectileMovement(ProjectileServer proj)
 		{
 			currentSnapshot.ProjectilePositions.Remove(proj);
 		}

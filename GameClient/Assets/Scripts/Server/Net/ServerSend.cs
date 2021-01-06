@@ -1,4 +1,5 @@
 ﻿using NetworkTutorial.Server.Client;
+using NetworkTutorial.Server.Gameplay;
 using NetworkTutorial.Shared.Net;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace NetworkTutorial.Server.Net
 		{
 			using (Packet packet = new Packet((byte)ServerPackets.serverSnapshot))
 			{
-				packet.Write(ServerSnapshot.currentSnapshot.PlayerPosition.Count);
+				packet.Write((byte)ServerSnapshot.currentSnapshot.PlayerPosition.Count);
 				foreach (var data in ServerSnapshot.currentSnapshot.PlayerPosition)
 				{
 					packet.Write(data.Value.Id);
@@ -29,20 +30,20 @@ namespace NetworkTutorial.Server.Net
 					packet.Write(data.Value.Position);
 				}
 
-				packet.Write(ServerSnapshot.currentSnapshot.ProjectilePositions.Count);
+				packet.Write((byte)ServerSnapshot.currentSnapshot.ProjectilePositions.Count);
 				foreach (var proj in ServerSnapshot.currentSnapshot.ProjectilePositions)
 				{
 					packet.Write(proj.id);
 					packet.Write(proj.transform.position);
 				}
 
-				SendToAllClients(packet);
+				//SendToAllClients(packet);
 			}
 
 			ServerSnapshot.ClearSnapshot();
 		}
 
-		public static void SendPlayerConnected_CLIENT(byte clientId, Player player)
+		public static void SendPlayerConnected_CLIENT(byte clientId, PlayerServer player)
 		{
 			using (Packet packet = new Packet((byte)ServerPackets.spawnPlayer))
 			{
@@ -64,7 +65,7 @@ namespace NetworkTutorial.Server.Net
 			}
 		}
 
-		public static void SendPlayerRotationUpdate_ALLEXCEPT(Player player)
+		public static void SendPlayerRotationUpdate_ALLEXCEPT(PlayerServer player)
 		{
 			using (Packet packet = new Packet((byte)ServerPackets.playerRotation))
 			{
@@ -75,7 +76,7 @@ namespace NetworkTutorial.Server.Net
 			}
 		}
 
-		public static void SendPlayerHealthUpdate_ALL(Player player)
+		public static void SendPlayerHealthUpdate_ALL(PlayerServer player)
 		{
 			using (Packet packet = new Packet((byte)ServerPackets.playerHealth))
 			{
@@ -85,7 +86,7 @@ namespace NetworkTutorial.Server.Net
 				SendToAllClients(packet);
 			}
 		}
-		public static void SendPlayerRespawned_ALL(Player player)
+		public static void SendPlayerRespawned_ALL(PlayerServer player)
 		{
 			using (Packet packet = new Packet((byte)ServerPackets.playerRespawn))
 			{
@@ -125,7 +126,7 @@ namespace NetworkTutorial.Server.Net
 			}
 		}
 
-		public static void SendProjectileSpawn_ALL(Projectile projectile)
+		public static void SendProjectileSpawn_ALL(ProjectileServer projectile)
 		{
 			using (Packet packet = new Packet((byte)ServerPackets.projectileSpawn))
 			{
@@ -136,7 +137,7 @@ namespace NetworkTutorial.Server.Net
 			}
 		}
 
-		public static void SendProjectileExplosion_ALL(Projectile projectile)
+		public static void SendProjectileExplosion_ALL(ProjectileServer projectile)
 		{
 			using (Packet packet = new Packet((byte)ServerPackets.projectileExplosion))
 			{
@@ -148,36 +149,20 @@ namespace NetworkTutorial.Server.Net
 		}
 
 		#region BroadcastOptions
-		/*
-		private static void SendTCPDataToClient(int clientId, Packet packet)
-		{
-			packet.WriteLength();
-			Server.Clients[clientId].udp.SendData(packet);
-		}
-		*/
 		private static void SendToClient(byte clientId, Packet packet)
 		{
 			packet.WriteLength();
-			Server.Clients[clientId].udp.SendData(packet);
+			Server.Clients[clientId].Connection.SendData(packet);
 		}
-		/*
-		private static void SendTCPDataToAllClients(Packet packet)
-		{
-			packet.WriteLength();
-			for (ushort i = 1; i <= Server.MaxPlayers; i++)
-			{
-				Server.Clients[i].udp.SendData(packet);
-			}
-		}
-		*/
+
 		private static void SendToAllClients(Packet packet)
 		{
 			packet.WriteLength();
 			for (byte i = 1; i <= Server.MaxPlayers; i++)
 			{
-				if (Server.Clients[i].udp != null)
+				if (Server.Clients[i].Connection != null)
 				{
-					Server.Clients[i].udp.SendData(packet);
+					Server.Clients[i].Connection.SendData(packet);
 				}
 			}
 		}
@@ -190,7 +175,7 @@ namespace NetworkTutorial.Server.Net
 				if (i == clientIdToExclude)
 					continue;
 
-				Server.Clients[i].udp.SendData(packet);
+				Server.Clients[i].Connection.SendData(packet);
 			}
 		}
 		#endregion

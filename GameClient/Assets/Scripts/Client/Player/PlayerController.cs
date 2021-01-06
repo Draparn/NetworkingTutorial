@@ -1,4 +1,5 @@
-﻿using NetworkTutorial.Client.Net;
+﻿using NetworkTutorial.Client.Gameplay;
+using NetworkTutorial.Client.Net;
 using NetworkTutorial.Shared;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ namespace NetworkTutorial.Client.Player
 
 		private Transform cameraTransform;
 		private CharacterController controller;
-		private PlayerManager playerManager;
+		private PlayerClient playerManager;
 		private InputsStruct inputs = new InputsStruct();
 		private Vector3 prevPos, nextPos;
 
@@ -30,7 +31,7 @@ namespace NetworkTutorial.Client.Player
 		private void Start()
 		{
 			cameraTransform = GetComponentInChildren<CameraController>().transform;
-			playerManager = GetComponent<PlayerManager>();
+			playerManager = GetComponent<PlayerClient>();
 			controller = GetComponent<CharacterController>();
 		}
 
@@ -50,7 +51,7 @@ namespace NetworkTutorial.Client.Player
 
 			clientTickRate += Time.deltaTime;
 
-			nextPos = GameManager.Instance.GetLastPredictedPos();
+			nextPos = GameManagerClient.Instance.GetLastPredictedPos();
 			if (nextPos != Vector3.zero)
 			{
 				gameObject.transform.position = Vector3.Lerp(
@@ -84,7 +85,7 @@ namespace NetworkTutorial.Client.Player
 			controller.enabled = true;
 			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(inputs, gameObject.transform.right, gameObject.transform.forward, ref yVelocity, controller.isGrounded));
 			controller.enabled = false;
-			GameManager.Instance.LocalPositionPredictions.Add(new LocalPredictionData(
+			GameManagerClient.Instance.LocalPositionPredictions.Add(new LocalPredictionData(
 				frameNumber,
 				inputs,
 				gameObject.transform.position,

@@ -1,4 +1,5 @@
-﻿using NetworkTutorial.Client.Player;
+﻿using NetworkTutorial.Client.Gameplay;
+using NetworkTutorial.Client.Player;
 using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Net;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace NetworkTutorial.Client.Net
 		{
 			using (Packet packet = new Packet((byte)ClientPackets.connectRequest))
 			{
-				packet.Write(Client.Instance.MyId);
+				packet.Write(LocalClient.Instance.MyId);
 				SendPacket(packet);
 			}
 		}
@@ -20,7 +21,7 @@ namespace NetworkTutorial.Client.Net
 		{
 			using (Packet packet = new Packet((byte)ClientPackets.welcomeReceived))
 			{
-				packet.Write(Client.Instance.MyId);
+				packet.Write(LocalClient.Instance.MyId);
 				packet.Write(GameObject.FindObjectOfType<UIManager>().UserNameField.text);
 				SendPacket(packet);
 			}
@@ -30,7 +31,7 @@ namespace NetworkTutorial.Client.Net
 		{
 			using (Packet packet = new Packet((byte)ClientPackets.disconnect))
 			{
-				packet.Write(Client.Instance.MyId);
+				packet.Write(LocalClient.Instance.MyId);
 				SendPacket(packet);
 			}
 		}
@@ -41,7 +42,7 @@ namespace NetworkTutorial.Client.Net
 			{
 				packet.Write(frameNumber);
 				packet.Write(inputs);
-				packet.Write(GameManager.Instance.Players[Client.Instance.MyId].transform.rotation);
+				packet.Write(GameManagerClient.Instance.Players[LocalClient.Instance.MyId].transform.rotation);
 
 				SendPacket(packet);
 			}
@@ -61,7 +62,7 @@ namespace NetworkTutorial.Client.Net
 		private static void SendPacket(Packet packet)
 		{
 			packet.WriteLength();
-			Client.Instance.udp.SendData(packet);
+			LocalClient.Instance.Connection.SendData(packet);
 		}
 	}
 }

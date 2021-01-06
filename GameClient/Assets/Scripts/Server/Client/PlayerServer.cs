@@ -1,11 +1,11 @@
-﻿using NetworkTutorial.Server.Managers;
+﻿using NetworkTutorial.Server.Gameplay;
 using NetworkTutorial.Server.Net;
 using NetworkTutorial.Shared;
 using UnityEngine;
 
 namespace NetworkTutorial.Server.Client
 {
-	public class Player : MonoBehaviour
+	public class PlayerServer : MonoBehaviour
 	{
 		private Vector2 inputDirection;
 
@@ -59,13 +59,13 @@ namespace NetworkTutorial.Server.Client
 				{
 					if (hit.collider.CompareTag("Player"))
 					{
-						hit.collider.GetComponent<Player>().TakeDamage(PrimaryFireDamage);
+						hit.collider.GetComponent<PlayerServer>().TakeDamage(PrimaryFireDamage);
 					}
 				}
 			}
 			else
 			{
-				NetworkManager.instance.InstantiateProjectile(ShootOrigin).Init(viewDirection, ThrowForce, PlayerId);
+				GameManagerServer.Instance.InstantiateProjectile(ShootOrigin).Init(viewDirection, ThrowForce, PlayerId);
 			}
 		}
 

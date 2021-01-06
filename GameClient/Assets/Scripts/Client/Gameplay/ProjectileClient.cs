@@ -1,18 +1,10 @@
 ﻿using UnityEngine;
 
-namespace NetworkTutorial.Client
+namespace NetworkTutorial.Client.Gameplay
 {
-	public class ProjectileManager : MonoBehaviour
+	public class ProjectileClient : MonoBehaviour
 	{
 		public GameObject ExplosionPrefab;
-
-		private int id;
-
-
-		public void Init(int id)
-		{
-			this.id = id;
-		}
 
 		public void Explode(Vector3 pos)
 		{
