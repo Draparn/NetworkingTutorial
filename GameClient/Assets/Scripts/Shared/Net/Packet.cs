@@ -35,6 +35,7 @@ namespace NetworkTutorial.Shared.Net
 
 	public class Packet : IDisposable
 	{
+		private byte id;
 		private List<byte> buffer;
 		private byte[] readableBuffer;
 		private int readPos;
@@ -50,6 +51,7 @@ namespace NetworkTutorial.Shared.Net
 		/// <param name="_id">The packet ID.</param>
 		public Packet(byte _id)
 		{
+			id = _id;
 			buffer = new List<byte>(); // Intitialize buffer
 			readPos = 0; // Set readPos to 0
 
@@ -109,18 +111,13 @@ namespace NetworkTutorial.Shared.Net
 
 		/// <summary>Resets the packet instance to allow it to be reused.</summary>
 		/// <param name="_shouldReset">Whether or not to reset the packet.</param>
-		public void Reset(bool _shouldReset = true)
+		public void Reset()
 		{
-			if (_shouldReset)
-			{
-				buffer.Clear(); // Clear buffer
-				readableBuffer = null;
-				readPos = 0; // Reset readPos
-			}
-			else
-			{
-				readPos -= 4; // "Unread" the last read int
-			}
+			buffer.Clear(); // Clear buffer
+			readableBuffer = null;
+			readPos = 0; // Reset readPos
+
+			Write(id);
 		}
 		#endregion
 

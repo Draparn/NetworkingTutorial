@@ -9,50 +9,51 @@ namespace NetworkTutorial.Client.Net
 	{
 		public static void SendConnectRequest()
 		{
-			using (Packet packet = new Packet((byte)ClientPackets.connectRequest))
-			{
-				SendPacket(packet);
-			}
+			var packet = PacketFactory.GetClientPacketType(ClientPackets.connectRequest);
+
+			SendPacket(packet);
+			packet.Reset();
 		}
 
 		public static void SendWelcomeReceived()
 		{
-			using (Packet packet = new Packet((byte)ClientPackets.welcomeReceived))
-			{
-				packet.Write(LocalClient.Instance.MyId);
-				packet.Write(LocalClient.Instance.playerName);
-				SendPacket(packet);
-			}
+			var packet = PacketFactory.GetClientPacketType(ClientPackets.welcomeReceived);
+
+			packet.Write(LocalClient.Instance.MyId);
+			packet.Write(LocalClient.Instance.playerName);
+
+			SendPacket(packet);
+			packet.Reset();
 		}
 
 		public static void SendDisconnect()
 		{
-			using (Packet packet = new Packet((byte)ClientPackets.disconnect))
-			{
-				SendPacket(packet);
-			}
+			var packet = PacketFactory.GetClientPacketType(ClientPackets.disconnect);
+
+			SendPacket(packet);
+			packet.Reset();
 		}
 
 		public static void SendPlayerInputs(uint frameNumber, InputsStruct inputs)
 		{
-			using (Packet packet = new Packet((byte)ClientPackets.playerMovement))
-			{
-				packet.Write(frameNumber);
-				packet.Write(inputs);
-				packet.Write(GameManagerClient.Instance.Players[LocalClient.Instance.MyId].transform.rotation);
+			var packet = PacketFactory.GetClientPacketType(ClientPackets.playerMovement);
 
-				SendPacket(packet);
-			}
+			packet.Write(frameNumber);
+			packet.Write(inputs);
+			packet.Write(GameManagerClient.Instance.Players[LocalClient.Instance.MyId].transform.rotation);
+
+			SendPacket(packet);
+			packet.Reset();
 		}
 
 		public static void SendPlayerPrimaryFire(Vector3 facing)
 		{
-			using (Packet packet = new Packet((byte)ClientPackets.playerPrimaryFire))
-			{
-				packet.Write(facing);
+			var packet = PacketFactory.GetClientPacketType(ClientPackets.playerPrimaryFire);
 
-				SendPacket(packet);
-			}
+			packet.Write(facing);
+
+			SendPacket(packet);
+			packet.Reset();
 		}
 
 

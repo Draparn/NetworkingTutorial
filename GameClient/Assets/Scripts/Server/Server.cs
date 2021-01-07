@@ -89,7 +89,7 @@ namespace NetworkTutorial.Server
 		private static void InitializeServerData()
 		{
 			for (byte i = 1; i <= MaxPlayers; i++)
-				Clients.Add(i, new Client.ClientServer(i));
+				Clients.Add(i, new ClientServer(i));
 
 			PacketHandlers = new Dictionary<byte, PacketHandler>();
 			PacketHandlers.Add((byte)ClientPackets.welcomeReceived, ServerHandle.OnWelcomeReceived);
