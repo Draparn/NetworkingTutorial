@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using NetworkTutorial.Client.Net;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -43,7 +44,20 @@ namespace NetworkTutorial.Client.Player
 			ConnectToIPField.interactable = false;
 			UserNameField.interactable = false;
 
-			Client.Instance.ConnectToServer(ConnectToIPField.text);
+			LocalClient.Instance.ConnectToServer(ConnectToIPField.text, UserNameField.text);
+		}
+
+		public void ConnectionTimedOut()
+		{
+			StartMenu.SetActive(true);
+			CrossHair.SetActive(false);
+			HealthText.transform.parent.gameObject.SetActive(false);
+
+			ConnectToIPField.interactable = true;
+			UserNameField.interactable = true;
+
+			LocalClient.Instance.MyId = 0;
+			Cursor.lockState = CursorLockMode.None;
 		}
 
 		public void TakeDamage(bool isDead)

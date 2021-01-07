@@ -4,7 +4,7 @@ using NetworkTutorial.Shared;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NetworkTutorial.Client
+namespace NetworkTutorial.Client.Gameplay
 {
 	public struct LocalPredictionData
 	{
@@ -32,12 +32,12 @@ namespace NetworkTutorial.Client
 		}
 	}
 
-	public class GameManager : MonoBehaviour
+	public class GameManagerClient : MonoBehaviour
 	{
-		public static GameManager Instance;
+		public static GameManagerClient Instance;
 
-		public Dictionary<int, PlayerManager> Players = new Dictionary<int, PlayerManager>();
-		public Dictionary<int, ProjectileManager> Projectiles = new Dictionary<int, ProjectileManager>();
+		public Dictionary<int, PlayerClient> Players = new Dictionary<int, PlayerClient>();
+		public Dictionary<int, ProjectileClient> Projectiles = new Dictionary<int, ProjectileClient>();
 		public Dictionary<byte, GameObject> Healthpacks = new Dictionary<byte, GameObject>();
 		private Dictionary<int, Vector3> projectilesOriginalPositions = new Dictionary<int, Vector3>();
 		private Dictionary<int, Vector3> playersOriginalPositions = new Dictionary<int, Vector3>();
@@ -80,13 +80,13 @@ namespace NetworkTutorial.Client
 					{
 						if (Players.ContainsKey(playerData.PlayerId))
 						{
-							if (!playersOriginalPositions.ContainsKey(playerData.PlayerId))
-								playersOriginalPositions.Add(playerData.PlayerId, Players[playerData.PlayerId].transform.position);
-
-							if (playerData.PlayerId == Client.Instance.MyId)
+							if (playerData.PlayerId == LocalClient.Instance.MyId)
 								continue;
 							else
 							{
+								if (!playersOriginalPositions.ContainsKey(playerData.PlayerId))
+									playersOriginalPositions.Add(playerData.PlayerId, Players[playerData.PlayerId].transform.position);
+
 								Players[playerData.PlayerId].transform.position = Vector3.Lerp(
 									playersOriginalPositions[playerData.PlayerId],
 									playerData.Position,
@@ -138,13 +138,13 @@ namespace NetworkTutorial.Client
 			return LocalPositionPredictions[LocalPositionPredictions.Count - 1].Position;
 		}
 
-		public void SpawnPlayer(bool isLocal, int playerId, string playerName, Vector3 pos, Quaternion rot)
+		public void SpawnPlayer(int playerId, string playerName, Vector3 pos, Quaternion rot)
 		{
-			var player = Instantiate(isLocal ? LocalPlayerPrefab : RemotePlayerPrefab, pos, rot);
-			var playermanagerComponent = player.GetComponent<PlayerManager>();
-			playermanagerComponent.Init(playerId, playerName);
+			var player = Instantiate(playerId == LocalClient.Instance.MyId ? LocalPlayerPrefab : RemotePlayerPrefab, pos, rot);
+			var playerComponent = player.GetComponent<PlayerClient>();
+			playerComponent.Init(playerId, playerName);
 
-			Players.Add(playerId, playermanagerComponent);
+			Players.Add(playerId, playerComponent);
 		}
 
 		public void SpawnProjectile(int id, Vector3 position)
@@ -156,8 +156,7 @@ namespace NetworkTutorial.Client
 			}
 			else
 			{
-				var projectileManagerComponent = Instantiate(ProjectilePrefab, position, Quaternion.identity, projectilePool).GetComponent<ProjectileManager>();
-				projectileManagerComponent.Init(id);
+				var projectileManagerComponent = Instantiate(ProjectilePrefab, position, Quaternion.identity, projectilePool).GetComponent<ProjectileClient>();
 
 				Projectiles.Add(id, projectileManagerComponent);
 			}
@@ -165,7 +164,8 @@ namespace NetworkTutorial.Client
 
 		public void SpawnHealthPack(byte id, Vector3 position)
 		{
-			Healthpacks.Add(id, Instantiate(HealthpackPrefab, position, Quaternion.identity, pickups));
+			if (!Healthpacks.ContainsKey(id))
+				Healthpacks.Add(id, Instantiate(HealthpackPrefab, position, Quaternion.identity, pickups));
 		}
 		public void HealthpackActivate(byte id)
 		{
@@ -175,55 +175,6 @@ namespace NetworkTutorial.Client
 		{
 			Healthpacks[id].SetActive(false);
 		}
-
-		/*
-		private void CheckPosAndReconcile(PlayerPosData playerData)
-		{
-			for (int i = 0; i < LocalPositionPredictions.Count; i++)
-			{
-				if (LocalPositionPredictions[i].FrameNumber == playerData.FrameNumber)
-				{
-					if (Vector3.Distance(LocalPositionPredictions[i].Position, playerData.Position) > 0.5f)
-					{
-						Debug.LogError($"Correcting. Index:{i}. Frame:{playerData.FrameNumber}, Predicted pos was: {LocalPositionPredictions[i].Position} and should be: {playerData.Position}");
-						LocalPositionPredictions.RemoveRange(0, i);
-
-						for (int j = 0; j < LocalPositionPredictions.Count; j++)
-						{
-							var prediction = LocalPositionPredictions[j];
-
-							if (j == 0)
-							{
-								prediction.Position = playerData.Position;
-								LocalPositionPredictions[j] = new LocalPredictionData(prediction);
-							}
-							else
-							{
-								prediction.Position = LocalPositionPredictions[j - 1].Position +
-									PlayerMovementCalculations.CalculatePlayerPosition(
-									LocalPositionPredictions[j].Inputs,
-									LocalPositionPredictions[j].TransformRight,
-									LocalPositionPredictions[j].TransformForward,
-									LocalPositionPredictions[j].yVelocityPreMove,
-									LocalPositionPredictions[j].IsGroundedPreMove
-									);
-
-								LocalPositionPredictions[j] = new LocalPredictionData(prediction);
-							}
-
-							//Players[playerData.PlayerId].gameObject.transform.position = LocalPositionPredictions[j].Position;
-						}
-
-						break;
-					}
-
-					LocalPositionPredictions.RemoveRange(0, i + 1);
-					break;
-				}
-			}
-
-		}
-		*/
 
 	}
 }

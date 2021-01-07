@@ -1,27 +1,38 @@
 ﻿using NetworkTutorial.Server.Client;
+using NetworkTutorial.Server.Gameplay;
 using NetworkTutorial.Shared.Net;
+using System.Net;
 using UnityEngine;
 
 namespace NetworkTutorial.Server.Net
 {
 	public class ServerSend
 	{
-		public static void SendWelcomeMessage_TCP_CLIENT(int clientId, string msg)
+		public static void SendWelcomeMessage_CLIENT(byte clientId, string msg)
 		{
-			using (Packet packet = new Packet((int)ServerPackets.welcome))
+			using (Packet packet = new Packet((byte)ServerPackets.welcome))
 			{
 				packet.Write(msg);
 				packet.Write(clientId);
 
-				SendTCPDataToClient(clientId, packet);
+				SendToClient(clientId, packet);
+			}
+		}
+
+		public static void SendServerFull(IPEndPoint endpoint)
+		{
+			using (Packet packet = new Packet((byte)ServerPackets.serverFull))
+			{
+				packet.Write("Server is full.");
+				Server.SendUDPData(endpoint, packet);
 			}
 		}
 
 		public static void SendSnapshot()
 		{
-			using (Packet packet = new Packet((int)ServerPackets.serverSnapshot))
+			using (Packet packet = new Packet((byte)ServerPackets.serverSnapshot))
 			{
-				packet.Write(ServerSnapshot.currentSnapshot.PlayerPosition.Count);
+				packet.Write((byte)ServerSnapshot.currentSnapshot.PlayerPosition.Count);
 				foreach (var data in ServerSnapshot.currentSnapshot.PlayerPosition)
 				{
 					packet.Write(data.Value.Id);
@@ -29,197 +40,152 @@ namespace NetworkTutorial.Server.Net
 					packet.Write(data.Value.Position);
 				}
 
-				packet.Write(ServerSnapshot.currentSnapshot.ProjectilePositions.Count);
+				packet.Write((byte)ServerSnapshot.currentSnapshot.ProjectilePositions.Count);
 				foreach (var proj in ServerSnapshot.currentSnapshot.ProjectilePositions)
 				{
 					packet.Write(proj.id);
 					packet.Write(proj.transform.position);
 				}
 
-				SendUDPDataToAllClients(packet);
+				SendToAllClients(packet);
 			}
 
 			ServerSnapshot.ClearSnapshot();
 		}
 
-		public static void SendPlayerConnected_TCP_CLIENT(int clientId, Player player)
+		public static void SendPlayerConnected_CLIENT(byte clientId, PlayerServer player)
 		{
-			using (Packet packet = new Packet((int)ServerPackets.spawnPlayer))
+			using (Packet packet = new Packet((byte)ServerPackets.spawnPlayer))
 			{
 				packet.Write(player.PlayerId);
 				packet.Write(player.PlayerName);
 				packet.Write(player.transform.position);
 				packet.Write(player.transform.rotation);
 
-				SendTCPDataToClient(clientId, packet);
+				SendToClient(clientId, packet);
 			}
 		}
-		public static void SendPlayerDisconnected_TCP_ALL(int clientId)
+		public static void SendPlayerDisconnected_ALL(byte clientId)
 		{
-			using (Packet packet = new Packet((int)ServerPackets.playerDisconnected))
+			using (Packet packet = new Packet((byte)ServerPackets.playerDisconnected))
 			{
 				packet.Write(clientId);
 
-				SendTCPDataToAllClients(packet);
+				SendToAllClients(packet);
 			}
 		}
 
-		//obsolete since snapshot implementation
-		public static void SendPlayerPositionUpdate_UDP_ALL(Player player)
+		public static void SendPlayerRotationUpdate_ALLEXCEPT(PlayerServer player)
 		{
-			using (Packet packet = new Packet((int)ServerPackets.playerPosition))
-			{
-				packet.Write(player.PlayerId);
-				packet.Write(player.transform.position);
-
-				SendUDPDataToAllClients(packet);
-			}
-		}
-		public static void SendPlayerRotationUpdate_UDP_ALLEXCEPT(Player player)
-		{
-			using (Packet packet = new Packet((int)ServerPackets.playerRotation))
+			using (Packet packet = new Packet((byte)ServerPackets.playerRotation))
 			{
 				packet.Write(player.PlayerId);
 				packet.Write(player.transform.rotation);
 
-				SendUDPDataToAllClientsExcept(player.PlayerId, packet);
+				SendToAllClientsExcept(player.PlayerId, packet);
 			}
 		}
 
-		public static void SendPlayerHealthUpdate_TCP_ALL(Player player)
+		public static void SendPlayerHealthUpdate_ALL(PlayerServer player)
 		{
-			using (Packet packet = new Packet((int)ServerPackets.playerHealth))
+			using (Packet packet = new Packet((byte)ServerPackets.playerHealth))
 			{
 				packet.Write(player.PlayerId);
 				packet.Write(player.CurrentHealth);
 
-				SendTCPDataToAllClients(packet);
+				SendToAllClients(packet);
 			}
 		}
-		public static void SendPlayerRespawned_TCP_ALL(Player player)
+		public static void SendPlayerRespawned_ALL(PlayerServer player)
 		{
-			using (Packet packet = new Packet((int)ServerPackets.playerRespawn))
+			using (Packet packet = new Packet((byte)ServerPackets.playerRespawn))
 			{
 				packet.Write(player.PlayerId);
 				packet.Write(player.transform.position);
 
-				SendTCPDataToAllClients(packet);
+				SendToAllClients(packet);
 			}
 		}
 
-		public static void SendHealthpackDeactivate_TCP_ALL(byte healthpackId)
+		public static void SendHealthpackDeactivate_ALL(byte healthpackId)
 		{
-			using (Packet packet = new Packet((int)ServerPackets.healthpackDeactivate))
+			using (Packet packet = new Packet((byte)ServerPackets.healthpackDeactivate))
 			{
 				packet.Write(healthpackId);
 
-				SendTCPDataToAllClients(packet);
+				SendToAllClients(packet);
 			}
 		}
-		public static void SendHealthpackActivate_TCP_ALL(byte healthpackId)
+		public static void SendHealthpackActivate_ALL(byte healthpackId)
 		{
-			using (Packet packet = new Packet((int)ServerPackets.healthpackActivate))
+			using (Packet packet = new Packet((byte)ServerPackets.healthpackActivate))
 			{
 				packet.Write(healthpackId);
 
-				SendTCPDataToAllClients(packet);
+				SendToAllClients(packet);
 			}
 		}
-		public static void SendHealthpackSpawn_TCP_CLIENT(int clientId, byte id, Vector3 position)
+		public static void SendHealthpackSpawn_CLIENT(byte clientId, byte healthPackId, Vector3 position)
 		{
-			using (Packet packet = new Packet((int)ServerPackets.healthpackSpawn))
+			using (Packet packet = new Packet((byte)ServerPackets.healthpackSpawn))
 			{
-				packet.Write(id);
+				packet.Write(healthPackId);
 				packet.Write(position);
 
-				SendTCPDataToClient(clientId, packet);
+				SendToClient(clientId, packet);
 			}
 		}
 
-		public static void SendProjectileSpawn_TCP_ALL(Projectile projectile)
+		public static void SendProjectileSpawn_ALL(ProjectileServer projectile)
 		{
-			using (Packet packet = new Packet((int)ServerPackets.projectileSpawn))
+			using (Packet packet = new Packet((byte)ServerPackets.projectileSpawn))
 			{
 				packet.Write(projectile.id);
 				packet.Write(projectile.transform.position);
 
-				SendTCPDataToAllClients(packet);
+				SendToAllClients(packet);
 			}
 		}
-		//obsolete since snapshot implementation
-		public static void SendProjectileUpdatePosition_UDP_ALL(Projectile projectile)
+
+		public static void SendProjectileExplosion_ALL(ProjectileServer projectile)
 		{
-			using (Packet packet = new Packet((int)ServerPackets.projectilePosition))
+			using (Packet packet = new Packet((byte)ServerPackets.projectileExplosion))
 			{
 				packet.Write(projectile.id);
 				packet.Write(projectile.transform.position);
 
-				SendUDPDataToAllClients(packet);
-			}
-		}
-		public static void SendProjectileExplosion_TCP_ALL(Projectile projectile)
-		{
-			using (Packet packet = new Packet((int)ServerPackets.projectileExplosion))
-			{
-				packet.Write(projectile.id);
-				packet.Write(projectile.transform.position);
-
-				SendTCPDataToAllClients(packet);
+				SendToAllClients(packet);
 			}
 		}
 
 		#region BroadcastOptions
-		private static void SendTCPDataToClient(int clientId, Packet packet)
+		private static void SendToClient(byte clientId, Packet packet)
 		{
 			packet.WriteLength();
-			Server.Clients[clientId].tcp.SendData(packet);
-		}
-		private static void SendUDPDataToClient(int clientId, Packet packet)
-		{
-			packet.WriteLength();
-			Server.Clients[clientId].udp.SendData(packet);
+			Server.Clients[clientId].Connection.SendData(packet);
 		}
 
-		private static void SendTCPDataToAllClients(Packet packet)
+		private static void SendToAllClients(Packet packet)
 		{
 			packet.WriteLength();
-			for (ushort i = 1; i <= Server.MaxPlayers; i++)
+			for (byte i = 1; i <= Server.MaxPlayers; i++)
 			{
-				Server.Clients[i].tcp.SendData(packet);
-			}
-		}
-		private static void SendUDPDataToAllClients(Packet packet)
-		{
-			packet.WriteLength();
-			for (ushort i = 1; i <= Server.MaxPlayers; i++)
-			{
-				if (Server.Clients[i].udp != null)
+				if (Server.Clients[i].Connection != null)
 				{
-					Server.Clients[i].udp.SendData(packet);
+					Server.Clients[i].Connection.SendData(packet);
 				}
 			}
 		}
 
-		private static void SendTCPDataToAllClientsExcept(int clientIdToExclude, Packet packet)
+		private static void SendToAllClientsExcept(byte clientIdToExclude, Packet packet)
 		{
 			packet.WriteLength();
-			for (ushort i = 1; i <= Server.MaxPlayers; i++)
+			for (byte i = 1; i <= Server.MaxPlayers; i++)
 			{
 				if (i == clientIdToExclude)
 					continue;
 
-				Server.Clients[i].tcp.SendData(packet);
-			}
-		}
-		private static void SendUDPDataToAllClientsExcept(int clientIdToExclude, Packet packet)
-		{
-			packet.WriteLength();
-			for (ushort i = 1; i <= Server.MaxPlayers; i++)
-			{
-				if (i == clientIdToExclude)
-					continue;
-
-				Server.Clients[i].udp.SendData(packet);
+				Server.Clients[i].Connection.SendData(packet);
 			}
 		}
 		#endregion

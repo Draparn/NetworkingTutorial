@@ -1,5 +1,4 @@
-﻿using NetworkTutorial.Client.Player;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -10,14 +9,13 @@ namespace NetworkTutorial.Shared.Net
 	public enum ServerPackets
 	{
 		welcome = 1,
+		serverFull,
 		spawnPlayer,
-		playerPosition,
 		playerRotation,
 		playerDisconnected,
 		playerRespawn,
 		playerHealth,
 		projectileSpawn,
-		projectilePosition,
 		projectileExplosion,
 		healthpackSpawn,
 		healthpackActivate,
@@ -28,7 +26,9 @@ namespace NetworkTutorial.Shared.Net
 	/// <summary>Sent from client to server.</summary>
 	public enum ClientPackets
 	{
-		welcomeReceived = 1,
+		connectRequest = 1,
+		welcomeReceived,
+		disconnect,
 		playerMovement,
 		playerPrimaryFire
 	}
@@ -48,7 +48,7 @@ namespace NetworkTutorial.Shared.Net
 
 		/// <summary>Creates a new packet with a given ID. Used for sending.</summary>
 		/// <param name="_id">The packet ID.</param>
-		public Packet(int _id)
+		public Packet(byte _id)
 		{
 			buffer = new List<byte>(); // Intitialize buffer
 			readPos = 0; // Set readPos to 0
@@ -78,14 +78,14 @@ namespace NetworkTutorial.Shared.Net
 		/// <summary>Inserts the length of the packet's content at the start of the buffer.</summary>
 		public void WriteLength()
 		{
-			buffer.InsertRange(0, BitConverter.GetBytes(buffer.Count)); // Insert the byte length of the packet at the very beginning
+			buffer.InsertRange(0, BitConverter.GetBytes((ushort)buffer.Count)); // Insert the byte length of the packet at the very beginning
 		}
 
-		/// <summary>Inserts the given int at the start of the buffer.</summary>
-		/// <param name="_value">The int to insert.</param>
-		public void InsertInt(int _value)
+		/// <summary>Inserts the given byte at the start of the buffer.</summary>
+		/// <param name="_value">The byte to insert.</param>
+		public void InsertByte(byte _value)
 		{
-			buffer.InsertRange(0, BitConverter.GetBytes(_value)); // Insert the int at the start of the buffer
+			buffer.Insert(0, _value); // Insert the byte at the start of the buffer
 		}
 
 		/// <summary>Gets the packet's content in array form.</summary>
@@ -164,6 +164,12 @@ namespace NetworkTutorial.Shared.Net
 		/// <summary>Adds a long to the packet.</summary>
 		/// <param name="_value">The long to add.</param>
 		public void Write(long _value)
+		{
+			buffer.AddRange(BitConverter.GetBytes(_value));
+		}
+		/// <summary>Adds a ulong to the packet.</summary>
+		/// <param name="_value">The ulong to add.</param>
+		public void Write(ulong _value)
 		{
 			buffer.AddRange(BitConverter.GetBytes(_value));
 		}
@@ -361,6 +367,26 @@ namespace NetworkTutorial.Shared.Net
 			else
 			{
 				throw new Exception("Could not read value of type 'long'!");
+			}
+		}
+		/// <summary>Reads a ulong from the packet.</summary>
+		/// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
+		public ulong ReadULong(bool _moveReadPos = true)
+		{
+			if (buffer.Count > readPos)
+			{
+				// If there are unread bytes
+				ulong _value = BitConverter.ToUInt64(readableBuffer, readPos); // Convert the bytes to a ulong
+				if (_moveReadPos)
+				{
+					// If _moveReadPos is true
+					readPos += 8; // Increase readPos by 8
+				}
+				return _value; // Return the ulong
+			}
+			else
+			{
+				throw new Exception("Could not read value of type 'ulong'!");
 			}
 		}
 

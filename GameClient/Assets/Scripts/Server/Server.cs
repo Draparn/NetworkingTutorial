@@ -1,21 +1,21 @@
-﻿using System;
+﻿using NetworkTutorial.Server.Client;
+using NetworkTutorial.Server.Net;
+using NetworkTutorial.Shared.Net;
+using System;
 using System.Collections.Generic;
 using System.Net;
-using NetworkTutorial.Shared.Net;
 using System.Net.Sockets;
 using UnityEngine;
-using NetworkTutorial.Server.Net;
 
 namespace NetworkTutorial.Server
 {
 	public class Server
 	{
-		public delegate void PacketHandler(int clientId, Packet packet);
+		public delegate void PacketHandler(byte clientId, Packet packet);
 
-		public static Dictionary<int, PacketHandler> PacketHandlers;
-		public static Dictionary<int, Client.Client> Clients = new Dictionary<int, Client.Client>();
+		public static Dictionary<byte, PacketHandler> PacketHandlers;
+		public static Dictionary<byte, ClientServer> Clients = new Dictionary<byte, ClientServer>();
 
-		private static TcpListener tcpListener;
 		private static UdpClient udpListener;
 
 		public static int MaxPlayers { get; set; }
@@ -29,10 +29,6 @@ namespace NetworkTutorial.Server
 			Debug.Log("Starting server...");
 			InitializeServerData();
 
-			tcpListener = new TcpListener(IPAddress.Any, Port);
-			tcpListener.Start();
-			tcpListener.BeginAcceptTcpClient(new AsyncCallback(TCPConnectCallback), null);
-
 			udpListener = new UdpClient(Port);
 			udpListener.BeginReceive(UDPReceiveCallback, null);
 
@@ -41,26 +37,7 @@ namespace NetworkTutorial.Server
 
 		public static void StopServer()
 		{
-			tcpListener.Stop();
 			udpListener.Close();
-		}
-
-		private static void TCPConnectCallback(IAsyncResult result)
-		{
-			TcpClient client = tcpListener.EndAcceptTcpClient(result);
-			tcpListener.BeginAcceptTcpClient(new AsyncCallback(TCPConnectCallback), null);
-
-			Debug.Log($"Incoming connection attempt from {client.Client.RemoteEndPoint}");
-			for (int i = 1; i <= MaxPlayers; i++)
-			{
-				if (Clients[i].tcp.socket == null)
-				{
-					Clients[i].tcp.Connect(client);
-					return;
-				}
-			}
-
-			Debug.Log($"{client.Client.RemoteEndPoint} failed to connect: Server was full.");
 		}
 
 		private static void UDPReceiveCallback(IAsyncResult result)
@@ -71,23 +48,21 @@ namespace NetworkTutorial.Server
 				var data = udpListener.EndReceive(result, ref endPoint);
 				udpListener.BeginReceive(UDPReceiveCallback, null);
 
-				if (data.Length < 4)
+				if (data.Length < 4 || (!HasConnected(endPoint) && !CheckEmptySlots(endPoint)))
 					return;
 
 				using (Packet packet = new Packet(data))
 				{
-					var clientId = packet.ReadInt();
-					if (clientId == 0)
-						return;
+					var clientId = packet.ReadByte();
 
-					if (Clients[clientId].udp.endPoint == null)
+					if (clientId == 0)
 					{
-						Clients[clientId].udp.Connect(endPoint);
+						Debug.Log($"Incoming connection request from {endPoint} received and accepted. Awaiting confirmation...");
 						return;
 					}
 
-					if (Clients[clientId].udp.endPoint.ToString() == endPoint.ToString())
-						Clients[clientId].udp.HandleData(packet);
+					if (Clients[clientId].Connection.endPoint.ToString() == endPoint.ToString())
+						Clients[clientId].Connection.HandleData(packet);
 				}
 			}
 			catch (Exception ex)
@@ -113,13 +88,43 @@ namespace NetworkTutorial.Server
 
 		private static void InitializeServerData()
 		{
-			for (int i = 1; i <= MaxPlayers; i++)
-				Clients.Add(i, new Client.Client(i));
+			for (byte i = 1; i <= MaxPlayers; i++)
+				Clients.Add(i, new Client.ClientServer(i));
 
-			PacketHandlers = new Dictionary<int, PacketHandler>();
-			PacketHandlers.Add((int)ClientPackets.welcomeReceived, ServerHandle.OnWelcomeReceived);
-			PacketHandlers.Add((int)ClientPackets.playerMovement, ServerHandle.OnPlayerMovement);
-			PacketHandlers.Add((int)ClientPackets.playerPrimaryFire, ServerHandle.OnPlayerPrimaryFire);
+			PacketHandlers = new Dictionary<byte, PacketHandler>();
+			PacketHandlers.Add((byte)ClientPackets.welcomeReceived, ServerHandle.OnWelcomeReceived);
+			PacketHandlers.Add((byte)ClientPackets.disconnect, ServerHandle.OnDisconnect);
+			PacketHandlers.Add((byte)ClientPackets.playerMovement, ServerHandle.OnPlayerMovement);
+			PacketHandlers.Add((byte)ClientPackets.playerPrimaryFire, ServerHandle.OnPlayerPrimaryFire);
+		}
+
+		private static bool HasConnected(IPEndPoint endPoint)
+		{
+			foreach (var client in Clients.Values)
+			{
+				if (client.Connection.endPoint != null && client.Connection.endPoint.ToString() == endPoint.ToString())
+					return true;
+			}
+
+			return false;
+		}
+
+		private static bool CheckEmptySlots(IPEndPoint endPoint)
+		{
+			for (byte i = 1; i <= MaxPlayers; i++)
+			{
+				if (Clients[i].Connection.endPoint == null)
+				{
+					Clients[i].Connection.Connect(endPoint);
+					ServerSend.SendWelcomeMessage_CLIENT(i, "Welcome to the party, pal!");
+					return true;
+				}
+			}
+
+			ServerSend.SendServerFull(endPoint);
+			Debug.Log($"{endPoint.Address} failed to connect: Server was full.");
+
+			return false;
 		}
 
 	}

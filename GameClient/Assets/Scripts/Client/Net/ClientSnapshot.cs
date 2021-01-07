@@ -1,4 +1,5 @@
-﻿using NetworkTutorial.Shared;
+﻿using NetworkTutorial.Client.Gameplay;
+using NetworkTutorial.Shared;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ namespace NetworkTutorial.Client.Net
 
 			foreach (var playerData in players)
 			{
-				if (Client.Instance.MyId == playerData.PlayerId)
+				if (LocalClient.Instance.MyId == playerData.PlayerId)
 				{
 					CheckPosAndReconcile(playerData);
 					break;
@@ -28,43 +29,43 @@ namespace NetworkTutorial.Client.Net
 
 		private void CheckPosAndReconcile(PlayerPosData playerData)
 		{
-			for (int i = 0; i < GameManager.Instance.LocalPositionPredictions.Count; i++)
+			for (int i = 0; i < GameManagerClient.Instance.LocalPositionPredictions.Count; i++)
 			{
-				if (GameManager.Instance.LocalPositionPredictions[i].FrameNumber == playerData.FrameNumber)
+				if (GameManagerClient.Instance.LocalPositionPredictions[i].FrameNumber == playerData.FrameNumber)
 				{
-					if (Vector3.Distance(GameManager.Instance.LocalPositionPredictions[i].Position, playerData.Position) > 0.2f)
+					if (Vector3.Distance(GameManagerClient.Instance.LocalPositionPredictions[i].Position, playerData.Position) > 0.2f)
 					{
 						//Debug.LogError($"Correcting. Index:{i}. Frame:{playerData.FrameNumber}, Predicted pos was: {GameManager.Instance.LocalPositionPredictions[i].Position} and should be: {playerData.Position}");
-						GameManager.Instance.LocalPositionPredictions.RemoveRange(0, i);
+						GameManagerClient.Instance.LocalPositionPredictions.RemoveRange(0, i);
 
-						for (int j = 0; j < GameManager.Instance.LocalPositionPredictions.Count; j++)
+						for (int j = 0; j < GameManagerClient.Instance.LocalPositionPredictions.Count; j++)
 						{
-							var prediction = GameManager.Instance.LocalPositionPredictions[j];
+							var prediction = GameManagerClient.Instance.LocalPositionPredictions[j];
 
 							if (j == 0)
 							{
 								prediction.Position = playerData.Position;
-								GameManager.Instance.LocalPositionPredictions[j] = new LocalPredictionData(prediction);
+								GameManagerClient.Instance.LocalPositionPredictions[j] = new LocalPredictionData(prediction);
 							}
 							else
 							{
-								prediction.Position = GameManager.Instance.LocalPositionPredictions[j - 1].Position +
+								prediction.Position = GameManagerClient.Instance.LocalPositionPredictions[j - 1].Position +
 									PlayerMovementCalculations.ReCalculatePlayerPosition(
-									GameManager.Instance.LocalPositionPredictions[j].Inputs,
-									GameManager.Instance.LocalPositionPredictions[j].TransformRight,
-									GameManager.Instance.LocalPositionPredictions[j].TransformForward,
-									GameManager.Instance.LocalPositionPredictions[j].yVelocityPreMove,
-									GameManager.Instance.LocalPositionPredictions[j].IsGroundedPreMove
+									GameManagerClient.Instance.LocalPositionPredictions[j].Inputs,
+									GameManagerClient.Instance.LocalPositionPredictions[j].TransformRight,
+									GameManagerClient.Instance.LocalPositionPredictions[j].TransformForward,
+									GameManagerClient.Instance.LocalPositionPredictions[j].yVelocityPreMove,
+									GameManagerClient.Instance.LocalPositionPredictions[j].IsGroundedPreMove
 									);
 
-								GameManager.Instance.LocalPositionPredictions[j] = new LocalPredictionData(prediction);
+								GameManagerClient.Instance.LocalPositionPredictions[j] = new LocalPredictionData(prediction);
 							}
 						}
 
 						break;
 					}
 
-					GameManager.Instance.LocalPositionPredictions.RemoveRange(0, i + 1);
+					GameManagerClient.Instance.LocalPositionPredictions.RemoveRange(0, i + 1);
 					break;
 				}
 			}

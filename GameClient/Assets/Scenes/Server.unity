@@ -3553,6 +3553,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47789f8c9b3336046a9fa8ffca5b978f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerPrefab: {fileID: 2989710863517623185, guid: fde17c4b2a2b1244f8b3e6670336dd06, type: 3}
+  ProjectilePrefab: {fileID: 3154701194088239469, guid: 90f6a8d3ae736834a9efed6e990b1a6f, type: 3}
 --- !u!4 &867808524
 Transform:
   m_ObjectHideFlags: 0
@@ -3574,7 +3576,7 @@ LightingSettings:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  serializedVersion: 2
+  serializedVersion: 3
   m_GIWorkflowMode: 1
   m_EnableBakedLightmaps: 1
   m_EnableRealtimeLightmaps: 0
@@ -3596,7 +3598,7 @@ LightingSettings:
   m_MixedBakeMode: 2
   m_LightmapsBakeMode: 1
   m_FilterMode: 1
-  m_LightmapParameters: {fileID: 0}
+  m_LightmapParameters: {fileID: 15204, guid: 0000000000000000f000000000000000, type: 0}
   m_ExportTrainingData: 0
   m_TrainingDataDestination: TrainingData
   m_RealtimeResolution: 2
@@ -3613,7 +3615,7 @@ LightingSettings:
   m_PVREnvironmentReferencePointCount: 2048
   m_LightProbeSampleCountMultiplier: 4
   m_PVRBounces: 2
-  m_PVRRussianRouletteStartBounce: 2
+  m_PVRMinBounces: 1
   m_PVREnvironmentMIS: 1
   m_PVRFilteringMode: 1
   m_PVRDenoiserTypeDirect: 1
@@ -5766,8 +5768,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02df5284ed0fe3b47b47e413fa2bf880, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerPrefab: {fileID: 2989710863517623185, guid: fde17c4b2a2b1244f8b3e6670336dd06, type: 3}
-  ProjectilePrefab: {fileID: 3154701194088239469, guid: 90f6a8d3ae736834a9efed6e990b1a6f, type: 3}
 --- !u!4 &1393156603
 Transform:
   m_ObjectHideFlags: 0
