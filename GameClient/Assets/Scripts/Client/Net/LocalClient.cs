@@ -20,11 +20,13 @@ namespace NetworkTutorial.Client.Net
 
 		public UDP Connection;
 
+		public string playerName;
+
 		private float disconnectTimer;
 
 		[HideInInspector] public byte MyId = 0;
 
-		private bool isConnected = false;
+		public bool isConnected = false;
 
 		private void Awake()
 		{
@@ -55,11 +57,13 @@ namespace NetworkTutorial.Client.Net
 			Disconnect();
 		}
 
-		public void ConnectToServer(string ip)
+		public void ConnectToServer(string ip, string playerName)
 		{
 			Connection = new UDP(ip);
 			Connection.InitializeClientData();
 			Connection.Connect();
+			this.playerName = playerName;
+
 			StartCoroutine(SendConnectAndWait());
 		}
 
@@ -68,7 +72,6 @@ namespace NetworkTutorial.Client.Net
 			if (isConnected)
 			{
 				ClientSend.SendDisconnect();
-
 				isConnected = false;
 				Connection.socket.Close();
 			}
@@ -95,6 +98,7 @@ namespace NetworkTutorial.Client.Net
 			{
 				packethandlers = new Dictionary<int, PacketHandler>();
 				packethandlers.Add((int)ServerPackets.welcome, ClientHandle.OnWelcomeMessage);
+				packethandlers.Add((int)ServerPackets.serverFull, ClientHandle.OnServerFull);
 				packethandlers.Add((int)ServerPackets.spawnPlayer, ClientHandle.OnPlayerConnected);
 				packethandlers.Add((int)ServerPackets.playerRotation, ClientHandle.OnPlayerRotationUpdate);
 				packethandlers.Add((int)ServerPackets.playerDisconnected, ClientHandle.OnPlayerDisconnected);
@@ -131,7 +135,7 @@ namespace NetworkTutorial.Client.Net
 					byte[] data = socket.EndReceive(result, ref endpoint);
 					socket.BeginReceive(ReceiveCallback, null);
 
-					if (data.Length < 1)
+					if (data.Length < 3)
 					{
 						Instance.Disconnect();
 						return;
@@ -150,7 +154,7 @@ namespace NetworkTutorial.Client.Net
 			{
 				using (Packet packet = new Packet(data))
 				{
-					int packetLength = packet.ReadInt();
+					int packetLength = packet.ReadUShort();
 					data = packet.ReadBytes(packetLength);
 				}
 
@@ -191,7 +195,6 @@ namespace NetworkTutorial.Client.Net
 		public void StopConnectionTimer()
 		{
 			StopAllCoroutines();
-			isConnected = true;
 		}
 	}
 }

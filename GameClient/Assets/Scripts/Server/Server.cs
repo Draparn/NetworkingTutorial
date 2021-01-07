@@ -48,10 +48,7 @@ namespace NetworkTutorial.Server
 				var data = udpListener.EndReceive(result, ref endPoint);
 				udpListener.BeginReceive(UDPReceiveCallback, null);
 
-				if (data.Length < 1)
-					return;
-
-				if (!HasConnected(endPoint) && !CheckEmptySlots(endPoint))
+				if (data.Length < 4 || (!HasConnected(endPoint) && !CheckEmptySlots(endPoint)))
 					return;
 
 				using (Packet packet = new Packet(data))
@@ -124,7 +121,9 @@ namespace NetworkTutorial.Server
 				}
 			}
 
+			ServerSend.SendServerFull(endPoint);
 			Debug.Log($"{endPoint.Address} failed to connect: Server was full.");
+
 			return false;
 		}
 

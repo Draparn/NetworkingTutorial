@@ -1,5 +1,4 @@
-﻿using NetworkTutorial.Server.Net;
-using NetworkTutorial.Shared;
+﻿using NetworkTutorial.Shared;
 using UnityEngine;
 
 namespace NetworkTutorial.Server.Net

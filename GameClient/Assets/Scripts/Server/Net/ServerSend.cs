@@ -1,6 +1,7 @@
 ﻿using NetworkTutorial.Server.Client;
 using NetworkTutorial.Server.Gameplay;
 using NetworkTutorial.Shared.Net;
+using System.Net;
 using UnityEngine;
 
 namespace NetworkTutorial.Server.Net
@@ -15,6 +16,15 @@ namespace NetworkTutorial.Server.Net
 				packet.Write(clientId);
 
 				SendToClient(clientId, packet);
+			}
+		}
+
+		public static void SendServerFull(IPEndPoint endpoint)
+		{
+			using (Packet packet = new Packet((byte)ServerPackets.serverFull))
+			{
+				packet.Write("Server is full.");
+				Server.SendUDPData(endpoint, packet);
 			}
 		}
 
@@ -37,7 +47,7 @@ namespace NetworkTutorial.Server.Net
 					packet.Write(proj.transform.position);
 				}
 
-				//SendToAllClients(packet);
+				SendToAllClients(packet);
 			}
 
 			ServerSnapshot.ClearSnapshot();

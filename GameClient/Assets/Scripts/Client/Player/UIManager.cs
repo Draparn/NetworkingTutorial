@@ -44,7 +44,7 @@ namespace NetworkTutorial.Client.Player
 			ConnectToIPField.interactable = false;
 			UserNameField.interactable = false;
 
-			LocalClient.Instance.ConnectToServer(ConnectToIPField.text);
+			LocalClient.Instance.ConnectToServer(ConnectToIPField.text, UserNameField.text);
 		}
 
 		public void ConnectionTimedOut()

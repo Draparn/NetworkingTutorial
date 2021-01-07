@@ -1,5 +1,4 @@
 ﻿using NetworkTutorial.Client.Gameplay;
-using NetworkTutorial.Client.Player;
 using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Net;
 using UnityEngine;
@@ -12,7 +11,6 @@ namespace NetworkTutorial.Client.Net
 		{
 			using (Packet packet = new Packet((byte)ClientPackets.connectRequest))
 			{
-				packet.Write(LocalClient.Instance.MyId);
 				SendPacket(packet);
 			}
 		}
@@ -22,7 +20,7 @@ namespace NetworkTutorial.Client.Net
 			using (Packet packet = new Packet((byte)ClientPackets.welcomeReceived))
 			{
 				packet.Write(LocalClient.Instance.MyId);
-				packet.Write(GameObject.FindObjectOfType<UIManager>().UserNameField.text);
+				packet.Write(LocalClient.Instance.playerName);
 				SendPacket(packet);
 			}
 		}
@@ -31,7 +29,6 @@ namespace NetworkTutorial.Client.Net
 		{
 			using (Packet packet = new Packet((byte)ClientPackets.disconnect))
 			{
-				packet.Write(LocalClient.Instance.MyId);
 				SendPacket(packet);
 			}
 		}

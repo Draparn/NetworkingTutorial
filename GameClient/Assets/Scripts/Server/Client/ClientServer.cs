@@ -83,7 +83,7 @@ namespace NetworkTutorial.Server.Client
 
 			public void HandleData(Packet packet)
 			{
-				int packetLength = packet.ReadInt();
+				int packetLength = packet.ReadUShort();
 				byte[] packetBytes = packet.ReadBytes(packetLength);
 
 				ThreadManager.ExecuteOnMainThread(() =>

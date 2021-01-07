@@ -9,6 +9,7 @@ namespace NetworkTutorial.Shared.Net
 	public enum ServerPackets
 	{
 		welcome = 1,
+		serverFull,
 		spawnPlayer,
 		playerRotation,
 		playerDisconnected,
@@ -77,7 +78,7 @@ namespace NetworkTutorial.Shared.Net
 		/// <summary>Inserts the length of the packet's content at the start of the buffer.</summary>
 		public void WriteLength()
 		{
-			buffer.InsertRange(0, BitConverter.GetBytes(buffer.Count)); // Insert the byte length of the packet at the very beginning
+			buffer.InsertRange(0, BitConverter.GetBytes((ushort)buffer.Count)); // Insert the byte length of the packet at the very beginning
 		}
 
 		/// <summary>Inserts the given byte at the start of the buffer.</summary>
