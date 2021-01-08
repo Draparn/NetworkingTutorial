@@ -201,9 +201,7 @@ namespace NetworkTutorial.Shared.Net
 		/// <param name="_value">The Quaternion to add.</param>
 		public void Write(Quaternion rotation)
 		{
-			Write(rotation.x);
 			Write(rotation.y);
-			Write(rotation.z);
 			Write(rotation.w);
 		}
 		/// <summary>Adds player inputs struct to the packet.</summary>
@@ -459,7 +457,7 @@ namespace NetworkTutorial.Shared.Net
 		/// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
 		public Quaternion ReadQuaternion(bool _moveReadPos = true)
 		{
-			return new Quaternion(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
+			return new Quaternion(0, ReadFloat(_moveReadPos), 0, ReadFloat(_moveReadPos));
 		}
 
 		/// <summary>Reads an InputsStruct from the packet.</summary>

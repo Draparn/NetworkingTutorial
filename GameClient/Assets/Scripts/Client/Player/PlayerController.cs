@@ -18,7 +18,7 @@ namespace NetworkTutorial.Client.Player
 		private float yVelocity, yVelocityPreMove, clientTickRate;
 		private bool isGroundedPreMove;
 
-		private uint frameNumber = 0;
+		private uint sequenceNumber = 0;
 
 		private void Awake()
 		{
@@ -41,7 +41,9 @@ namespace NetworkTutorial.Client.Player
 				return;
 
 			if (Input.GetKeyDown(KeyCode.Mouse0))
+			{
 				ClientSend.SendPlayerPrimaryFire(cameraTransform.forward);
+			}
 
 			inputs.Forward = Input.GetKey(KeyCode.W);
 			inputs.Back = Input.GetKey(KeyCode.S);
@@ -65,13 +67,13 @@ namespace NetworkTutorial.Client.Player
 			{
 				SendAndPredict();
 				clientTickRate = 0;
-				frameNumber++;
+				sequenceNumber++;
 			}
 		}
 
 		private void SendAndPredict()
 		{
-			ClientSend.SendPlayerInputs(frameNumber, inputs);
+			ClientSend.SendPlayerInputs(sequenceNumber, inputs);
 			PredictPlayerPosition();
 		}
 
@@ -86,7 +88,7 @@ namespace NetworkTutorial.Client.Player
 			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(inputs, gameObject.transform.right, gameObject.transform.forward, ref yVelocity, controller.isGrounded));
 			controller.enabled = false;
 			GameManagerClient.Instance.LocalPositionPredictions.Add(new LocalPredictionData(
-				frameNumber,
+				sequenceNumber,
 				inputs,
 				gameObject.transform.position,
 				gameObject.transform.right,

@@ -30,7 +30,7 @@ namespace NetworkTutorial.Server.Client
 		private bool hitScan = false;
 
 		public byte PlayerId;
-		public uint FrameNumber = uint.MaxValue;
+		public uint SequenceNumber = uint.MaxValue;
 
 		private InputsStruct playerInput;
 
@@ -105,15 +105,15 @@ namespace NetworkTutorial.Server.Client
 
 		public void UpdatePosAndRot(uint frameNumber, InputsStruct inputs, Quaternion rot)
 		{
-			if (frameNumber < FrameNumber && FrameNumber != uint.MaxValue)
+			if (frameNumber < SequenceNumber && SequenceNumber != uint.MaxValue)
 				return;
 
-			FrameNumber = frameNumber;
+			SequenceNumber = frameNumber;
 			playerInput = inputs;
 			transform.rotation = rot;
 
 			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(playerInput, transform.right, transform.forward, ref yVelocity, controller.isGrounded));
-			ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, FrameNumber);
+			ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, SequenceNumber);
 			ServerSend.SendPlayerRotationUpdate_ALLEXCEPT(this);
 		}
 	}

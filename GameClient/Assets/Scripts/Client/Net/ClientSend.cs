@@ -34,11 +34,11 @@ namespace NetworkTutorial.Client.Net
 			packet.Reset();
 		}
 
-		public static void SendPlayerInputs(uint frameNumber, InputsStruct inputs)
+		public static void SendPlayerInputs(uint sequenceNumber, InputsStruct inputs)
 		{
 			var packet = PacketFactory.GetClientPacketType(ClientPackets.playerMovement);
 
-			packet.Write(frameNumber);
+			packet.Write(sequenceNumber);
 			packet.Write(inputs);
 			packet.Write(GameManagerClient.Instance.Players[LocalClient.Instance.MyId].transform.rotation);
 
