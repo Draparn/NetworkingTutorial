@@ -33,6 +33,9 @@ namespace NetworkTutorial.Client.Player
 			cameraTransform = GetComponentInChildren<CameraController>().transform;
 			playerManager = GetComponent<PlayerClient>();
 			controller = GetComponent<CharacterController>();
+
+			prevPos = gameObject.transform.position;
+			nextPos = gameObject.transform.position;
 		}
 
 		private void Update()
@@ -41,9 +44,7 @@ namespace NetworkTutorial.Client.Player
 				return;
 
 			if (Input.GetKeyDown(KeyCode.Mouse0))
-			{
 				ClientSend.SendPlayerPrimaryFire(cameraTransform.forward);
-			}
 
 			inputs.Forward = Input.GetKey(KeyCode.W);
 			inputs.Back = Input.GetKey(KeyCode.S);
@@ -53,15 +54,11 @@ namespace NetworkTutorial.Client.Player
 
 			clientTickRate += Time.deltaTime;
 
-			nextPos = GameManagerClient.Instance.GetLastPredictedPos();
-			if (nextPos != Vector3.zero)
-			{
-				gameObject.transform.position = Vector3.Lerp(
-					prevPos,
-					nextPos,
-					clientTickRate / ConstantValues.SERVER_TICK_RATE
-					);
-			}
+			gameObject.transform.position = Vector3.Lerp(
+				prevPos,
+				nextPos,
+				clientTickRate / ConstantValues.SERVER_TICK_RATE
+				);
 
 			if (clientTickRate >= ConstantValues.SERVER_TICK_RATE)
 			{
@@ -80,6 +77,9 @@ namespace NetworkTutorial.Client.Player
 		private void PredictPlayerPosition()
 		{
 			prevPos = gameObject.transform.position;
+			gameObject.transform.position = GameManagerClient.Instance.GetLastPredictedPos();
+			if (gameObject.transform.position == Vector3.zero)
+				gameObject.transform.position = prevPos;
 
 			yVelocityPreMove = yVelocity;
 			isGroundedPreMove = controller.isGrounded;
@@ -97,6 +97,7 @@ namespace NetworkTutorial.Client.Player
 				isGroundedPreMove
 				));
 
+			nextPos = gameObject.transform.position;
 			gameObject.transform.position = prevPos;
 		}
 
