@@ -33,9 +33,8 @@ namespace NetworkTutorial.Client.Net
 			{
 				if (GameManagerClient.Instance.LocalPositionPredictions[i].FrameNumber == playerData.FrameNumber)
 				{
-					if (Vector3.Distance(GameManagerClient.Instance.LocalPositionPredictions[i].Position, playerData.Position) > 0.2f)
+					if (Vector3.Distance(GameManagerClient.Instance.LocalPositionPredictions[i].Position, playerData.Position) > 0.1f)
 					{
-						//Debug.LogError($"Correcting. Index:{i}. Frame:{playerData.FrameNumber}, Predicted pos was: {GameManager.Instance.LocalPositionPredictions[i].Position} and should be: {playerData.Position}");
 						GameManagerClient.Instance.LocalPositionPredictions.RemoveRange(0, i);
 
 						for (int j = 0; j < GameManagerClient.Instance.LocalPositionPredictions.Count; j++)

@@ -1,4 +1,5 @@
 ﻿using NetworkTutorial.Client.Gameplay;
+using NetworkTutorial.Client.Player;
 using NetworkTutorial.Shared.Net;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,6 +43,8 @@ namespace NetworkTutorial.Client.Net
 			LocalClient.Instance.StopConnectionTimer();
 			LocalClient.Instance.MyId = id;
 			LocalClient.Instance.isConnected = true;
+
+			UIManager.Instance.GameOn();
 
 			ClientSend.SendWelcomeReceived();
 		}

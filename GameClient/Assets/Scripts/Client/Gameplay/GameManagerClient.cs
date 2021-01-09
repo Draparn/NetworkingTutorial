@@ -49,8 +49,8 @@ namespace NetworkTutorial.Client.Gameplay
 		public GameObject ProjectilePrefab;
 		public GameObject HealthpackPrefab;
 
-		private Transform projectilePool;
-		private Transform pickups;
+		[SerializeField] private Transform projectilePool;
+		[SerializeField] private Transform pickups;
 
 		private float lerpValue;
 		private float bufferTimeMultiplier = 1;
@@ -61,12 +61,6 @@ namespace NetworkTutorial.Client.Gameplay
 				Instance = this;
 			else if (Instance != this)
 				Destroy(this);
-		}
-
-		private void Start()
-		{
-			projectilePool = GameObject.Find("ProjectilePool").transform;
-			pickups = GameObject.Find("Pickups").transform;
 		}
 
 		private void Update()

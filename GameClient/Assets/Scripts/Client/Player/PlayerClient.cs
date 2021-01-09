@@ -21,17 +21,6 @@ namespace NetworkTutorial.Client.Player
 
 		private bool flickering = false;
 
-		private void Awake()
-		{
-			menuCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-			menuCamera.enabled = false;
-		}
-
-		private void OnDestroy()
-		{
-			menuCamera.enabled = true;
-		}
-
 		public void Init(int id, string playerName)
 		{
 			PlayerId = id;

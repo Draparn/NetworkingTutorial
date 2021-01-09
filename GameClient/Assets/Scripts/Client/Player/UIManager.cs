@@ -11,6 +11,8 @@ namespace NetworkTutorial.Client.Player
 
 		public GameObject StartMenu;
 		public GameObject CrossHair;
+		public GameObject Connecting;
+		public GameObject InputFields;
 
 		public Image HurtScreen;
 		private Color healed = new Color(0, 1, 0, 0.2f);
@@ -37,9 +39,8 @@ namespace NetworkTutorial.Client.Player
 
 		public void ConnectToServer()
 		{
-			StartMenu.SetActive(false);
-			CrossHair.SetActive(true);
-			HealthText.transform.parent.gameObject.SetActive(true);
+			Connecting.SetActive(true);
+			InputFields.SetActive(false);
 
 			ConnectToIPField.interactable = false;
 			UserNameField.interactable = false;
@@ -49,15 +50,31 @@ namespace NetworkTutorial.Client.Player
 
 		public void ConnectionTimedOut()
 		{
-			StartMenu.SetActive(true);
-			CrossHair.SetActive(false);
-			HealthText.transform.parent.gameObject.SetActive(false);
+			Connecting.SetActive(false);
+			InputFields.SetActive(true);
 
 			ConnectToIPField.interactable = true;
 			UserNameField.interactable = true;
 
 			LocalClient.Instance.MyId = 0;
 			Cursor.lockState = CursorLockMode.None;
+		}
+
+		public void GameOn()
+		{
+			Connecting.SetActive(false);
+			InputFields.SetActive(true);
+			StartMenu.SetActive(false);
+
+			HealthText.transform.parent.gameObject.SetActive(true);
+			CrossHair.SetActive(true);
+		}
+
+		public void GameOff()
+		{
+			StartMenu.SetActive(true);
+			HealthText.transform.parent.gameObject.SetActive(false);
+			CrossHair.SetActive(false);
 		}
 
 		public void TakeDamage(bool isDead)
