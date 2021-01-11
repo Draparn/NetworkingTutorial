@@ -170,7 +170,7 @@ namespace NetworkTutorial.Server.Net
 			packet.WriteLength();
 			for (byte i = 1; i <= Server.MaxPlayers; i++)
 			{
-				if (Server.Clients[i].Connection != null)
+				if (Server.Clients[i].Connection.endPoint != null)
 				{
 					Server.Clients[i].Connection.SendData(packet);
 				}
