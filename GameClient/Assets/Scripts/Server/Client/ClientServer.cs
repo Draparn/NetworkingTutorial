@@ -11,6 +11,7 @@ namespace NetworkTutorial.Server.Client
 	{
 		public PlayerServer PlayerObject;
 		public UDP Connection;
+		public float DisconnectTimer;
 		public byte Id;
 
 		public ClientServer(byte id)
@@ -78,7 +79,8 @@ namespace NetworkTutorial.Server.Client
 
 			public void SendData(Packet packet)
 			{
-				Server.SendUDPData(endPoint, packet);
+				Server.SendPacket(endPoint, packet);
+				Debug.Log(packet.Length());
 			}
 
 			public void HandleData(Packet packet)

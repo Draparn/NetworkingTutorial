@@ -14,11 +14,12 @@ namespace NetworkTutorial.Client.Player
 		private PlayerClient playerManager;
 		private InputsStruct inputs = new InputsStruct();
 		private Vector3 prevPos, nextPos;
+		//Quaternion prevRot;
 
 		private float yVelocity, yVelocityPreMove, clientTickRate;
 		private bool isGroundedPreMove;
 
-		private uint sequenceNumber = 0;
+		private ushort sequenceNumber = 0;
 
 		private void Awake()
 		{
@@ -70,7 +71,7 @@ namespace NetworkTutorial.Client.Player
 
 		private void SendAndPredict()
 		{
-			ClientSend.SendPlayerInputs(sequenceNumber, inputs);
+			ClientSend.SendPlayerInputs(sequenceNumber, inputs, transform.rotation);
 			PredictPlayerPosition();
 		}
 

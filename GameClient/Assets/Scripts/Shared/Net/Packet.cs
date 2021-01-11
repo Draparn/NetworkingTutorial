@@ -189,31 +189,6 @@ namespace NetworkTutorial.Shared.Net
 			Write(_value.Length); // Add the length of the string to the packet
 			buffer.AddRange(Encoding.ASCII.GetBytes(_value)); // Add the string itself
 		}
-		/// <summary>Adds a Vector3 to the packet.</summary>
-		/// <param name="_value">The Vector3 to add.</param>
-		public void Write(Vector3 position)
-		{
-			Write(position.x);
-			Write(position.y);
-			Write(position.z);
-		}
-		/// <summary>Adds a Quaternion to the packet.</summary>
-		/// <param name="_value">The Quaternion to add.</param>
-		public void Write(Quaternion rotation)
-		{
-			Write(rotation.y);
-			Write(rotation.w);
-		}
-		/// <summary>Adds player inputs struct to the packet.</summary>
-		/// <param name="_value">The struct to add.</param>
-		public void Write(InputsStruct inputs)
-		{
-			Write(inputs.Forward);
-			Write(inputs.Back);
-			Write(inputs.Left);
-			Write(inputs.Right);
-			Write(inputs.Jump);
-		}
 		#endregion
 
 		#region Read Data
@@ -446,25 +421,6 @@ namespace NetworkTutorial.Shared.Net
 			{
 				throw new Exception("Could not read value of type 'string'!");
 			}
-		}
-		/// <summary>Reads a Vector3 from the packet.</summary>
-		/// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
-		public Vector3 ReadVector3(bool _moveReadPos = true)
-		{
-			return new Vector3(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
-		}
-		/// <summary>Reads a Quaternion from the packet.</summary>
-		/// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
-		public Quaternion ReadQuaternion(bool _moveReadPos = true)
-		{
-			return new Quaternion(0, ReadFloat(_moveReadPos), 0, ReadFloat(_moveReadPos));
-		}
-
-		/// <summary>Reads an InputsStruct from the packet.</summary>
-		/// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
-		public InputsStruct ReadInputs(bool _moveReadPos = true)
-		{
-			return new InputsStruct(ReadBool(_moveReadPos), ReadBool(_moveReadPos), ReadBool(_moveReadPos), ReadBool(_moveReadPos), ReadBool(_moveReadPos));
 		}
 		#endregion
 

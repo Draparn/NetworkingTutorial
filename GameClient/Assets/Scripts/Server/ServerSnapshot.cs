@@ -9,15 +9,14 @@ namespace NetworkTutorial.Server
 	{
 		public byte Id;
 		public Vector3 Position;
-		public uint FrameNumber;
+		public ushort SequenceNumber;
 
-		public PlayerPosData(byte id, Vector3 pos, uint frameNumber)
+		public PlayerPosData(byte id, Vector3 pos, ushort sequenceNumber)
 		{
 			Id = id;
 			Position = pos;
-			FrameNumber = frameNumber;
+			SequenceNumber = sequenceNumber;
 		}
-
 	}
 
 	public class ServerSnapshot
@@ -25,17 +24,20 @@ namespace NetworkTutorial.Server
 		public static ServerSnapshot currentSnapshot = new ServerSnapshot();
 
 		public Dictionary<int, PlayerPosData> PlayerPosition = new Dictionary<int, PlayerPosData>();
+		//public Dictionary<int, Vector3> PlayerStartPositions = new Dictionary<int, Vector3>();
 		public List<ProjectileServer> ProjectilePositions = new List<ProjectileServer>();
 
-		public static void AddPlayerMovement(byte id, Vector3 pos, uint frameNumber)
+		public static void AddPlayerMovement(byte id, Vector3 pos, ushort sequenceNumber)
 		{
-			if (frameNumber == uint.MaxValue)
-				return;
-
 			if (currentSnapshot.PlayerPosition.ContainsKey(id))
-				currentSnapshot.PlayerPosition[id] = new PlayerPosData(id, pos, frameNumber);
+			{
+				currentSnapshot.PlayerPosition[id] = new PlayerPosData(id, pos/* - currentSnapshot.PlayerStartPositions[id]*/, sequenceNumber);
+			}
 			else
-				currentSnapshot.PlayerPosition.Add(id, new PlayerPosData(id, pos, frameNumber));
+			{
+				currentSnapshot.PlayerPosition.Add(id, new PlayerPosData(id, pos, sequenceNumber));
+				//currentSnapshot.PlayerStartPositions.Add(id, pos);
+			}
 		}
 		public static void RemovePlayerMovement(PlayerServer player)
 		{
@@ -58,6 +60,7 @@ namespace NetworkTutorial.Server
 		public static void ClearSnapshot()
 		{
 			currentSnapshot.PlayerPosition.Clear();
+			//currentSnapshot.PlayerStartPositions.Clear();
 			currentSnapshot.ProjectilePositions.Clear();
 		}
 

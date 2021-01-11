@@ -8,7 +8,7 @@ namespace NetworkTutorial.Client.Gameplay
 {
 	public struct LocalPredictionData
 	{
-		public uint FrameNumber;
+		public ushort SequenceNumber;
 		public Vector3 Position;
 		public Vector3 TransformRight;
 		public Vector3 TransformForward;
@@ -16,9 +16,9 @@ namespace NetworkTutorial.Client.Gameplay
 		public bool IsGroundedPreMove;
 		public InputsStruct Inputs;
 
-		public LocalPredictionData(uint frameNumber, InputsStruct inputs, Vector3 position, Vector3 transformRight, Vector3 transformForward, float yVelocityPreMove, bool isGroundedPreMove)
+		public LocalPredictionData(ushort sequenceNumber, InputsStruct inputs, Vector3 position, Vector3 transformRight, Vector3 transformForward, float yVelocityPreMove, bool isGroundedPreMove)
 		{
-			FrameNumber = frameNumber;
+			SequenceNumber = sequenceNumber;
 			Inputs = inputs;
 			Position = position;
 			TransformRight = transformRight;

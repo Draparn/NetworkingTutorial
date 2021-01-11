@@ -8,11 +8,10 @@ namespace NetworkTutorial.Server.Net
 {
 	public class ServerSend
 	{
-		public static void SendWelcomeMessage_CLIENT(byte clientId, string msg)
+		public static void SendWelcomeMessage_CLIENT(byte clientId)
 		{
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.welcome);
 
-			packet.Write(msg);
 			packet.Write(clientId);
 
 			SendToClient(clientId, packet);
@@ -25,7 +24,7 @@ namespace NetworkTutorial.Server.Net
 
 			packet.Write("Server is full.");
 
-			Server.SendUDPData(endpoint, packet);
+			Server.SendPacket(endpoint, packet);
 			packet.Reset();
 		}
 
@@ -34,18 +33,25 @@ namespace NetworkTutorial.Server.Net
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.serverSnapshot);
 
 			packet.Write((byte)ServerSnapshot.currentSnapshot.PlayerPosition.Count);
-			foreach (var data in ServerSnapshot.currentSnapshot.PlayerPosition)
+			foreach (var playerPosData in ServerSnapshot.currentSnapshot.PlayerPosition.Values)
 			{
-				packet.Write(data.Value.Id);
-				packet.Write(data.Value.FrameNumber);
-				packet.Write(data.Value.Position);
+				packet.Write(playerPosData.Id);
+
+				packet.Write(playerPosData.SequenceNumber);
+
+				packet.Write(playerPosData.Position.x);
+				packet.Write(playerPosData.Position.y);
+				packet.Write(playerPosData.Position.z);
 			}
 
 			packet.Write((byte)ServerSnapshot.currentSnapshot.ProjectilePositions.Count);
 			foreach (var proj in ServerSnapshot.currentSnapshot.ProjectilePositions)
 			{
 				packet.Write(proj.id);
-				packet.Write(proj.transform.position);
+
+				packet.Write(proj.transform.position.x);
+				packet.Write(proj.transform.position.y);
+				packet.Write(proj.transform.position.z);
 			}
 
 			SendToAllClients(packet);
@@ -59,8 +65,13 @@ namespace NetworkTutorial.Server.Net
 
 			packet.Write(player.PlayerId);
 			packet.Write(player.PlayerName);
-			packet.Write(player.transform.position);
-			packet.Write(player.transform.rotation);
+
+			packet.Write(player.transform.position.x);
+			packet.Write(player.transform.position.y);
+			packet.Write(player.transform.position.z);
+
+			packet.Write(player.transform.rotation.y);
+			packet.Write(player.transform.rotation.w);
 
 			SendToClient(clientId, packet);
 			packet.Reset();
@@ -80,7 +91,8 @@ namespace NetworkTutorial.Server.Net
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerRotation);
 
 			packet.Write(player.PlayerId);
-			packet.Write(player.transform.rotation);
+			packet.Write(player.transform.rotation.y);
+			packet.Write(player.transform.rotation.w);
 
 			SendToAllClientsExcept(player.PlayerId, packet);
 			packet.Reset();
@@ -101,7 +113,9 @@ namespace NetworkTutorial.Server.Net
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerRespawn);
 
 			packet.Write(player.PlayerId);
-			packet.Write(player.transform.position);
+			packet.Write(player.transform.position.x);
+			packet.Write(player.transform.position.y);
+			packet.Write(player.transform.position.z);
 
 			SendToAllClients(packet);
 			packet.Reset();
@@ -130,7 +144,9 @@ namespace NetworkTutorial.Server.Net
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.healthpackSpawn);
 
 			packet.Write(healthPackId);
-			packet.Write(position);
+			packet.Write(position.x);
+			packet.Write(position.y);
+			packet.Write(position.z);
 
 			SendToClient(clientId, packet);
 			packet.Reset();
@@ -141,7 +157,9 @@ namespace NetworkTutorial.Server.Net
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.projectileSpawn);
 
 			packet.Write(projectile.id);
-			packet.Write(projectile.transform.position);
+			packet.Write(projectile.transform.position.x);
+			packet.Write(projectile.transform.position.y);
+			packet.Write(projectile.transform.position.z);
 
 			SendToAllClients(packet);
 			packet.Reset();
@@ -152,11 +170,14 @@ namespace NetworkTutorial.Server.Net
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.projectileExplosion);
 
 			packet.Write(projectile.id);
-			packet.Write(projectile.transform.position);
+			packet.Write(projectile.transform.position.x);
+			packet.Write(projectile.transform.position.y);
+			packet.Write(projectile.transform.position.z);
 
 			SendToAllClients(packet);
 			packet.Reset();
 		}
+
 
 		#region BroadcastOptions
 		private static void SendToClient(byte clientId, Packet packet)

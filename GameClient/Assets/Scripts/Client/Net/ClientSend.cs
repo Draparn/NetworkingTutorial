@@ -1,5 +1,4 @@
-﻿using NetworkTutorial.Client.Gameplay;
-using NetworkTutorial.Shared;
+﻿using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Net;
 using UnityEngine;
 
@@ -34,13 +33,20 @@ namespace NetworkTutorial.Client.Net
 			packet.Reset();
 		}
 
-		public static void SendPlayerInputs(uint sequenceNumber, InputsStruct inputs)
+		public static void SendPlayerInputs(ushort sequenceNumber, InputsStruct inputs, Quaternion rotation)
 		{
 			var packet = PacketFactory.GetClientPacketType(ClientPackets.playerMovement);
 
 			packet.Write(sequenceNumber);
-			packet.Write(inputs);
-			packet.Write(GameManagerClient.Instance.Players[LocalClient.Instance.MyId].transform.rotation);
+
+			packet.Write(inputs.Forward);
+			packet.Write(inputs.Back);
+			packet.Write(inputs.Left);
+			packet.Write(inputs.Right);
+			packet.Write(inputs.Jump);
+
+			packet.Write(rotation.y);
+			packet.Write(rotation.w);
 
 			SendPacket(packet);
 			packet.Reset();
@@ -50,7 +56,9 @@ namespace NetworkTutorial.Client.Net
 		{
 			var packet = PacketFactory.GetClientPacketType(ClientPackets.playerPrimaryFire);
 
-			packet.Write(facing);
+			packet.Write(facing.x);
+			packet.Write(facing.y);
+			packet.Write(facing.z);
 
 			SendPacket(packet);
 			packet.Reset();
@@ -61,6 +69,7 @@ namespace NetworkTutorial.Client.Net
 		{
 			packet.WriteLength();
 			LocalClient.Instance.Connection.SendData(packet);
+			Debug.Log(packet.Length());
 		}
 	}
 }

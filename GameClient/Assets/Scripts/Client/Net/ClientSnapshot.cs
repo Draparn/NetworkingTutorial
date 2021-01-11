@@ -31,7 +31,7 @@ namespace NetworkTutorial.Client.Net
 		{
 			for (int i = 0; i < GameManagerClient.Instance.LocalPositionPredictions.Count; i++)
 			{
-				if (GameManagerClient.Instance.LocalPositionPredictions[i].FrameNumber == playerData.FrameNumber)
+				if (GameManagerClient.Instance.LocalPositionPredictions[i].SequenceNumber == playerData.Sequencenumber)
 				{
 					if (Vector3.Distance(GameManagerClient.Instance.LocalPositionPredictions[i].Position, playerData.Position) > 0.1f)
 					{

@@ -30,7 +30,7 @@ namespace NetworkTutorial.Server.Client
 		private bool hitScan = false;
 
 		public byte PlayerId;
-		public uint SequenceNumber = uint.MaxValue;
+		public ushort SequenceNumber = ushort.MaxValue;
 
 		private InputsStruct playerInput;
 
@@ -103,18 +103,24 @@ namespace NetworkTutorial.Server.Client
 			ServerSend.SendPlayerRespawned_ALL(this);
 		}
 
-		public void UpdatePosAndRot(uint frameNumber, InputsStruct inputs, Quaternion rot)
+		public void UpdatePosAndRot(ushort sequenceNumber, InputsStruct inputs, Quaternion rot)
 		{
-			if (frameNumber < SequenceNumber && SequenceNumber != uint.MaxValue)
+			if (!IsMoreRecent(sequenceNumber))
 				return;
 
-			SequenceNumber = frameNumber;
+			SequenceNumber = sequenceNumber;
 			playerInput = inputs;
 			transform.rotation = rot;
 
 			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(playerInput, transform.right, transform.forward, ref yVelocity, controller.isGrounded));
 			ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, SequenceNumber);
 			ServerSend.SendPlayerRotationUpdate_ALLEXCEPT(this);
+		}
+
+		private bool IsMoreRecent(ushort newSequenceNumber)
+		{
+			return ((newSequenceNumber > SequenceNumber) && (newSequenceNumber - SequenceNumber <= 32768)) ||
+				((newSequenceNumber < SequenceNumber) && (SequenceNumber - newSequenceNumber > 32768));
 		}
 	}
 }

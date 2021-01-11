@@ -36,6 +36,17 @@ namespace NetworkTutorial.Server.Gameplay
 				if (healthpack.currentRespawnTime <= 0)
 					ActivateHealthpack(healthpack);
 			}
+
+			//Clients
+			foreach (var client in Server.Clients.Values)
+			{
+				if (client.Connection.endPoint != null)
+				{
+					client.DisconnectTimer += Time.deltaTime;
+					if (client.DisconnectTimer >= 10.0f)
+						client.Disconnect();
+				}
+			}
 		}
 
 		public PlayerServer InstantiatePlayer()

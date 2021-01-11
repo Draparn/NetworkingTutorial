@@ -48,7 +48,7 @@ namespace NetworkTutorial.Server
 				var data = udpListener.EndReceive(result, ref endPoint);
 				udpListener.BeginReceive(UDPReceiveCallback, null);
 
-				if (data.Length < 4 || (!HasConnected(endPoint) && !CheckEmptySlots(endPoint)))
+				if (data.Length < 4 || (!HasConnected(endPoint) && !ServerHasEmptySlot(endPoint)))
 					return;
 
 				using (Packet packet = new Packet(data))
@@ -62,7 +62,10 @@ namespace NetworkTutorial.Server
 					}
 
 					if (Clients[clientId].Connection.endPoint.ToString() == endPoint.ToString())
+					{
+						Clients[clientId].DisconnectTimer = 0.0f;
 						Clients[clientId].Connection.HandleData(packet);
+					}
 				}
 			}
 			catch (Exception ex)
@@ -71,7 +74,7 @@ namespace NetworkTutorial.Server
 			}
 		}
 
-		public static void SendUDPData(IPEndPoint endPoint, Packet packet)
+		public static void SendPacket(IPEndPoint endPoint, Packet packet)
 		{
 			try
 			{
@@ -109,14 +112,14 @@ namespace NetworkTutorial.Server
 			return false;
 		}
 
-		private static bool CheckEmptySlots(IPEndPoint endPoint)
+		private static bool ServerHasEmptySlot(IPEndPoint endPoint)
 		{
 			for (byte i = 1; i <= MaxPlayers; i++)
 			{
 				if (Clients[i].Connection.endPoint == null)
 				{
 					Clients[i].Connection.Connect(endPoint);
-					ServerSend.SendWelcomeMessage_CLIENT(i, "Welcome to the party, pal!");
+					ServerSend.SendWelcomeMessage_CLIENT(i);
 					return true;
 				}
 			}
