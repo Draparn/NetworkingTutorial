@@ -18,6 +18,7 @@ namespace NetworkTutorial.Server.Client
 
 		public Transform ShootOrigin;
 		private CharacterController controller;
+		private Vector3 prevPos;
 
 		public string PlayerName;
 
@@ -112,8 +113,11 @@ namespace NetworkTutorial.Server.Client
 			playerInput = inputs;
 			transform.rotation = rot;
 
+			prevPos = transform.position;
 			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(playerInput, transform.right, transform.forward, ref yVelocity, controller.isGrounded));
-			ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, SequenceNumber);
+
+			if (transform.position != prevPos)
+				ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, SequenceNumber);
 			ServerSend.SendPlayerRotationUpdate_ALLEXCEPT(this);
 		}
 
