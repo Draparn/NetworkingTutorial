@@ -51,8 +51,7 @@ namespace NetworkTutorial.Client.Net
 								prediction.Position = GameManagerClient.Instance.LocalPositionPredictions[j - 1].Position +
 									PlayerMovementCalculations.ReCalculatePlayerPosition(
 									GameManagerClient.Instance.LocalPositionPredictions[j].Inputs,
-									GameManagerClient.Instance.LocalPositionPredictions[j].TransformRight,
-									GameManagerClient.Instance.LocalPositionPredictions[j].TransformForward,
+									GameManagerClient.Instance.LocalPositionPredictions[j].Transform,
 									GameManagerClient.Instance.LocalPositionPredictions[j].yVelocityPreMove,
 									GameManagerClient.Instance.LocalPositionPredictions[j].IsGroundedPreMove
 									);
