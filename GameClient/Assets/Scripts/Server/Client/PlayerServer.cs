@@ -114,7 +114,7 @@ namespace NetworkTutorial.Server.Client
 			transform.rotation = rot;
 
 			prevPos = transform.position;
-			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(playerInput, transform.right, transform.forward, ref yVelocity, controller.isGrounded));
+			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(playerInput, transform, ref yVelocity, controller.isGrounded));
 
 			if (transform.position != prevPos)
 				ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, SequenceNumber);

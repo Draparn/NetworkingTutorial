@@ -14,7 +14,6 @@ namespace NetworkTutorial.Client.Player
 		private PlayerClient playerManager;
 		private InputsStruct inputs = new InputsStruct();
 		private Vector3 prevPos, nextPos;
-		//Quaternion prevRot;
 
 		private float yVelocity, yVelocityPreMove, clientTickRate;
 		private bool isGroundedPreMove;
@@ -86,14 +85,13 @@ namespace NetworkTutorial.Client.Player
 			isGroundedPreMove = controller.isGrounded;
 
 			controller.enabled = true;
-			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(inputs, gameObject.transform.right, gameObject.transform.forward, ref yVelocity, controller.isGrounded));
+			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(inputs, transform, ref yVelocity, controller.isGrounded));
 			controller.enabled = false;
 			GameManagerClient.Instance.LocalPositionPredictions.Add(new LocalPredictionData(
 				sequenceNumber,
 				inputs,
 				gameObject.transform.position,
-				gameObject.transform.right,
-				gameObject.transform.forward,
+				transform,
 				yVelocityPreMove,
 				isGroundedPreMove
 				));

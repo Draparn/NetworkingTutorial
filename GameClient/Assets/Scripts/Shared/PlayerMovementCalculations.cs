@@ -22,7 +22,7 @@ namespace NetworkTutorial.Shared
 
 	public class PlayerMovementCalculations : MonoBehaviour
 	{
-		public static Vector3 ReCalculatePlayerPosition(InputsStruct inputs, Vector3 transformRight, Vector3 transformForward, float yVelocity, bool isGrounded)
+		public static Vector3 ReCalculatePlayerPosition(InputsStruct inputs, Transform transform, float yVelocity, bool isGrounded)
 		{
 			var inputDirection = Vector3.zero;
 			if (inputs.Forward)  //W
@@ -34,7 +34,7 @@ namespace NetworkTutorial.Shared
 			if (inputs.Right)  //D
 				inputDirection.x += 1;
 
-			var moveDirection = transformRight * inputDirection.x + transformForward * inputDirection.z;
+			var moveDirection = transform.right * inputDirection.x + transform.forward * inputDirection.z;
 			moveDirection.Normalize();
 			moveDirection *= ConstantValues.PLAYER_MOVE_SPEED * ConstantValues.SERVER_TICK_RATE;
 
@@ -53,7 +53,7 @@ namespace NetworkTutorial.Shared
 			return moveDirection;
 		}
 
-		public static Vector3 CalculatePlayerPosition(InputsStruct inputs, Vector3 transformRight, Vector3 transformForward, ref float yVelocity, bool isGrounded)
+		public static Vector3 CalculatePlayerPosition(InputsStruct inputs, Transform transform, ref float yVelocity, bool isGrounded)
 		{
 			var inputDirection = Vector3.zero;
 			if (inputs.Forward)  //W
@@ -65,7 +65,7 @@ namespace NetworkTutorial.Shared
 			if (inputs.Right)  //D
 				inputDirection.x += 1;
 
-			var moveDirection = transformRight * inputDirection.x + transformForward * inputDirection.z;
+			var moveDirection = transform.right * inputDirection.x + transform.forward * inputDirection.z;
 			moveDirection.Normalize();
 			moveDirection *= ConstantValues.PLAYER_MOVE_SPEED * ConstantValues.SERVER_TICK_RATE;
 

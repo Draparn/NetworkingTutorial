@@ -10,19 +10,17 @@ namespace NetworkTutorial.Client.Gameplay
 	{
 		public ushort SequenceNumber;
 		public Vector3 Position;
-		public Vector3 TransformRight;
-		public Vector3 TransformForward;
+		public Transform Transform;
 		public float yVelocityPreMove;
 		public bool IsGroundedPreMove;
 		public InputsStruct Inputs;
 
-		public LocalPredictionData(ushort sequenceNumber, InputsStruct inputs, Vector3 position, Vector3 transformRight, Vector3 transformForward, float yVelocityPreMove, bool isGroundedPreMove)
+		public LocalPredictionData(ushort sequenceNumber, InputsStruct inputs, Vector3 position, Transform transform, float yVelocityPreMove, bool isGroundedPreMove)
 		{
 			SequenceNumber = sequenceNumber;
 			Inputs = inputs;
 			Position = position;
-			TransformRight = transformRight;
-			TransformForward = transformForward;
+			Transform = transform;
 			this.yVelocityPreMove = yVelocityPreMove;
 			IsGroundedPreMove = isGroundedPreMove;
 		}
@@ -132,6 +130,18 @@ namespace NetworkTutorial.Client.Gameplay
 			return LocalPositionPredictions[LocalPositionPredictions.Count - 1].Position;
 		}
 
+		public Vector3 GetPredictedPositionBySequence(ushort targetSequenceNumber)
+		{
+			for (int i = 0; i < LocalPositionPredictions.Count; i++)
+			{
+				if (LocalPositionPredictions[i].SequenceNumber == targetSequenceNumber)
+					return LocalPositionPredictions[i].Position;
+			}
+
+			Debug.LogError("Error: LocalPositionPredictions didn't contain targetSequenceNumber.");
+			return Vector3.zero;
+		}
+
 		public void SpawnPlayer(int playerId, string playerName, Vector3 pos, Quaternion rot)
 		{
 			var player = Instantiate(playerId == LocalClient.Instance.MyId ? LocalPlayerPrefab : RemotePlayerPrefab, pos, rot);
@@ -151,7 +161,6 @@ namespace NetworkTutorial.Client.Gameplay
 			else
 			{
 				var projectileManagerComponent = Instantiate(ProjectilePrefab, position, Quaternion.identity, projectilePool).GetComponent<ProjectileClient>();
-
 				Projectiles.Add(id, projectileManagerComponent);
 			}
 		}
