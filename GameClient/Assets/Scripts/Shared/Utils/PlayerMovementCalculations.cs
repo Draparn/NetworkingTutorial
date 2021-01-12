@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace NetworkTutorial.Shared
+namespace NetworkTutorial.Shared.Utils
 {
 	public struct InputsStruct
 	{

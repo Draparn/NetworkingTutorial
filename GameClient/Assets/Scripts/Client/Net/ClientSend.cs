@@ -1,5 +1,5 @@
-﻿using NetworkTutorial.Shared;
-using NetworkTutorial.Shared.Net;
+﻿using NetworkTutorial.Shared.Net;
+using NetworkTutorial.Shared.Utils;
 using UnityEngine;
 
 namespace NetworkTutorial.Client.Net
@@ -45,8 +45,16 @@ namespace NetworkTutorial.Client.Net
 			packet.Write(inputs.Right);
 			packet.Write(inputs.Jump);
 
-			packet.Write(rotation.y);
-			packet.Write(rotation.w);
+			if (Mathf.Abs(rotation.y) > Mathf.Abs(rotation.w))
+			{
+				packet.Write(false);
+				packet.Write(rotation.y < 0 ? -(rotation.w) : rotation.w);
+			}
+			else
+			{
+				packet.Write(true);
+				packet.Write(rotation.w < 0 ? -(rotation.y) : rotation.y);
+			}
 
 			SendPacket(packet);
 			packet.Reset();
@@ -69,7 +77,7 @@ namespace NetworkTutorial.Client.Net
 		{
 			packet.WriteLength();
 			LocalClient.Instance.Connection.SendData(packet);
-			Debug.Log(packet.Length());
+			//Debug.Log(packet.Length());
 		}
 	}
 }

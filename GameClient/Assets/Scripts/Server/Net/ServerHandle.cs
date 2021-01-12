@@ -1,5 +1,5 @@
-﻿using NetworkTutorial.Shared;
-using NetworkTutorial.Shared.Net;
+﻿using NetworkTutorial.Shared.Net;
+using NetworkTutorial.Shared.Utils;
 using UnityEngine;
 
 namespace NetworkTutorial.Server.Net
@@ -30,8 +30,19 @@ namespace NetworkTutorial.Server.Net
 		public static void OnPlayerMovement(byte clientId, Packet packet)
 		{
 			var sequenceNumber = packet.ReadUShort();
+
 			var inputs = new InputsStruct(packet.ReadBool(), packet.ReadBool(), packet.ReadBool(), packet.ReadBool(), packet.ReadBool());
-			var rotation = new Quaternion(0, packet.ReadFloat(), 0, packet.ReadFloat());
+
+			var floatIsY = packet.ReadBool();
+			float quatFloat = packet.ReadFloat();
+			float otherQuatFloat = Mathf.Sqrt(1.0f - (quatFloat * quatFloat));
+
+			var rotation = new Quaternion(
+				0,
+				floatIsY ? quatFloat : otherQuatFloat,
+				0,
+				floatIsY ? otherQuatFloat : quatFloat
+				);
 
 			Server.Clients[clientId].PlayerObject.UpdatePosAndRot(sequenceNumber, inputs, rotation);
 		}
