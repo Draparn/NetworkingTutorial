@@ -1,6 +1,7 @@
 ﻿using NetworkTutorial.Client.Gameplay;
 using NetworkTutorial.Client.Net;
 using NetworkTutorial.Shared;
+using NetworkTutorial.Shared.Utils;
 using UnityEngine;
 
 namespace NetworkTutorial.Client.Player

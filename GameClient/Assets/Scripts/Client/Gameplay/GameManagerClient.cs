@@ -1,6 +1,7 @@
 ﻿using NetworkTutorial.Client.Net;
 using NetworkTutorial.Client.Player;
 using NetworkTutorial.Shared;
+using NetworkTutorial.Shared.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
