@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetworkTutorial.Shared.Utils;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -188,6 +189,32 @@ namespace NetworkTutorial.Shared.Net
 		{
 			Write(_value.Length); // Add the length of the string to the packet
 			buffer.AddRange(Encoding.ASCII.GetBytes(_value)); // Add the string itself
+		}
+		///<summary>Adds adds a quaternion to the packet.</summary>
+		///<param name="rotation">The quaternion to add.</param>
+		public void Write(Quaternion rotation)
+		{
+			if (Mathf.Abs(rotation.y) > Mathf.Abs(rotation.w))
+			{
+				Write(false);
+				Write(rotation.y < 0 ? (short)-ValueTypeConversions.ReturnDecimalsAsShort(rotation.w) : ValueTypeConversions.ReturnDecimalsAsShort(rotation.w));
+			}
+			else
+			{
+				Write(true);
+				Write(rotation.w < 0 ? (short)-(ValueTypeConversions.ReturnDecimalsAsShort(rotation.y)) : ValueTypeConversions.ReturnDecimalsAsShort(rotation.y));
+			}
+		}
+		///<summary>Adds adds a Vector3 to the packet.</summary>
+		///<param name="position">The Vector3 to add.</param>
+		public void Write(Vector3 position)
+		{
+			Write((byte)position.x);
+			Write(ValueTypeConversions.ReturnDecimalsAsShort(position.x));
+			Write((byte)position.y);
+			Write(ValueTypeConversions.ReturnDecimalsAsShort(position.y));
+			Write((byte)position.z);
+			Write(ValueTypeConversions.ReturnDecimalsAsShort(position.z));
 		}
 		#endregion
 
@@ -421,6 +448,41 @@ namespace NetworkTutorial.Shared.Net
 			{
 				throw new Exception("Could not read value of type 'string'!");
 			}
+		}
+
+		/// <summary>Reads a Quaternion from the packet.</summary>
+		/// <param name="_moveReadPos"></param>
+		public Quaternion ReadQuaternion(bool _moveReadPos = true)
+		{
+			var floatIsY = ReadBool();
+			var sentFloat = ValueTypeConversions.ReturnShortAsFloat(ReadShort());
+			var omittedFloat = Mathf.Sqrt(1.0f - (sentFloat * sentFloat));
+
+			return new Quaternion(
+				0,
+				floatIsY ? sentFloat : omittedFloat,
+				0,
+				floatIsY ? omittedFloat : sentFloat
+				);
+		}
+		/// <summary>Reads a Vector3 from the packet.</summary>
+		/// <param name="_moveReadPos"></param>
+		public Vector3 ReadVector3(bool _moveReadPos = true)
+		{
+			var wholeX = ReadByte();
+			var decimalsX = ValueTypeConversions.ReturnShortAsFloat(ReadShort());
+
+			var wholeY = ReadByte();
+			var decimalsY = ValueTypeConversions.ReturnShortAsFloat(ReadShort());
+
+			var wholeZ = ReadByte();
+			var decimalsZ = ValueTypeConversions.ReturnShortAsFloat(ReadShort());
+
+			return new Vector3(
+				(float)wholeX + decimalsX,
+				(float)wholeY + decimalsY,
+				(float)wholeZ + decimalsZ
+				);
 		}
 		#endregion
 

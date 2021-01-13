@@ -1,6 +1,5 @@
 ﻿using NetworkTutorial.Server.Gameplay;
 using NetworkTutorial.Server.Net;
-using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Utils;
 using UnityEngine;
 
@@ -12,9 +11,9 @@ namespace NetworkTutorial.Server.Client
 
 		private Vector3[] respawnPoints = new Vector3[3]
 		{
-			new Vector3(0, 0, 0),
-			new Vector3(0, 2.4f, -18),
-			new Vector3(-5, 0, 20)
+			new Vector3(24, 4, 22),
+			new Vector3(24, 6.4f, 4),
+			new Vector3(19, 4, 42)
 		};
 
 		public Transform ShootOrigin;
@@ -67,7 +66,7 @@ namespace NetworkTutorial.Server.Client
 			}
 			else
 			{
-				GameManagerServer.Instance.InstantiateProjectile(ShootOrigin).Init(viewDirection, ThrowForce, PlayerId);
+				GameManagerServer.Instance.InstantiateProjectile(ShootOrigin, viewDirection).Init(viewDirection, ThrowForce, PlayerId);
 			}
 		}
 

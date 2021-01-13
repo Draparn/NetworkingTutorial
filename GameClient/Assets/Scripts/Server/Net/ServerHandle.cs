@@ -33,25 +33,14 @@ namespace NetworkTutorial.Server.Net
 
 			var inputs = new InputsStruct(packet.ReadBool(), packet.ReadBool(), packet.ReadBool(), packet.ReadBool(), packet.ReadBool());
 
-			var floatIsY = packet.ReadBool();
-			float quatFloat = packet.ReadFloat();
-			float otherQuatFloat = Mathf.Sqrt(1.0f - (quatFloat * quatFloat));
-
-			var rotation = new Quaternion(
-				0,
-				floatIsY ? quatFloat : otherQuatFloat,
-				0,
-				floatIsY ? otherQuatFloat : quatFloat
-				);
+			var rotation = packet.ReadQuaternion();
 
 			Server.Clients[clientId].PlayerObject.UpdatePosAndRot(sequenceNumber, inputs, rotation);
 		}
 
 		public static void OnPlayerPrimaryFire(byte clientId, Packet packet)
 		{
-			var viewDirection = new Vector3(packet.ReadFloat(), packet.ReadFloat(), packet.ReadFloat());
-
-			Server.Clients[clientId].PlayerObject.PrimaryFire(viewDirection);
+			Server.Clients[clientId].PlayerObject.PrimaryFire(packet.ReadVector3());
 		}
 
 	}

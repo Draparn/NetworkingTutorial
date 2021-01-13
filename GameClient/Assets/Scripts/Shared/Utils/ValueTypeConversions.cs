@@ -1,19 +1,19 @@
-﻿
+﻿using UnityEngine;
 
 namespace NetworkTutorial.Shared.Utils
 {
 	public class ValueTypeConversions
 	{
-		public static short ReturnFloatDecimalsAsShort(float value)
+		public static short ReturnDecimalsAsShort(float value)
 		{
-			int wholeNumber = (int)value;
-			return (short)((value - wholeNumber) * 10000);
+			long wholeNumber = (long)value;
+
+			return (short)Mathf.RoundToInt((value - wholeNumber) / 4 * 100000);
 		}
 
-		public static float ReturnShortAsFloatDecimals(short value)
+		public static float ReturnShortAsFloat(short value)
 		{
-			float decimals = value;
-			return decimals /= 10000;
+			return (float)(value / 100000f * 4f);
 		}
 	}
 }

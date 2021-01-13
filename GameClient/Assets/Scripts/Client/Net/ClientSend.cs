@@ -45,16 +45,7 @@ namespace NetworkTutorial.Client.Net
 			packet.Write(inputs.Right);
 			packet.Write(inputs.Jump);
 
-			if (Mathf.Abs(rotation.y) > Mathf.Abs(rotation.w))
-			{
-				packet.Write(false);
-				packet.Write(rotation.y < 0 ? -(rotation.w) : rotation.w);
-			}
-			else
-			{
-				packet.Write(true);
-				packet.Write(rotation.w < 0 ? -(rotation.y) : rotation.y);
-			}
+			packet.Write(rotation);
 
 			SendPacket(packet);
 			packet.Reset();
@@ -64,9 +55,7 @@ namespace NetworkTutorial.Client.Net
 		{
 			var packet = PacketFactory.GetClientPacketType(ClientPackets.playerPrimaryFire);
 
-			packet.Write(facing.x);
-			packet.Write(facing.y);
-			packet.Write(facing.z);
+			packet.Write(facing);
 
 			SendPacket(packet);
 			packet.Reset();
@@ -77,7 +66,6 @@ namespace NetworkTutorial.Client.Net
 		{
 			packet.WriteLength();
 			LocalClient.Instance.Connection.SendData(packet);
-			//Debug.Log(packet.Length());
 		}
 	}
 }

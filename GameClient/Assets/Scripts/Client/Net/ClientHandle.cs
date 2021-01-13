@@ -1,6 +1,7 @@
 ﻿using NetworkTutorial.Client.Gameplay;
 using NetworkTutorial.Client.Player;
 using NetworkTutorial.Shared.Net;
+using NetworkTutorial.Shared.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -56,14 +57,11 @@ namespace NetworkTutorial.Client.Net
 
 		public static void OnNewSnapshot(Packet packet)
 		{
-			byte amount;
-			byte playerId;
-			ushort projId;
-			ushort sequenceNumber;
+			byte amount, playerId;
+			ushort projId, sequenceNumber;
 			Vector3 position;
 			var players = new List<PlayerPosData>();
 			var projectiles = new List<ProjectileData>();
-
 
 			//players
 			amount = packet.ReadByte();
@@ -72,13 +70,10 @@ namespace NetworkTutorial.Client.Net
 				playerId = packet.ReadByte();
 
 				sequenceNumber = packet.ReadUShort();
-
-				position.x = packet.ReadFloat();
-				position.y = packet.ReadFloat();
-				position.z = packet.ReadFloat();
+				position = packet.ReadVector3();
 
 				if (GameManagerClient.Instance.Players.ContainsKey(playerId))
-					players.Add(new PlayerPosData((byte)playerId, sequenceNumber, position));
+					players.Add(new PlayerPosData(playerId, sequenceNumber, position));
 			}
 
 			//projcetiles
@@ -86,10 +81,7 @@ namespace NetworkTutorial.Client.Net
 			for (int i = 0; i < amount; i++)
 			{
 				projId = packet.ReadUShort();
-
-				position.x = packet.ReadFloat();
-				position.y = packet.ReadFloat();
-				position.z = packet.ReadFloat();
+				position = packet.ReadVector3();
 
 				if (GameManagerClient.Instance.Projectiles.ContainsKey(projId))
 					projectiles.Add(new ProjectileData(projId, position));
@@ -102,8 +94,8 @@ namespace NetworkTutorial.Client.Net
 		{
 			var id = packet.ReadByte();
 			var playerName = packet.ReadString();
-			var position = new Vector3(packet.ReadFloat(), packet.ReadFloat(), packet.ReadFloat());
-			var rotation = new Quaternion(0, packet.ReadFloat(), 0, packet.ReadFloat());
+			var position = packet.ReadVector3();
+			var rotation = packet.ReadQuaternion();
 
 			GameManagerClient.Instance.SpawnPlayer(id, playerName, position, rotation);
 		}
@@ -121,14 +113,14 @@ namespace NetworkTutorial.Client.Net
 				}
 			}
 
-			GameManagerClient.Instance.Players.Remove(clientId);
 			GameObject.Destroy(GameManagerClient.Instance.Players[clientId].gameObject);
+			GameManagerClient.Instance.Players.Remove(clientId);
 		}
 
 		public static void OnPlayerRotationUpdate(Packet packet)
 		{
 			var id = packet.ReadByte();
-			var rotation = new Quaternion(0, packet.ReadFloat(), 0, packet.ReadFloat());
+			var rotation = packet.ReadQuaternion();
 
 			GameManagerClient.Instance.Players[id].transform.rotation = rotation;
 		}
@@ -136,15 +128,18 @@ namespace NetworkTutorial.Client.Net
 		public static void OnPlayerHealthUpdate(Packet packet)
 		{
 			var clientId = packet.ReadByte();
-			var newHealth = packet.ReadFloat();
-			GameManagerClient.Instance.Players[clientId].SetHealth(clientId, newHealth);
+			var wholeNumber = packet.ReadByte();
+			var decimalsValue = ValueTypeConversions.ReturnShortAsFloat(packet.ReadShort());
+
+			GameManagerClient.Instance.Players[clientId].SetHealth(clientId, (float)wholeNumber + decimalsValue);
 		}
+
 		public static void OnPlayerRespawn(Packet packet)
 		{
 			var id = packet.ReadByte();
-			var pos = new Vector3(packet.ReadFloat(), packet.ReadFloat(), packet.ReadFloat());
+			var position = packet.ReadVector3();
 
-			GameManagerClient.Instance.Players[id].Respawn(pos);
+			GameManagerClient.Instance.Players[id].Respawn(position);
 		}
 
 		public static void OnHealthpackActivate(Packet packet)
@@ -158,25 +153,25 @@ namespace NetworkTutorial.Client.Net
 		public static void OnHealthpackSpawn(Packet packet)
 		{
 			var id = packet.ReadByte();
-			var pos = new Vector3(packet.ReadFloat(), packet.ReadFloat(), packet.ReadFloat());
+			var position = packet.ReadVector3();
 
-			GameManagerClient.Instance.SpawnHealthPack(id, pos);
+			GameManagerClient.Instance.SpawnHealthPack(id, position);
 		}
 
 		public static void OnProjectileSpawn(Packet packet)
 		{
 			var id = packet.ReadUShort();
-			var pos = new Vector3(packet.ReadFloat(), packet.ReadFloat(), packet.ReadFloat());
+			var position = packet.ReadVector3();
 
-			GameManagerClient.Instance.SpawnProjectile(id, pos);
+			GameManagerClient.Instance.SpawnProjectile(id, position);
 		}
 
 		public static void OnProjectieExplosion(Packet packet)
 		{
 			var id = packet.ReadUShort();
-			var pos = new Vector3(packet.ReadFloat(), packet.ReadFloat(), packet.ReadFloat());
+			var position = packet.ReadVector3();
 
-			GameManagerClient.Instance.Projectiles[id].Explode(pos);
+			GameManagerClient.Instance.Projectiles[id].Explode(position);
 		}
 
 	}

@@ -51,12 +51,12 @@ namespace NetworkTutorial.Server.Gameplay
 
 		public PlayerServer InstantiatePlayer()
 		{
-			return Instantiate(PlayerPrefab, new Vector3(0, 0, 0), Quaternion.identity).GetComponent<PlayerServer>();
+			return Instantiate(PlayerPrefab, new Vector3(24, 4, 22), Quaternion.identity).GetComponent<PlayerServer>();
 		}
 
-		public ProjectileServer InstantiateProjectile(Transform shootOrigin)
+		public ProjectileServer InstantiateProjectile(Transform shootOrigin, Vector3 viewDirection)
 		{
-			return Instantiate(ProjectilePrefab, shootOrigin.position + shootOrigin.forward * 0.7f, Quaternion.identity).GetComponent<ProjectileServer>();
+			return Instantiate(ProjectilePrefab, shootOrigin.position + viewDirection * 0.7f, Quaternion.identity).GetComponent<ProjectileServer>();
 		}
 
 		public static void AddHealthpackToDict(HealthpackServer hps)

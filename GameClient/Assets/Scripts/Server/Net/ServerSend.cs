@@ -1,6 +1,7 @@
 ﻿using NetworkTutorial.Server.Client;
 using NetworkTutorial.Server.Gameplay;
 using NetworkTutorial.Shared.Net;
+using NetworkTutorial.Shared.Utils;
 using System.Net;
 using UnityEngine;
 
@@ -36,22 +37,15 @@ namespace NetworkTutorial.Server.Net
 			foreach (var playerPosData in ServerSnapshot.currentSnapshot.PlayerPosition.Values)
 			{
 				packet.Write(playerPosData.Id);
-
 				packet.Write(playerPosData.SequenceNumber);
-
-				packet.Write(playerPosData.Position.x);
-				packet.Write(playerPosData.Position.y);
-				packet.Write(playerPosData.Position.z);
+				packet.Write(playerPosData.Position);
 			}
 
 			packet.Write((byte)ServerSnapshot.currentSnapshot.ProjectilePositions.Count);
 			foreach (var proj in ServerSnapshot.currentSnapshot.ProjectilePositions)
 			{
 				packet.Write(proj.id);
-
-				packet.Write(proj.transform.position.x);
-				packet.Write(proj.transform.position.y);
-				packet.Write(proj.transform.position.z);
+				packet.Write(proj.transform.position);
 			}
 
 			SendToAllClients(packet);
@@ -65,13 +59,8 @@ namespace NetworkTutorial.Server.Net
 
 			packet.Write(player.PlayerId);
 			packet.Write(player.PlayerName);
-
-			packet.Write(player.transform.position.x);
-			packet.Write(player.transform.position.y);
-			packet.Write(player.transform.position.z);
-
-			packet.Write(player.transform.rotation.y);
-			packet.Write(player.transform.rotation.w);
+			packet.Write(player.transform.position);
+			packet.Write(player.transform.rotation);
 
 			SendToClient(clientId, packet);
 			packet.Reset();
@@ -91,8 +80,7 @@ namespace NetworkTutorial.Server.Net
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerRotation);
 
 			packet.Write(player.PlayerId);
-			packet.Write(player.transform.rotation.y);
-			packet.Write(player.transform.rotation.w);
+			packet.Write(player.transform.rotation);
 
 			SendToAllClientsExcept(player.PlayerId, packet);
 			packet.Reset();
@@ -103,19 +91,19 @@ namespace NetworkTutorial.Server.Net
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerHealth);
 
 			packet.Write(player.PlayerId);
-			packet.Write(player.CurrentHealth);
+			packet.Write((byte)player.CurrentHealth);
+			packet.Write(ValueTypeConversions.ReturnDecimalsAsShort(player.CurrentHealth));
 
 			SendToAllClients(packet);
 			packet.Reset();
 		}
+
 		public static void SendPlayerRespawned_ALL(PlayerServer player)
 		{
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerRespawn);
 
 			packet.Write(player.PlayerId);
-			packet.Write(player.transform.position.x);
-			packet.Write(player.transform.position.y);
-			packet.Write(player.transform.position.z);
+			packet.Write(player.transform.position);
 
 			SendToAllClients(packet);
 			packet.Reset();
@@ -144,9 +132,7 @@ namespace NetworkTutorial.Server.Net
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.healthpackSpawn);
 
 			packet.Write(healthPackId);
-			packet.Write(position.x);
-			packet.Write(position.y);
-			packet.Write(position.z);
+			packet.Write(position);
 
 			SendToClient(clientId, packet);
 			packet.Reset();
@@ -157,9 +143,7 @@ namespace NetworkTutorial.Server.Net
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.projectileSpawn);
 
 			packet.Write(projectile.id);
-			packet.Write(projectile.transform.position.x);
-			packet.Write(projectile.transform.position.y);
-			packet.Write(projectile.transform.position.z);
+			packet.Write(projectile.transform.position);
 
 			SendToAllClients(packet);
 			packet.Reset();
@@ -170,9 +154,7 @@ namespace NetworkTutorial.Server.Net
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.projectileExplosion);
 
 			packet.Write(projectile.id);
-			packet.Write(projectile.transform.position.x);
-			packet.Write(projectile.transform.position.y);
-			packet.Write(projectile.transform.position.z);
+			packet.Write(projectile.transform.position);
 
 			SendToAllClients(packet);
 			packet.Reset();
@@ -183,7 +165,8 @@ namespace NetworkTutorial.Server.Net
 		private static void SendToClient(byte clientId, Packet packet)
 		{
 			packet.WriteLength();
-			Server.Clients[clientId].Connection.SendData(packet);
+			if (Server.Clients[clientId].Connection.endPoint != null)
+				Server.Clients[clientId].Connection.SendData(packet);
 		}
 
 		private static void SendToAllClients(Packet packet)
@@ -191,10 +174,10 @@ namespace NetworkTutorial.Server.Net
 			packet.WriteLength();
 			for (byte i = 1; i <= Server.MaxPlayers; i++)
 			{
-				if (Server.Clients[i].Connection.endPoint != null)
-				{
-					Server.Clients[i].Connection.SendData(packet);
-				}
+				if (Server.Clients[i].Connection.endPoint == null)
+					continue;
+
+				Server.Clients[i].Connection.SendData(packet);
 			}
 		}
 
@@ -203,7 +186,7 @@ namespace NetworkTutorial.Server.Net
 			packet.WriteLength();
 			for (byte i = 1; i <= Server.MaxPlayers; i++)
 			{
-				if (i == clientIdToExclude)
+				if (i == clientIdToExclude || Server.Clients[i].Connection.endPoint == null)
 					continue;
 
 				Server.Clients[i].Connection.SendData(packet);

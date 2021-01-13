@@ -80,7 +80,6 @@ namespace NetworkTutorial.Server.Client
 			public void SendData(Packet packet)
 			{
 				Server.SendPacket(endPoint, packet);
-				Debug.Log(packet.Length());
 			}
 
 			public void HandleData(Packet packet)
