@@ -1,5 +1,4 @@
 ﻿using NetworkTutorial.Client.Gameplay;
-using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Utils;
 using System.Collections.Generic;
 using UnityEngine;

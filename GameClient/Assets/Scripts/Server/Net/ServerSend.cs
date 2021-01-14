@@ -39,6 +39,7 @@ namespace NetworkTutorial.Server.Net
 				packet.Write(playerPosData.Id);
 				packet.Write(playerPosData.SequenceNumber);
 				packet.Write(playerPosData.Position);
+				packet.Write(playerPosData.Rotation);
 			}
 
 			packet.Write((byte)ServerSnapshot.currentSnapshot.ProjectilePositions.Count);
@@ -72,17 +73,6 @@ namespace NetworkTutorial.Server.Net
 			packet.Write(clientId);
 
 			SendToAllClients(packet);
-			packet.Reset();
-		}
-
-		public static void SendPlayerRotationUpdate_ALLEXCEPT(PlayerServer player)
-		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerRotation);
-
-			packet.Write(player.PlayerId);
-			packet.Write(player.transform.rotation);
-
-			SendToAllClientsExcept(player.PlayerId, packet);
 			packet.Reset();
 		}
 

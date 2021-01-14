@@ -12,12 +12,14 @@ namespace NetworkTutorial.Client.Net
 		public byte PlayerId;
 		public ushort Sequencenumber;
 		public Vector3 Position;
+		public Quaternion Rotation;
 
-		public PlayerPosData(byte playerId, ushort sequenceNumber, Vector3 position)
+		public PlayerPosData(byte playerId, ushort sequenceNumber, Vector3 position, Quaternion rotation)
 		{
 			PlayerId = playerId;
 			Sequencenumber = sequenceNumber;
 			Position = position;
+			Rotation = rotation;
 		}
 	}
 	public struct ProjectileData
@@ -60,6 +62,7 @@ namespace NetworkTutorial.Client.Net
 			byte amount, playerId;
 			ushort projId, sequenceNumber;
 			Vector3 position;
+			Quaternion rotation;
 			var players = new List<PlayerPosData>();
 			var projectiles = new List<ProjectileData>();
 
@@ -71,9 +74,10 @@ namespace NetworkTutorial.Client.Net
 
 				sequenceNumber = packet.ReadUShort();
 				position = packet.ReadVector3();
+				rotation = packet.ReadQuaternion();
 
 				if (GameManagerClient.Instance.Players.ContainsKey(playerId))
-					players.Add(new PlayerPosData(playerId, sequenceNumber, position));
+					players.Add(new PlayerPosData(playerId, sequenceNumber, position, rotation));
 			}
 
 			//projcetiles
@@ -115,14 +119,6 @@ namespace NetworkTutorial.Client.Net
 
 			GameObject.Destroy(GameManagerClient.Instance.Players[clientId].gameObject);
 			GameManagerClient.Instance.Players.Remove(clientId);
-		}
-
-		public static void OnPlayerRotationUpdate(Packet packet)
-		{
-			var id = packet.ReadByte();
-			var rotation = packet.ReadQuaternion();
-
-			GameManagerClient.Instance.Players[id].transform.rotation = rotation;
 		}
 
 		public static void OnPlayerHealthUpdate(Packet packet)

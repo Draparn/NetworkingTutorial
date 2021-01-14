@@ -2,6 +2,7 @@
 using NetworkTutorial.Client.Player;
 using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Utils;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -39,7 +40,7 @@ namespace NetworkTutorial.Client.Gameplay
 		public Dictionary<int, ProjectileClient> Projectiles = new Dictionary<int, ProjectileClient>();
 		public Dictionary<byte, GameObject> Healthpacks = new Dictionary<byte, GameObject>();
 		private Dictionary<int, Vector3> projectilesOriginalPositions = new Dictionary<int, Vector3>();
-		private Dictionary<int, Vector3> playersOriginalPositions = new Dictionary<int, Vector3>();
+		private Dictionary<int, Tuple<Vector3, Quaternion>> playersOriginalPosAndRot = new Dictionary<int, Tuple<Vector3, Quaternion>>();
 
 		public List<LocalPredictionData> LocalPositionPredictions = new List<LocalPredictionData>();
 
@@ -77,12 +78,22 @@ namespace NetworkTutorial.Client.Gameplay
 								continue;
 							else
 							{
-								if (!playersOriginalPositions.ContainsKey(playerData.PlayerId))
-									playersOriginalPositions.Add(playerData.PlayerId, Players[playerData.PlayerId].transform.position);
+								if (!playersOriginalPosAndRot.ContainsKey(playerData.PlayerId))
+									playersOriginalPosAndRot.Add(playerData.PlayerId, new Tuple<Vector3, Quaternion>(
+											Players[playerData.PlayerId].transform.position,
+											Players[playerData.PlayerId].transform.rotation));
 
+								//position
 								Players[playerData.PlayerId].transform.position = Vector3.Lerp(
-									playersOriginalPositions[playerData.PlayerId],
+									playersOriginalPosAndRot[playerData.PlayerId].Item1,
 									playerData.Position,
+									lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier)
+									);
+
+								//rotation
+								Players[playerData.PlayerId].transform.rotation = Quaternion.Lerp(
+									playersOriginalPosAndRot[playerData.PlayerId].Item2,
+									playerData.Rotation,
 									lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier)
 									);
 							}
@@ -117,7 +128,7 @@ namespace NetworkTutorial.Client.Gameplay
 					else
 						bufferTimeMultiplier = 1.0f;
 
-					playersOriginalPositions.Clear();
+					playersOriginalPosAndRot.Clear();
 					projectilesOriginalPositions.Clear();
 				}
 			}

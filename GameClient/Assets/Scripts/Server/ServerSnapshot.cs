@@ -9,12 +9,14 @@ namespace NetworkTutorial.Server
 	{
 		public byte Id;
 		public Vector3 Position;
+		public Quaternion Rotation;
 		public ushort SequenceNumber;
 
-		public PlayerPosData(byte id, Vector3 pos, ushort sequenceNumber)
+		public PlayerPosData(byte id, Vector3 pos, Quaternion rot, ushort sequenceNumber)
 		{
 			Id = id;
 			Position = pos;
+			Rotation = rot;
 			SequenceNumber = sequenceNumber;
 		}
 	}
@@ -24,19 +26,17 @@ namespace NetworkTutorial.Server
 		public static ServerSnapshot currentSnapshot = new ServerSnapshot();
 
 		public Dictionary<int, PlayerPosData> PlayerPosition = new Dictionary<int, PlayerPosData>();
-		//public Dictionary<int, Vector3> PlayerStartPositions = new Dictionary<int, Vector3>();
 		public List<ProjectileServer> ProjectilePositions = new List<ProjectileServer>();
 
-		public static void AddPlayerMovement(byte id, Vector3 pos, ushort sequenceNumber)
+		public static void AddPlayerMovement(byte id, Vector3 pos, Quaternion rot, ushort sequenceNumber)
 		{
 			if (currentSnapshot.PlayerPosition.ContainsKey(id))
 			{
-				currentSnapshot.PlayerPosition[id] = new PlayerPosData(id, pos/* - currentSnapshot.PlayerStartPositions[id]*/, sequenceNumber);
+				currentSnapshot.PlayerPosition[id] = new PlayerPosData(id, pos, rot, sequenceNumber);
 			}
 			else
 			{
-				currentSnapshot.PlayerPosition.Add(id, new PlayerPosData(id, pos, sequenceNumber));
-				//currentSnapshot.PlayerStartPositions.Add(id, pos);
+				currentSnapshot.PlayerPosition.Add(id, new PlayerPosData(id, pos, rot, sequenceNumber));
 			}
 		}
 		public static void RemovePlayerMovement(PlayerServer player)
@@ -60,7 +60,6 @@ namespace NetworkTutorial.Server
 		public static void ClearSnapshot()
 		{
 			currentSnapshot.PlayerPosition.Clear();
-			//currentSnapshot.PlayerStartPositions.Clear();
 			currentSnapshot.ProjectilePositions.Clear();
 		}
 

@@ -19,6 +19,7 @@ namespace NetworkTutorial.Server.Client
 		public Transform ShootOrigin;
 		private CharacterController controller;
 		private Vector3 prevPos;
+		private Quaternion prevRot;
 
 		public string PlayerName;
 
@@ -109,6 +110,8 @@ namespace NetworkTutorial.Server.Client
 			if (!IsMoreRecent(sequenceNumber))
 				return;
 
+			prevRot = transform.rotation;
+
 			SequenceNumber = sequenceNumber;
 			playerInput = inputs;
 			transform.rotation = rot;
@@ -116,9 +119,8 @@ namespace NetworkTutorial.Server.Client
 			prevPos = transform.position;
 			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(playerInput, transform, ref yVelocity, controller.isGrounded));
 
-			if (transform.position != prevPos)
-				ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, SequenceNumber);
-			ServerSend.SendPlayerRotationUpdate_ALLEXCEPT(this);
+			if (transform.position != prevPos || transform.rotation != prevRot)
+				ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, transform.rotation, SequenceNumber);
 		}
 
 		private bool IsMoreRecent(ushort newSequenceNumber)

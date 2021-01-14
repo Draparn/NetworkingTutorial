@@ -100,7 +100,6 @@ namespace NetworkTutorial.Client.Net
 				packethandlers.Add((int)ServerPackets.welcome, ClientHandle.OnWelcomeMessage);
 				packethandlers.Add((int)ServerPackets.serverFull, ClientHandle.OnServerFull);
 				packethandlers.Add((int)ServerPackets.spawnPlayer, ClientHandle.OnPlayerConnected);
-				packethandlers.Add((int)ServerPackets.playerRotation, ClientHandle.OnPlayerRotationUpdate);
 				packethandlers.Add((int)ServerPackets.playerDisconnected, ClientHandle.OnPlayerDisconnected);
 				packethandlers.Add((int)ServerPackets.playerHealth, ClientHandle.OnPlayerHealthUpdate);
 				packethandlers.Add((int)ServerPackets.playerRespawn, ClientHandle.OnPlayerRespawn);

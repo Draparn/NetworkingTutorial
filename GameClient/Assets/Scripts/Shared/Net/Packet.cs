@@ -12,7 +12,6 @@ namespace NetworkTutorial.Shared.Net
 		welcome = 1,
 		serverFull,
 		spawnPlayer,
-		playerRotation,
 		playerDisconnected,
 		playerRespawn,
 		playerHealth,

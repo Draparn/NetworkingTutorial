@@ -9,7 +9,6 @@ namespace NetworkTutorial.Shared.Net
 			{ServerPackets.welcome, new Packet((int)ServerPackets.welcome) },
 			{ServerPackets.serverFull, new Packet((int)ServerPackets.serverFull) },
 			{ServerPackets.spawnPlayer, new Packet((int)ServerPackets.spawnPlayer) },
-			{ServerPackets.playerRotation, new Packet((int)ServerPackets.playerRotation) },
 			{ServerPackets.playerDisconnected, new Packet((int)ServerPackets.playerDisconnected) },
 			{ServerPackets.playerRespawn, new Packet((int)ServerPackets.playerRespawn) },
 			{ServerPackets.playerHealth, new Packet((int)ServerPackets.playerHealth) },
