@@ -56,9 +56,9 @@ namespace NetworkTutorial.Server.Client
 				PlayerObject = null;
 			});
 
-			Connection.Disconnect();
-
 			ServerSend.SendPlayerDisconnected_ALL(Id);
+
+			Connection.Disconnect();
 		}
 
 		public class UDP

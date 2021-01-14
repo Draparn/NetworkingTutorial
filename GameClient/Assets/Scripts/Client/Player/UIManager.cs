@@ -50,6 +50,7 @@ namespace NetworkTutorial.Client.Player
 
 		public void ConnectionTimedOut()
 		{
+			GameOff();
 			Connecting.SetActive(false);
 			InputFields.SetActive(true);
 
@@ -58,6 +59,7 @@ namespace NetworkTutorial.Client.Player
 
 			LocalClient.Instance.MyId = 0;
 			Cursor.lockState = CursorLockMode.None;
+			Cursor.visible = true;
 		}
 
 		public void GameOn()

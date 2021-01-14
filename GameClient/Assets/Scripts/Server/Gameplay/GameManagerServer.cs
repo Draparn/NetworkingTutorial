@@ -13,6 +13,7 @@ namespace NetworkTutorial.Server.Gameplay
 		public GameObject ProjectilePrefab;
 
 		public static Dictionary<byte, HealthpackServer> healthpacks = new Dictionary<byte, HealthpackServer>();
+		public List<Vector3> respawnPoints = new List<Vector3>();
 
 		private static byte nextHealthpackId = 0;
 

@@ -18,6 +18,7 @@ namespace NetworkTutorial.Client.Player
 
 		private float yVelocity, yVelocityPreMove, clientTickRate;
 		private bool isGroundedPreMove;
+		private bool sendInputs = true;
 
 		private ushort sequenceNumber = 0;
 
@@ -46,6 +47,8 @@ namespace NetworkTutorial.Client.Player
 
 			if (Input.GetKeyDown(KeyCode.Mouse0))
 				ClientSend.SendPlayerPrimaryFire(cameraTransform.forward);
+			if (Input.GetKeyDown(KeyCode.P))
+				sendInputs = !sendInputs;
 
 			inputs.Forward = Input.GetKey(KeyCode.W);
 			inputs.Back = Input.GetKey(KeyCode.S);
@@ -71,7 +74,8 @@ namespace NetworkTutorial.Client.Player
 
 		private void SendAndPredict()
 		{
-			ClientSend.SendPlayerInputs(sequenceNumber, inputs, transform.rotation);
+			if (sendInputs)
+				ClientSend.SendPlayerInputs(sequenceNumber, inputs, transform.rotation);
 			PredictPlayerPosition();
 		}
 
@@ -99,6 +103,12 @@ namespace NetworkTutorial.Client.Player
 
 			nextPos = gameObject.transform.position;
 			gameObject.transform.position = prevPos;
+		}
+
+		public void SetRespawnPos()
+		{
+			prevPos = transform.position;
+			nextPos = transform.position;
 		}
 
 	}

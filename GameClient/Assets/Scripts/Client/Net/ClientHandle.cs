@@ -113,7 +113,7 @@ namespace NetworkTutorial.Client.Net
 				{
 					LocalClient.Instance.isConnected = false;
 					LocalClient.Instance.Connection.socket.Close();
-					UIManager.Instance.GameOff();
+					UIManager.Instance.ConnectionTimedOut();
 				}
 			}
 

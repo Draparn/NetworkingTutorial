@@ -1,4 +1,5 @@
-﻿using NetworkTutorial.Client.Net;
+﻿using NetworkTutorial.Client.Gameplay;
+using NetworkTutorial.Client.Net;
 using System.Collections;
 using UnityEngine;
 
@@ -44,7 +45,12 @@ namespace NetworkTutorial.Client.Player
 			currentHealth = newHealthValue;
 
 			if (currentHealth <= 0)
+			{
+				if (clientId == LocalClient.Instance.MyId)
+					GameManagerClient.Instance.LocalPositionPredictions.Clear();
+
 				Die();
+			}
 		}
 
 		private void FlashUI(float newHealthValue)
@@ -65,12 +71,15 @@ namespace NetworkTutorial.Client.Player
 
 		public void Respawn(Vector3 position)
 		{
+			gameObject.transform.position = position;
+			PlayerController.Instance.SetRespawnPos();
+
+			currentHealth = maxHealth;
+			rend.gameObject.SetActive(true);
+
 			UIManager.Instance.Respawn();
 			UIManager.Instance.SetHealthText(maxHealth);
 			UIManager.Instance.SetHealthTextColor(maxHealth);
-			transform.position = position;
-			currentHealth = maxHealth;
-			rend.gameObject.SetActive(true);
 		}
 
 		private IEnumerator Flicker()

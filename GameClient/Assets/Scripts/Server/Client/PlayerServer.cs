@@ -9,13 +9,6 @@ namespace NetworkTutorial.Server.Client
 	{
 		private Vector2 inputDirection;
 
-		private Vector3[] respawnPoints = new Vector3[3]
-		{
-			new Vector3(24, 4, 22),
-			new Vector3(24, 6.4f, 4),
-			new Vector3(19, 4, 42)
-		};
-
 		public Transform ShootOrigin;
 		private CharacterController controller;
 		private Vector3 prevPos;
@@ -93,12 +86,13 @@ namespace NetworkTutorial.Server.Client
 			CurrentHealth = 0;
 			controller.enabled = false;
 
+
 			Invoke(nameof(PlayerRespawn), 3);
 		}
 
 		private void PlayerRespawn()
 		{
-			transform.position = respawnPoints[Random.Range(0, 3)];
+			transform.position = GameManagerServer.Instance.respawnPoints[Random.Range(0, GameManagerServer.Instance.respawnPoints.Count)];
 			CurrentHealth = MaxHealth;
 			controller.enabled = true;
 

@@ -44,6 +44,7 @@ namespace NetworkTutorial.Client.Net
 
 				if (disconnectTimer >= 10.0)
 				{
+					Debug.Log("Server not responding. Disconnecting...");
 					Instance.Disconnect();
 					GameObject.Destroy(GameManagerClient.Instance.Players[Instance.MyId].gameObject);
 					GameManagerClient.Instance.Players.Remove(Instance.MyId);
