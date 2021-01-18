@@ -1,5 +1,6 @@
 ﻿using NetworkTutorial.Server.Client;
 using NetworkTutorial.Server.Net;
+using NetworkTutorial.Shared;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -44,7 +45,7 @@ namespace NetworkTutorial.Server.Gameplay
 				if (client.Connection.endPoint != null)
 				{
 					client.DisconnectTimer += Time.deltaTime;
-					if (client.DisconnectTimer >= 10.0f)
+					if (client.DisconnectTimer >= ConstantValues.TIMEOUT_TIMER)
 						client.Disconnect();
 				}
 			}
@@ -52,7 +53,7 @@ namespace NetworkTutorial.Server.Gameplay
 
 		public PlayerServer InstantiatePlayer()
 		{
-			return Instantiate(PlayerPrefab, new Vector3(24, 4, 22), Quaternion.identity).GetComponent<PlayerServer>();
+			return Instantiate(PlayerPrefab, respawnPoints[Random.Range(0, respawnPoints.Count)], Quaternion.identity).GetComponent<PlayerServer>();
 		}
 
 		public ProjectileServer InstantiateProjectile(Transform shootOrigin, Vector3 viewDirection)

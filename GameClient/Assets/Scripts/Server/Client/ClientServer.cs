@@ -47,18 +47,17 @@ namespace NetworkTutorial.Server.Client
 
 		public void Disconnect()
 		{
-			Debug.Log($"{Connection.endPoint.Address} has disconnected.");
+			Debug.Log($"{Connection.endPoint} has disconnected.");
+			Connection.Disconnect();
 
 			ThreadManager.ExecuteOnMainThread(() =>
 			{
-				GameObject.Destroy(PlayerObject.gameObject);
 				ServerSnapshot.RemovePlayerMovement(PlayerObject);
+				GameObject.Destroy(PlayerObject.gameObject);
 				PlayerObject = null;
 			});
 
 			ServerSend.SendPlayerDisconnected_ALL(Id);
-
-			Connection.Disconnect();
 		}
 
 		public class UDP

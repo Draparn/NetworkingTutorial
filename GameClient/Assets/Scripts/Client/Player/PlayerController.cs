@@ -44,14 +44,10 @@ namespace NetworkTutorial.Client.Player
 			if (playerManager.currentHealth <= 0)
 				return;
 
-			if (Input.GetKeyDown(KeyCode.Mouse0))
+			if (Input.GetKeyDown(KeyCode.Mouse0) && !UIManager.Instance.MenuIsActive)
 				ClientSend.SendPlayerPrimaryFire(cameraTransform.forward);
-			if (Input.GetKeyDown(KeyCode.P))
-			{
-				ClientSend.SendDisconnect();
-				LocalClient.Instance.Disconnect();
-				UIManager.Instance.ConnectionLost();
-			}
+			if (Input.GetButtonDown("Cancel"))
+				UIManager.Instance.EscapePressed();
 
 			inputs.Forward = Input.GetKey(KeyCode.W);
 			inputs.Back = Input.GetKey(KeyCode.S);

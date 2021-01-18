@@ -1,5 +1,6 @@
 ﻿using NetworkTutorial.Server.Client;
 using NetworkTutorial.Server.Net;
+using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Net;
 using System;
 using System.Collections.Generic;
@@ -44,7 +45,7 @@ namespace NetworkTutorial.Server
 		{
 			try
 			{
-				IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 0);
+				var endPoint = new IPEndPoint(IPAddress.Any, ConstantValues.SERVER_PORT);
 				var data = udpListener.EndReceive(result, ref endPoint);
 				udpListener.BeginReceive(UDPReceiveCallback, null);
 

@@ -20,7 +20,7 @@ namespace NetworkTutorial.Client.Player
 
 		private void Update()
 		{
-			if (player.currentHealth > 0)
+			if (player.currentHealth > 0 && !UIManager.Instance.MenuIsActive)
 				Look();
 		}
 

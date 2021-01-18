@@ -112,7 +112,7 @@ namespace NetworkTutorial.Client.Net
 				if (LocalClient.Instance.isConnected)
 				{
 					LocalClient.Instance.Disconnect();					
-					UIManager.Instance.ConnectionLost();
+					UIManager.Instance.ShowMainMenu();
 				}
 			}
 

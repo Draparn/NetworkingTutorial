@@ -49,15 +49,18 @@ namespace NetworkTutorial.Client.Net
 					Instance.Disconnect();
 					GameObject.Destroy(GameManagerClient.Instance.Players[Instance.MyId].gameObject);
 					GameManagerClient.Instance.Players.Remove(Instance.MyId);
-					UIManager.Instance.ConnectionLost();
+					UIManager.Instance.ShowMainMenu();
 				}
 			}
 		}
 
 		private void OnApplicationQuit()
 		{
-			ClientSend.SendDisconnect();
-			Disconnect();
+			if (isConnected)
+			{
+				ClientSend.SendDisconnect();
+				Disconnect();
+			}
 		}
 
 		public void ConnectToServer(string ip, string playerName)
@@ -93,7 +96,7 @@ namespace NetworkTutorial.Client.Net
 
 			public UDP(string ip)
 			{
-				endpoint = new IPEndPoint(IPAddress.Parse(ip), ConstantValues.PORT);
+				endpoint = new IPEndPoint(IPAddress.Parse(ip), ConstantValues.SERVER_PORT);
 				socket = new UdpClient();
 			}
 
@@ -191,7 +194,7 @@ namespace NetworkTutorial.Client.Net
 				ticker++;
 			} while (ticker < 5);
 
-			UIManager.Instance.ConnectionLost();
+			UIManager.Instance.ShowMainMenu();
 		}
 
 		public void StopConnectionTimer()
