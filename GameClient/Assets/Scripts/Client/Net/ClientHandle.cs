@@ -111,9 +111,8 @@ namespace NetworkTutorial.Client.Net
 			{
 				if (LocalClient.Instance.isConnected)
 				{
-					LocalClient.Instance.isConnected = false;
-					LocalClient.Instance.Connection.socket.Close();
-					UIManager.Instance.ConnectionTimedOut();
+					LocalClient.Instance.Disconnect();					
+					UIManager.Instance.ConnectionLost();
 				}
 			}
 
@@ -135,7 +134,7 @@ namespace NetworkTutorial.Client.Net
 			var id = packet.ReadByte();
 			var position = packet.ReadVector3();
 
-			GameManagerClient.Instance.Players[id].Respawn(position);
+			GameManagerClient.Instance.Players[id].Respawn(position, id);
 		}
 
 		public static void OnHealthpackActivate(Packet packet)

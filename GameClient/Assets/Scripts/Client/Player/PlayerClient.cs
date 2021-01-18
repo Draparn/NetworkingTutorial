@@ -69,17 +69,20 @@ namespace NetworkTutorial.Client.Player
 			rend.gameObject.SetActive(false);
 		}
 
-		public void Respawn(Vector3 position)
+		public void Respawn(Vector3 position, byte playerId)
 		{
 			gameObject.transform.position = position;
-			PlayerController.Instance.SetRespawnPos();
+			PlayerController.Instance.SetRespawnPosValues();
 
 			currentHealth = maxHealth;
 			rend.gameObject.SetActive(true);
 
-			UIManager.Instance.Respawn();
-			UIManager.Instance.SetHealthText(maxHealth);
-			UIManager.Instance.SetHealthTextColor(maxHealth);
+			if (playerId == LocalClient.Instance.MyId)
+			{
+				UIManager.Instance.Respawn();
+				UIManager.Instance.SetHealthText(maxHealth);
+				UIManager.Instance.SetHealthTextColor(maxHealth);
+			}
 		}
 
 		private IEnumerator Flicker()

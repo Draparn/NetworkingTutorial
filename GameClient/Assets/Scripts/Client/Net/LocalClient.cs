@@ -45,16 +45,18 @@ namespace NetworkTutorial.Client.Net
 				if (disconnectTimer >= 10.0)
 				{
 					Debug.Log("Server not responding. Disconnecting...");
+					ClientSend.SendDisconnect();
 					Instance.Disconnect();
 					GameObject.Destroy(GameManagerClient.Instance.Players[Instance.MyId].gameObject);
 					GameManagerClient.Instance.Players.Remove(Instance.MyId);
-					UIManager.Instance.ConnectionTimedOut();
+					UIManager.Instance.ConnectionLost();
 				}
 			}
 		}
 
 		private void OnApplicationQuit()
 		{
+			ClientSend.SendDisconnect();
 			Disconnect();
 		}
 
@@ -72,10 +74,16 @@ namespace NetworkTutorial.Client.Net
 		{
 			if (isConnected)
 			{
-				ClientSend.SendDisconnect();
 				isConnected = false;
 				Connection.socket.Close();
+				Connection = null;
 			}
+		}
+
+		public void ResetNameAndId()
+		{
+			playerName = "ClientName";
+			MyId = 0;
 		}
 
 		public class UDP
@@ -137,6 +145,7 @@ namespace NetworkTutorial.Client.Net
 
 					if (data.Length < 3)
 					{
+						ClientSend.SendDisconnect();
 						Instance.Disconnect();
 						return;
 					}
@@ -146,7 +155,8 @@ namespace NetworkTutorial.Client.Net
 				}
 				catch
 				{
-					Disconnect();
+					ClientSend.SendDisconnect();
+					Instance.Disconnect();
 				}
 			}
 
@@ -168,14 +178,6 @@ namespace NetworkTutorial.Client.Net
 				});
 			}
 
-			private void Disconnect()
-			{
-				Instance.Disconnect();
-
-				endpoint = null;
-				socket = null;
-			}
-
 		}
 
 		private IEnumerator SendConnectAndWait()
@@ -189,7 +191,7 @@ namespace NetworkTutorial.Client.Net
 				ticker++;
 			} while (ticker < 5);
 
-			UIManager.Instance.ConnectionTimedOut();
+			UIManager.Instance.ConnectionLost();
 		}
 
 		public void StopConnectionTimer()

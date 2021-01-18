@@ -48,7 +48,7 @@ namespace NetworkTutorial.Client.Player
 			LocalClient.Instance.ConnectToServer(ConnectToIPField.text, UserNameField.text);
 		}
 
-		public void ConnectionTimedOut()
+		public void ConnectionLost()
 		{
 			GameOff();
 			Connecting.SetActive(false);
@@ -57,7 +57,7 @@ namespace NetworkTutorial.Client.Player
 			ConnectToIPField.interactable = true;
 			UserNameField.interactable = true;
 
-			LocalClient.Instance.MyId = 0;
+			LocalClient.Instance.ResetNameAndId();
 			Cursor.lockState = CursorLockMode.None;
 			Cursor.visible = true;
 		}
