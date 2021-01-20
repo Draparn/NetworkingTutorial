@@ -21,7 +21,7 @@ namespace NetworkTutorial.Server.Net
 		{
 			QualitySettings.vSyncCount = 0;
 			Application.targetFrameRate = 60;
-			Server.StartServer(ConstantValues.SERVER_MAX_PLAYERS, ConstantValues.SERVER_PORT);
+			Server.StartServer(ConstantValues.SERVER_MAX_PLAYERS);
 		}
 
 		private void LateUpdate()

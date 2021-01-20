@@ -4,7 +4,7 @@ namespace NetworkTutorial.Shared
 {
 	public class ConstantValues
 	{
-		public const int SERVER_PORT = 1986;
+		public const int SERVER_PORT = 56789;
 		public const int SERVER_MAX_PLAYERS = 3;
 
 		public const float SERVER_TICK_RATE = 1.0f / 20.0f;

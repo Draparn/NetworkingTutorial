@@ -20,20 +20,18 @@ namespace NetworkTutorial.Server
 		private static UdpClient udpListener;
 
 		public static int MaxPlayers { get; set; }
-		public static int Port { get; set; }
 
-		public static void StartServer(int maxPlayers, int port)
+		public static void StartServer(int maxPlayers)
 		{
 			MaxPlayers = maxPlayers;
-			Port = port;
 
 			Debug.Log("Starting server...");
 			InitializeServerData();
 
-			udpListener = new UdpClient(Port);
+			udpListener = new UdpClient(ConstantValues.SERVER_PORT);			
 			udpListener.BeginReceive(UDPReceiveCallback, null);
 
-			Debug.Log($"Server started on port {Port}.");
+			Debug.Log($"Server started on port {ConstantValues.SERVER_PORT}.");
 		}
 
 		public static void StopServer()
@@ -45,8 +43,9 @@ namespace NetworkTutorial.Server
 		{
 			try
 			{
-				var endPoint = new IPEndPoint(IPAddress.Any, ConstantValues.SERVER_PORT);
+				var endPoint = new IPEndPoint(IPAddress.Any, 0);
 				var data = udpListener.EndReceive(result, ref endPoint);
+
 				udpListener.BeginReceive(UDPReceiveCallback, null);
 
 				if (data.Length < 4 || (!HasConnected(endPoint) && !ServerHasEmptySlot(endPoint)))
