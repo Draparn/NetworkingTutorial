@@ -2,6 +2,8 @@
 using NetworkTutorial.Client.Net;
 using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Utils;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace NetworkTutorial.Client.Player
@@ -12,12 +14,15 @@ namespace NetworkTutorial.Client.Player
 
 		private Transform cameraTransform;
 		private CharacterController controller;
-		private PlayerClient playerManager;
+		private PlayerClient playerObject;
 		private InputsStruct inputs = new InputsStruct();
 		private Vector3 prevPos, nextPos;
 
 		private float yVelocity, yVelocityPreMove, clientTickRate;
-		private bool isGroundedPreMove;
+		private byte? PressedWeaponKey = null;
+		private byte currentWeapon = 1;
+		private bool isGroundedPreMove, isSwitchingWeapon;
+		public List<Weapon> pickedUpWeapons;
 
 		private ushort sequenceNumber = 0;
 
@@ -32,23 +37,41 @@ namespace NetworkTutorial.Client.Player
 		private void Start()
 		{
 			cameraTransform = GetComponentInChildren<CameraController>().transform;
-			playerManager = GetComponent<PlayerClient>();
+			playerObject = GetComponent<PlayerClient>();
 			controller = GetComponent<CharacterController>();
 
 			prevPos = gameObject.transform.position;
 			nextPos = gameObject.transform.position;
+
+			pickedUpWeapons = Weapons.AllWeapons;
+			pickedUpWeapons[1].IsPickedUp = true;
+			pickedUpWeapons[2].IsPickedUp = true;
 		}
 
 		private void Update()
 		{
-			if (playerManager.currentHealth <= 0)
+			if (playerObject.currentHealth <= 0)
 				return;
 
-			if (Input.GetKeyDown(KeyCode.Mouse0) && !UIManager.Instance.MenuIsActive)
+			//Switched weapon
+			PressedWeaponKey = GetPressedWeaponKey();
+			if (PressedWeaponKey != null && PressedWeaponKey != currentWeapon && HasWeapon())
+			{
+				ClientSend.SendWeaponSwitch((byte)PressedWeaponKey);
+				StartCoroutine(SwitchWeapon());
+			}
+
+			//Primary Fire
+			if (Input.GetKeyDown(KeyCode.Mouse0) && !UIManager.Instance.MenuIsActive && !isSwitchingWeapon)
+			{
 				ClientSend.SendPlayerPrimaryFire(cameraTransform.forward);
+				playerObject.FireWeapon();
+			}
+
 			if (Input.GetButtonDown("Cancel"))
 				UIManager.Instance.EscapePressed();
 
+			//Inputs
 			inputs.Forward = Input.GetKey(KeyCode.W);
 			inputs.Back = Input.GetKey(KeyCode.S);
 			inputs.Left = Input.GetKey(KeyCode.A);
@@ -107,6 +130,36 @@ namespace NetworkTutorial.Client.Player
 		{
 			prevPos = transform.position;
 			nextPos = transform.position;
+		}
+
+		private byte? GetPressedWeaponKey()
+		{
+			for (byte i = (byte)KeyCode.Alpha0; i <= (byte)KeyCode.Alpha9; i++)
+			{
+				if (Input.GetKeyDown((KeyCode)i))
+					return (byte)(i - (byte)KeyCode.Alpha0);
+			}
+
+			return null;
+		}
+
+		private bool HasWeapon()
+		{
+			if (pickedUpWeapons[(byte)PressedWeaponKey].IsPickedUp)
+				return true;
+
+			return false;
+		}
+
+		private IEnumerator SwitchWeapon()
+		{
+			isSwitchingWeapon = true;
+
+			//Play animation here
+
+			currentWeapon = (byte)PressedWeaponKey;
+			yield return new WaitForSeconds(ConstantValues.PLAYER_WEAPON_SWITCH_TIME);
+			isSwitchingWeapon = false;
 		}
 
 	}

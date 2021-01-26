@@ -99,6 +99,7 @@ namespace NetworkTutorial.Server
 			PacketHandlers.Add((byte)ClientPackets.disconnect, ServerHandle.OnDisconnect);
 			PacketHandlers.Add((byte)ClientPackets.playerMovement, ServerHandle.OnPlayerMovement);
 			PacketHandlers.Add((byte)ClientPackets.playerPrimaryFire, ServerHandle.OnPlayerPrimaryFire);
+			PacketHandlers.Add((byte)ClientPackets.playerWeaponSwitch, ServerHandle.OnPlayerWeaponSwitch);
 		}
 
 		private static bool HasConnected(IPEndPoint endPoint)

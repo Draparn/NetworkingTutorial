@@ -12,8 +12,11 @@ namespace NetworkTutorial.Client.Net
 		internal List<PlayerPosData> players;
 		internal List<ProjectileData> projectiles;
 
-		public ClientSnapshot(List<PlayerPosData> players, List<ProjectileData> projectiles)
+		public uint sequenceNumber;
+
+		public ClientSnapshot(uint sequenceNumber, List<PlayerPosData> players, List<ProjectileData> projectiles)
 		{
+			this.sequenceNumber = sequenceNumber;
 			this.players = players.Count > 0 ? players : null;
 			this.projectiles = projectiles.Count > 0 ? projectiles : null;
 

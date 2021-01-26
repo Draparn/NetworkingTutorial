@@ -46,7 +46,6 @@ namespace NetworkTutorial.Client.Gameplay
 
 		public GameObject LocalPlayerPrefab;
 		public GameObject RemotePlayerPrefab;
-		public GameObject ProjectilePrefab;
 		public GameObject HealthpackPrefab;
 
 		[SerializeField] private Transform projectilePool;
@@ -154,7 +153,7 @@ namespace NetworkTutorial.Client.Gameplay
 			return Vector3.zero;
 		}
 
-		public void SpawnPlayer(int playerId, string playerName, Vector3 pos, Quaternion rot)
+		public void SpawnPlayer(byte playerId, string playerName, Vector3 pos, Quaternion rot)
 		{
 			var player = Instantiate(playerId == LocalClient.Instance.MyId ? LocalPlayerPrefab : RemotePlayerPrefab, pos, rot);
 			var playerComponent = player.GetComponent<PlayerClient>();
@@ -163,16 +162,15 @@ namespace NetworkTutorial.Client.Gameplay
 			Players.Add(playerId, playerComponent);
 		}
 
-		public void SpawnProjectile(int id, Vector3 position)
+		public void SpawnProjectile(int id, Vector3 position, byte shotFromWeapon)
 		{
 			if (Projectiles.ContainsKey(id))
-			{
 				Projectiles[id].transform.position = position;
-				Projectiles[id].gameObject.SetActive(true);
-			}
 			else
 			{
-				var projectileManagerComponent = Instantiate(ProjectilePrefab, position, Quaternion.identity, projectilePool).GetComponent<ProjectileClient>();
+
+				var projectileManagerComponent =
+					Instantiate(Weapons.AllWeapons[shotFromWeapon].ProjectilePrefabClient, position, Quaternion.identity, projectilePool).GetComponent<ProjectileClient>();
 				Projectiles.Add(id, projectileManagerComponent);
 			}
 		}

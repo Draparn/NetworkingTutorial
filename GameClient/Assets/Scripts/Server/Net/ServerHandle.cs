@@ -40,7 +40,15 @@ namespace NetworkTutorial.Server.Net
 
 		public static void OnPlayerPrimaryFire(byte clientId, Packet packet)
 		{
-			Server.Clients[clientId].PlayerObject.PrimaryFire(packet.ReadVector3());
+			var viewDirection = packet.ReadVector3();
+			var sequenceNumber = packet.ReadUInt();
+
+			Server.Clients[clientId].PlayerObject.PrimaryFire(viewDirection, sequenceNumber);
+		}
+
+		public static void OnPlayerWeaponSwitch(byte clientId, Packet packet)
+		{
+			Server.Clients[clientId].PlayerObject.WeaponSwitch(packet.ReadByte());
 		}
 
 	}

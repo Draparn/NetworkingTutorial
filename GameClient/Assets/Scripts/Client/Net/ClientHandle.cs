@@ -61,10 +61,13 @@ namespace NetworkTutorial.Client.Net
 		{
 			byte amount, playerId;
 			ushort projId, sequenceNumber;
+			uint snapshotSequenceNumber;
 			Vector3 position;
 			Quaternion rotation;
 			var players = new List<PlayerPosData>();
 			var projectiles = new List<ProjectileData>();
+
+			snapshotSequenceNumber = packet.ReadUInt();
 
 			//players
 			amount = packet.ReadByte();
@@ -91,7 +94,7 @@ namespace NetworkTutorial.Client.Net
 					projectiles.Add(new ProjectileData(projId, position));
 			}
 
-			ClientSnapshot.Snapshots.Add(new ClientSnapshot(players, projectiles));
+			ClientSnapshot.Snapshots.Add(new ClientSnapshot(snapshotSequenceNumber, players, projectiles));
 		}
 
 		public static void OnPlayerConnected(Packet packet)
@@ -111,7 +114,7 @@ namespace NetworkTutorial.Client.Net
 			{
 				if (LocalClient.Instance.isConnected)
 				{
-					LocalClient.Instance.Disconnect();					
+					LocalClient.Instance.Disconnect();
 					UIManager.Instance.ShowMainMenu();
 				}
 			}
@@ -128,7 +131,13 @@ namespace NetworkTutorial.Client.Net
 
 			GameManagerClient.Instance.Players[clientId].SetHealth(clientId, (float)wholeNumber + decimalsValue);
 		}
+		public static void OnPlayerWeaponSwitch(Packet packet)
+		{
+			var clientId = packet.ReadByte();
+			var weaponSlot = packet.ReadByte();
 
+			GameManagerClient.Instance.Players[clientId].SetWeaponMesh(weaponSlot);
+		}
 		public static void OnPlayerRespawn(Packet packet)
 		{
 			var id = packet.ReadByte();
@@ -157,10 +166,13 @@ namespace NetworkTutorial.Client.Net
 		{
 			var id = packet.ReadUShort();
 			var position = packet.ReadVector3();
+			var shotFromWeapon = packet.ReadByte();
 
-			GameManagerClient.Instance.SpawnProjectile(id, position);
+			if (GameManagerClient.Instance.Projectiles.ContainsKey(id))
+				GameManagerClient.Instance.Projectiles[id].gameObject.SetActive(true);
+
+			GameManagerClient.Instance.SpawnProjectile(id, position, shotFromWeapon);
 		}
-
 		public static void OnProjectieExplosion(Packet packet)
 		{
 			var id = packet.ReadUShort();

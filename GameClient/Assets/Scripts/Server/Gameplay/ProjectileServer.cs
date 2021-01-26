@@ -1,5 +1,6 @@
 ﻿using NetworkTutorial.Server.Client;
 using NetworkTutorial.Server.Net;
+using NetworkTutorial.Shared;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,7 +17,8 @@ namespace NetworkTutorial.Server.Gameplay
 
 		private Vector3 initialForce;
 
-		private byte thrownByPlayer;
+		public byte shotFromWeapon;
+		private byte shotByPlayer;
 
 		[SerializeField] private float fuseTimer = 1;
 		[SerializeField] private float explosionRadius = 2.5f;
@@ -48,7 +50,7 @@ namespace NetworkTutorial.Server.Gameplay
 			rb = GetComponent<Rigidbody>();
 			rb.AddForce(initialForce);
 
-			Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), Server.Clients[thrownByPlayer].PlayerObject.GetComponent<CharacterController>());
+			Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), Server.Clients[shotByPlayer].PlayerObject.GetComponent<CharacterController>());
 
 			Invoke(nameof(Explode), fuseTimer);
 		}
@@ -62,14 +64,15 @@ namespace NetworkTutorial.Server.Gameplay
 		{
 			var playerComp = other.transform.GetComponent<PlayerServer>();
 
-			if (playerComp != null && playerComp.PlayerId != thrownByPlayer && playerComp.CurrentHealth > 0)
+			if (playerComp != null && playerComp.PlayerId != shotByPlayer && playerComp.CurrentHealth > 0)
 				Explode();
 		}
 
-		public void Init(Vector3 viewDirection, float initialforceStrength, byte thrownByPlayer)
+		public void Init(Vector3 viewDirection, Weapon shotFromWeapon, byte shotByPlayer)
 		{
-			initialForce = viewDirection * initialforceStrength;
-			this.thrownByPlayer = thrownByPlayer;
+			this.shotFromWeapon = (byte)Weapons.AllWeapons.IndexOf(shotFromWeapon);
+			this.shotByPlayer = shotByPlayer;
+			initialForce = viewDirection * shotFromWeapon.projExitVelocity;
 		}
 
 		private void Explode()

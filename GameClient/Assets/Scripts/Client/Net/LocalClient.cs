@@ -75,12 +75,9 @@ namespace NetworkTutorial.Client.Net
 
 		public void Disconnect()
 		{
-			if (isConnected)
-			{
-				isConnected = false;
-				Connection.socket.Close();
-				Connection = null;
-			}
+			isConnected = false;
+			Connection.socket.Close();
+			Connection = null;
 		}
 
 		public void ResetNameAndId()
@@ -111,10 +108,11 @@ namespace NetworkTutorial.Client.Net
 				packethandlers = new Dictionary<int, PacketHandler>();
 				packethandlers.Add((int)ServerPackets.welcome, ClientHandle.OnWelcomeMessage);
 				packethandlers.Add((int)ServerPackets.serverFull, ClientHandle.OnServerFull);
-				packethandlers.Add((int)ServerPackets.spawnPlayer, ClientHandle.OnPlayerConnected);
+				packethandlers.Add((int)ServerPackets.playerSpawn, ClientHandle.OnPlayerConnected);
 				packethandlers.Add((int)ServerPackets.playerDisconnected, ClientHandle.OnPlayerDisconnected);
 				packethandlers.Add((int)ServerPackets.playerHealth, ClientHandle.OnPlayerHealthUpdate);
 				packethandlers.Add((int)ServerPackets.playerRespawn, ClientHandle.OnPlayerRespawn);
+				packethandlers.Add((int)ServerPackets.playerWeaponSwitch, ClientHandle.OnPlayerWeaponSwitch);
 				packethandlers.Add((int)ServerPackets.projectileSpawn, ClientHandle.OnProjectileSpawn);
 				packethandlers.Add((int)ServerPackets.projectileExplosion, ClientHandle.OnProjectieExplosion);
 				packethandlers.Add((int)ServerPackets.healthpackActivate, ClientHandle.OnHealthpackActivate);

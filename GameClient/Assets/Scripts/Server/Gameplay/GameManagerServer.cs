@@ -11,7 +11,6 @@ namespace NetworkTutorial.Server.Gameplay
 		public static GameManagerServer Instance;
 
 		public GameObject PlayerPrefab;
-		public GameObject ProjectilePrefab;
 
 		public static Dictionary<byte, HealthpackServer> healthpacks = new Dictionary<byte, HealthpackServer>();
 		public List<Vector3> respawnPoints = new List<Vector3>();
@@ -45,7 +44,7 @@ namespace NetworkTutorial.Server.Gameplay
 				if (client.Connection.endPoint != null)
 				{
 					client.DisconnectTimer += Time.deltaTime;
-					if (client.DisconnectTimer >= ConstantValues.TIMEOUT_TIMER)
+					if (client.DisconnectTimer >= ConstantValues.CONNECTION_TIMEOUT_TIMER)
 						client.Disconnect();
 				}
 			}
@@ -56,9 +55,9 @@ namespace NetworkTutorial.Server.Gameplay
 			return Instantiate(PlayerPrefab, respawnPoints[Random.Range(0, respawnPoints.Count)], Quaternion.identity).GetComponent<PlayerServer>();
 		}
 
-		public ProjectileServer InstantiateProjectile(Transform shootOrigin, Vector3 viewDirection)
+		public ProjectileServer InstantiateProjectile(Transform shootOrigin, Vector3 viewDirection, GameObject projectilePrefab)
 		{
-			return Instantiate(ProjectilePrefab, shootOrigin.position + viewDirection * 0.7f, Quaternion.identity).GetComponent<ProjectileServer>();
+			return Instantiate(projectilePrefab, shootOrigin.position + viewDirection * 0.7f, Quaternion.identity).GetComponent<ProjectileServer>();
 		}
 
 		public static void AddHealthpackToDict(HealthpackServer hps)

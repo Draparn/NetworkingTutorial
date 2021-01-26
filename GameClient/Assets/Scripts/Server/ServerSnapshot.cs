@@ -1,5 +1,6 @@
 ﻿using NetworkTutorial.Server.Client;
 using NetworkTutorial.Server.Gameplay;
+using NetworkTutorial.Shared;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,26 +24,34 @@ namespace NetworkTutorial.Server
 
 	public class ServerSnapshot
 	{
+		public ServerSnapshot(ServerSnapshot snapshot = null)
+		{
+			if (snapshot != null)
+			{
+				SequenceNumber = snapshot.SequenceNumber;
+				PlayerPositions = snapshot.PlayerPositions;
+				ProjectilePositions = snapshot.ProjectilePositions;
+			}
+		}
+
+		public static List<ServerSnapshot> OldSnapshots = new List<ServerSnapshot>();
 		public static ServerSnapshot currentSnapshot = new ServerSnapshot();
 
-		public Dictionary<int, PlayerPosData> PlayerPosition = new Dictionary<int, PlayerPosData>();
+		public Dictionary<byte, PlayerPosData> PlayerPositions = new Dictionary<byte, PlayerPosData>();
 		public List<ProjectileServer> ProjectilePositions = new List<ProjectileServer>();
+
+		public uint SequenceNumber;
 
 		public static void AddPlayerMovement(byte id, Vector3 pos, Quaternion rot, ushort sequenceNumber)
 		{
-			if (currentSnapshot.PlayerPosition.ContainsKey(id))
-			{
-				currentSnapshot.PlayerPosition[id] = new PlayerPosData(id, pos, rot, sequenceNumber);
-			}
+			if (currentSnapshot.PlayerPositions.ContainsKey(id))
+				currentSnapshot.PlayerPositions[id] = new PlayerPosData(id, pos, rot, sequenceNumber);
 			else
-			{
-				currentSnapshot.PlayerPosition.Add(id, new PlayerPosData(id, pos, rot, sequenceNumber));
-			}
+				currentSnapshot.PlayerPositions.Add(id, new PlayerPosData(id, pos, rot, sequenceNumber));
 		}
 		public static void RemovePlayerMovement(PlayerServer player)
 		{
-			if (currentSnapshot.PlayerPosition.ContainsKey(player.PlayerId))
-				currentSnapshot.PlayerPosition.Remove(player.PlayerId);
+			currentSnapshot.PlayerPositions.Remove(player.PlayerId);
 		}
 
 		public static void AddProjectileMovement(ProjectileServer proj)
@@ -57,10 +66,27 @@ namespace NetworkTutorial.Server
 			currentSnapshot.ProjectilePositions.Remove(proj);
 		}
 
+		public static ServerSnapshot GetOldSnapshot(uint sequenceNumber)
+		{
+			for (int i = 0; i < OldSnapshots.Count; i++)
+			{
+				if (OldSnapshots[i].SequenceNumber == sequenceNumber)
+					return OldSnapshots[i];
+			}
+
+			return OldSnapshots[0];
+		}
+
 		public static void ClearSnapshot()
 		{
-			currentSnapshot.PlayerPosition.Clear();
+			OldSnapshots.Add(new ServerSnapshot(currentSnapshot));
+
+			if (OldSnapshots.Count > 1 / ConstantValues.SERVER_TICK_RATE) //One second's worth of snapshots
+				OldSnapshots.RemoveAt(0);
+
+			currentSnapshot.PlayerPositions.Clear();
 			currentSnapshot.ProjectilePositions.Clear();
+			currentSnapshot.SequenceNumber++;
 		}
 
 	}

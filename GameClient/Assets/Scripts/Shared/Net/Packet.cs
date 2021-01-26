@@ -11,10 +11,11 @@ namespace NetworkTutorial.Shared.Net
 	{
 		welcome = 1,
 		serverFull,
-		spawnPlayer,
+		playerSpawn,
 		playerDisconnected,
 		playerRespawn,
 		playerHealth,
+		playerWeaponSwitch,
 		projectileSpawn,
 		projectileExplosion,
 		healthpackSpawn,
@@ -30,7 +31,8 @@ namespace NetworkTutorial.Shared.Net
 		welcomeReceived,
 		disconnect,
 		playerMovement,
-		playerPrimaryFire
+		playerPrimaryFire,
+		playerWeaponSwitch
 	}
 
 	public class Packet : IDisposable

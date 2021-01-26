@@ -56,11 +56,21 @@ namespace NetworkTutorial.Client.Net
 			var packet = PacketFactory.GetClientPacketType(ClientPackets.playerPrimaryFire);
 
 			packet.Write(facing);
+			packet.Write(ClientSnapshot.Snapshots[0].sequenceNumber);
 
 			SendPacket(packet);
 			packet.Reset();
 		}
 
+		public static void SendWeaponSwitch(byte weaponKey)
+		{
+			var packet = PacketFactory.GetClientPacketType(ClientPackets.playerWeaponSwitch);
+
+			packet.Write(weaponKey);
+
+			SendPacket(packet);
+			packet.Reset();
+		}
 
 		private static void SendPacket(Packet packet)
 		{

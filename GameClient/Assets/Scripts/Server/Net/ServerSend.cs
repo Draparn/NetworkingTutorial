@@ -33,8 +33,10 @@ namespace NetworkTutorial.Server.Net
 		{
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.serverSnapshot);
 
-			packet.Write((byte)ServerSnapshot.currentSnapshot.PlayerPosition.Count);
-			foreach (var playerPosData in ServerSnapshot.currentSnapshot.PlayerPosition.Values)
+			packet.Write(ServerSnapshot.currentSnapshot.SequenceNumber);
+
+			packet.Write((byte)ServerSnapshot.currentSnapshot.PlayerPositions.Count);
+			foreach (var playerPosData in ServerSnapshot.currentSnapshot.PlayerPositions.Values)
 			{
 				packet.Write(playerPosData.Id);
 				packet.Write(playerPosData.SequenceNumber);
@@ -56,7 +58,7 @@ namespace NetworkTutorial.Server.Net
 
 		public static void SendPlayerConnected_CLIENT(byte clientId, PlayerServer player)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.spawnPlayer);
+			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerSpawn);
 
 			packet.Write(player.PlayerId);
 			packet.Write(player.PlayerName);
@@ -87,7 +89,16 @@ namespace NetworkTutorial.Server.Net
 			SendToAllClients(packet);
 			packet.Reset();
 		}
+		public static void SendPlayerSwitchedWeapon_ALL(PlayerServer player)
+		{
+			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerWeaponSwitch);
 
+			packet.Write(player.PlayerId);
+			packet.Write(player.currentWeaponSlot);
+
+			SendToAllClients(packet);
+			packet.Reset();
+		}
 		public static void SendPlayerRespawned_ALL(PlayerServer player)
 		{
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerRespawn);
@@ -134,6 +145,7 @@ namespace NetworkTutorial.Server.Net
 
 			packet.Write(projectile.id);
 			packet.Write(projectile.transform.position);
+			packet.Write(projectile.shotFromWeapon);
 
 			SendToAllClients(packet);
 			packet.Reset();

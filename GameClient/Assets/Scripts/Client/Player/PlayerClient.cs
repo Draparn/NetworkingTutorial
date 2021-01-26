@@ -1,5 +1,7 @@
 ﻿using NetworkTutorial.Client.Gameplay;
+using NetworkTutorial.Client.Gameplay.WeaponScrips;
 using NetworkTutorial.Client.Net;
+using NetworkTutorial.Shared;
 using System.Collections;
 using UnityEngine;
 
@@ -8,30 +10,31 @@ namespace NetworkTutorial.Client.Player
 	public class PlayerClient : MonoBehaviour
 	{
 		public GameObject PlayerMesh;
-		private MeshRenderer rend;
-		private Camera menuCamera;
+		public GameObject WeaponMeshHolder;
+		private GameObject currentWeapon;
+		private MeshRenderer PlayerMeshRenderer;
 
 		private Color originalColor;
-
-		private string PlayerName;
 
 		public float currentHealth;
 		public float maxHealth = 100.0f;
 
-		private int PlayerId;
+		private string PlayerName;
+		private byte PlayerId;
 
 		private bool flickering = false;
 
-		public void Init(int id, string playerName)
+		public void Init(byte id, string playerName)
 		{
 			PlayerId = id;
 			PlayerName = playerName;
 			currentHealth = maxHealth;
-			rend = PlayerMesh.GetComponent<MeshRenderer>();
-			originalColor = rend.material.color;
+			PlayerMeshRenderer = PlayerMesh.GetComponent<MeshRenderer>();
+			originalColor = PlayerMeshRenderer.material.color;
+			SetWeaponMesh(1);
 		}
 
-		public void SetHealth(int clientId, float newHealthValue)
+		public void SetHealth(byte clientId, float newHealthValue)
 		{
 			if (clientId == LocalClient.Instance.MyId)
 				FlashUI(newHealthValue);
@@ -53,6 +56,19 @@ namespace NetworkTutorial.Client.Player
 			}
 		}
 
+		public void FireWeapon()
+		{
+			currentWeapon.GetComponent<ClientWeapon>()?.Shoot();
+		}
+
+		public void SetWeaponMesh(byte weaponSlot)
+		{
+			if (WeaponMeshHolder.transform.childCount > 0)
+				Destroy(WeaponMeshHolder.transform.GetChild(0).gameObject);
+
+			currentWeapon = Instantiate(Weapons.AllWeapons[weaponSlot].ClientPrefab, WeaponMeshHolder.transform);
+		}
+
 		private void FlashUI(float newHealthValue)
 		{
 			if (newHealthValue < currentHealth)
@@ -66,16 +82,19 @@ namespace NetworkTutorial.Client.Player
 
 		private void Die()
 		{
-			rend.gameObject.SetActive(false);
+			PlayerMeshRenderer.gameObject.SetActive(false);
+			currentWeapon.SetActive(false);
 		}
 
 		public void Respawn(Vector3 position, byte playerId)
 		{
 			gameObject.transform.position = position;
 			PlayerController.Instance.SetRespawnPosValues();
+			PlayerController.Instance.pickedUpWeapons = Weapons.AllWeapons;
+			SetWeaponMesh(1);
 
 			currentHealth = maxHealth;
-			rend.gameObject.SetActive(true);
+			PlayerMeshRenderer.gameObject.SetActive(true);
 
 			if (playerId == LocalClient.Instance.MyId)
 			{
@@ -92,9 +111,9 @@ namespace NetworkTutorial.Client.Player
 			byte counter = 0;
 			do
 			{
-				rend.material.color = Color.red;
+				PlayerMeshRenderer.material.color = Color.red;
 				yield return new WaitForSeconds(0.1f);
-				rend.material.color = originalColor;
+				PlayerMeshRenderer.material.color = originalColor;
 				yield return new WaitForSeconds(0.1f);
 
 				counter++;
