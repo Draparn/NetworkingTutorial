@@ -44,7 +44,6 @@ namespace NetworkTutorial.Client.Player
 			nextPos = gameObject.transform.position;
 
 			pickedUpWeapons = Weapons.AllWeapons;
-			pickedUpWeapons[1].IsPickedUp = true;
 			pickedUpWeapons[2].IsPickedUp = true;
 		}
 
@@ -126,10 +125,13 @@ namespace NetworkTutorial.Client.Player
 			gameObject.transform.position = prevPos;
 		}
 
-		public void SetRespawnPosValues()
+		public void SetRespawnValues()
 		{
 			prevPos = transform.position;
 			nextPos = transform.position;
+			pickedUpWeapons = Weapons.AllWeapons;
+			pickedUpWeapons[2].IsPickedUp = true;
+			currentWeapon = 1;
 		}
 
 		private byte? GetPressedWeaponKey()

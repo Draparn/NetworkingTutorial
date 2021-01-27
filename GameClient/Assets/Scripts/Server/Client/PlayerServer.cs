@@ -33,7 +33,6 @@ namespace NetworkTutorial.Server.Client
 			controller = gameObject.GetComponent<CharacterController>();
 
 			pickedUpWeapons = Weapons.AllWeapons;
-			pickedUpWeapons[1].IsPickedUp = true;
 			pickedUpWeapons[2].IsPickedUp = true;
 			currentWeaponSlot = 1;
 		}
@@ -61,7 +60,9 @@ namespace NetworkTutorial.Server.Client
 				if (Physics.Raycast(ShootOrigin.position, viewDirection, out RaycastHit hit))
 				{
 					if (hit.collider.CompareTag("Player"))
+					{
 						hit.collider.GetComponent<PlayerServer>().TakeDamage(pickedUpWeapons[currentWeaponSlot].Damage);
+					}
 				}
 				RestorePlayerPositions();
 			}
@@ -104,7 +105,7 @@ namespace NetworkTutorial.Server.Client
 			CurrentHealth = 0;
 			controller.enabled = false;
 
-			Invoke(nameof(PlayerRespawn), 3);
+			Invoke(nameof(PlayerRespawn), ConstantValues.PLAYER_RESPAWN_TIME);
 		}
 
 		private void PlayerRespawn()
@@ -113,12 +114,16 @@ namespace NetworkTutorial.Server.Client
 			CurrentHealth = MaxHealth;
 			controller.enabled = true;
 
+			pickedUpWeapons = Weapons.AllWeapons;
+			pickedUpWeapons[2].IsPickedUp = true;
+			currentWeaponSlot = 1;
+
 			ServerSend.SendPlayerRespawned_ALL(this);
 		}
 
 		public void UpdatePosAndRot(ushort sequenceNumber, InputsStruct inputs, Quaternion rot)
 		{
-			if (!IsMoreRecent(sequenceNumber))
+			if (!IsMoreRecent(sequenceNumber) && controller.enabled == true)
 				return;
 
 			prevRot = transform.rotation;
@@ -159,6 +164,10 @@ namespace NetworkTutorial.Server.Client
 			{
 				if (Server.Clients[kvp.Key].PlayerObject.CurrentHealth > 0)
 					Server.Clients[kvp.Key].PlayerObject.transform.position = kvp.Value;
+				else
+				{
+
+				}
 			}
 		}
 

@@ -86,8 +86,7 @@ namespace NetworkTutorial.Client.Player
 		public void Respawn(Vector3 position, byte playerId)
 		{
 			gameObject.transform.position = position;
-			PlayerController.Instance.SetRespawnPosValues();
-			PlayerController.Instance.pickedUpWeapons = Weapons.AllWeapons;
+			PlayerController.Instance.SetRespawnValues();
 			SetWeaponMesh(1);
 
 			currentHealth = maxHealth;

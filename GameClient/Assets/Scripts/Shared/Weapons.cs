@@ -21,6 +21,7 @@ namespace NetworkTutorial.Shared
 				WeaponName = "Pistol",
 				ProjectileType = ProjectileType.Hitscan,
 				Ammo = ushort.MaxValue,
+				IsPickedUp = true,
 				Damage = 15
 			},
 			new Weapon
