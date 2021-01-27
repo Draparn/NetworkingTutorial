@@ -14,7 +14,7 @@ namespace NetworkTutorial.Server.Net
 			if (clientId != claimedId)
 			{
 				Debug.Log($"Player \"{userName}\" (ID: {clientId} has assumed the wrong client ID ({claimedId})!");
-				//disconnect client here and return
+				//TODO: disconnect client here and return
 			}
 
 			Debug.Log($"{Server.Clients[clientId].Connection.endPoint} connected successfully and is now player {clientId}.");
@@ -30,9 +30,7 @@ namespace NetworkTutorial.Server.Net
 		public static void OnPlayerMovement(byte clientId, Packet packet)
 		{
 			var sequenceNumber = packet.ReadUShort();
-
 			var inputs = new InputsStruct(packet.ReadBool(), packet.ReadBool(), packet.ReadBool(), packet.ReadBool(), packet.ReadBool());
-
 			var rotation = packet.ReadQuaternion();
 
 			Server.Clients[clientId].PlayerObject.UpdatePosAndRot(sequenceNumber, inputs, rotation);

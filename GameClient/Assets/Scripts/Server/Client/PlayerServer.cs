@@ -9,28 +9,24 @@ namespace NetworkTutorial.Server.Client
 {
 	public class PlayerServer : MonoBehaviour
 	{
-		private List<Weapon> pickedUpWeapons;
 		private Dictionary<byte, Vector3> currentPositions;
-
+		private List<Weapon> pickedUpWeapons;
 		public Transform ShootOrigin;
 		private CharacterController controller;
 		private ServerSnapshot oldSnapshot;
 		private ClientServer client;
 
+		private InputsStruct playerInput;
 		private Quaternion prevRot;
 		private Vector2 inputDirection;
 		private Vector3 prevPos;
 
 		public string PlayerName;
-
-		public float CurrentHealth = 100.0f;
-		public float MaxHealth = 100.0f;
+		public float CurrentHealth = 100.0f, MaxHealth = 100.0f;
 		private float yVelocity;
-
 		public byte PlayerId, currentWeaponSlot;
 		public ushort SequenceNumber = ushort.MaxValue;
 
-		private InputsStruct playerInput;
 
 		private void Start()
 		{

@@ -11,6 +11,7 @@ namespace NetworkTutorial.Server.Client
 	{
 		public PlayerServer PlayerObject;
 		public UDP Connection;
+
 		public float DisconnectTimer;
 		public byte Id;
 

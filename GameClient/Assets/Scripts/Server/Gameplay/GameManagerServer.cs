@@ -9,11 +9,9 @@ namespace NetworkTutorial.Server.Gameplay
 	public class GameManagerServer : MonoBehaviour
 	{
 		public static GameManagerServer Instance;
-
-		public GameObject PlayerPrefab;
-
 		public static Dictionary<byte, HealthpackServer> healthpacks = new Dictionary<byte, HealthpackServer>();
 		public List<Vector3> respawnPoints = new List<Vector3>();
+		public GameObject PlayerPrefab;
 
 		private static byte nextHealthpackId = 0;
 

@@ -38,15 +38,15 @@ namespace NetworkTutorial.Shared
 
 	public class Weapon
 	{
-		public GameObject ClientPrefab;
-		public GameObject ProjectilePrefabClient;
-		public GameObject ProjectilePrefabServer;
+		public GameObject ClientPrefab, ProjectilePrefabClient, ProjectilePrefabServer;
+
 		public ProjectileType ProjectileType;
+
 		public string WeaponName;
 		public float projExitVelocity;
-		public byte Damage;
 		public ushort Ammo;
 		public bool IsPickedUp;
+		public byte Damage;
 	}
 
 	public enum ProjectileType

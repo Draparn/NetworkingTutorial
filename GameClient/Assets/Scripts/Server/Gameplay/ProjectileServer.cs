@@ -9,20 +9,15 @@ namespace NetworkTutorial.Server.Gameplay
 	public class ProjectileServer : MonoBehaviour
 	{
 		public static Dictionary<int, ProjectileServer> Projectiles = new Dictionary<int, ProjectileServer>();
-		private static ushort nextProjectileId = 1;
-
-		[HideInInspector] public ushort id;
-
 		private Rigidbody rb;
 
 		private Vector3 initialForce;
 
+		private static ushort nextProjectileId = 1;
+		public ushort id;
+		private float fuseTimer = 1, explosionRadius = 2.5f;
 		public byte shotFromWeapon;
 		private byte shotByPlayer;
-
-		[SerializeField] private float fuseTimer = 1;
-		[SerializeField] private float explosionRadius = 2.5f;
-		[SerializeField] private float explosionDamage = 15.0f;
 
 		private void Start()
 		{
@@ -84,7 +79,7 @@ namespace NetworkTutorial.Server.Gameplay
 			foreach (var collider in nearbyColliders)
 			{
 				if (collider.CompareTag("Player"))
-					collider.GetComponent<PlayerServer>().TakeDamage(explosionDamage);
+					collider.GetComponent<PlayerServer>().TakeDamage(Weapons.AllWeapons[shotFromWeapon].Damage);
 			}
 
 			Projectiles.Remove(id);

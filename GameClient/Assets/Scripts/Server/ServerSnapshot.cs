@@ -8,10 +8,10 @@ namespace NetworkTutorial.Server
 {
 	public struct PlayerPosData
 	{
-		public byte Id;
 		public Vector3 Position;
 		public Quaternion Rotation;
 		public ushort SequenceNumber;
+		public byte Id;
 
 		public PlayerPosData(byte id, Vector3 pos, Quaternion rot, ushort sequenceNumber)
 		{
@@ -36,7 +36,6 @@ namespace NetworkTutorial.Server
 
 		public static List<ServerSnapshot> OldSnapshots = new List<ServerSnapshot>();
 		public static ServerSnapshot currentSnapshot = new ServerSnapshot();
-
 		public Dictionary<byte, PlayerPosData> PlayerPositions = new Dictionary<byte, PlayerPosData>();
 		public List<ProjectileServer> ProjectilePositions = new List<ProjectileServer>();
 

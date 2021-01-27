@@ -37,9 +37,10 @@ namespace NetworkTutorial.Shared.Net
 
 	public class Packet : IDisposable
 	{
-		private byte id;
 		private List<byte> buffer;
+
 		private byte[] readableBuffer;
+		private byte id;
 		private int readPos;
 
 		/// <summary>Creates a new empty packet (without an ID).</summary>

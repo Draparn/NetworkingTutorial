@@ -9,23 +9,12 @@ namespace NetworkTutorial.Client.Player
 	public class UIManager : MonoBehaviour
 	{
 		public static UIManager Instance;
-
-		public GameObject StartMenu;
-		public GameObject CrossHair;
-		public GameObject Connecting;
-		public GameObject InputFields;
-		public GameObject IngameMenu;
-		public GameObject ExitGame;
-
+		public GameObject StartMenu, CrossHair, Connecting, InputFields, IngameMenu, ExitGame;
 		public Image HurtScreen;
-		private Color healed = new Color(0, 1, 0, 0.2f);
-		private Color hurt = new Color(1, 0, 0, 0.2f);
-		private Color dead = new Color(0.5f, 0, 0, 0.8f);
-
-		public InputField ConnectToIPField;
-		public InputField UserNameField;
-
+		public InputField ConnectToIPField, UserNameField;
 		public Text HealthText;
+
+		private Color healed = new Color(0, 1, 0, 0.2f), hurt = new Color(1, 0, 0, 0.2f), dead = new Color(0.5f, 0, 0, 0.8f);
 
 		public bool MenuIsActive = true;
 

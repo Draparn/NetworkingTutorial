@@ -5,11 +5,9 @@ namespace NetworkTutorial.Client.Player
 	public class CameraController : MonoBehaviour
 	{
 		public PlayerClient player;
-		public float sensitivity = 100f;
 
-		private float clampAngle = 85f;
-		private float verticalRotation;
-		private float horizontalRotation;
+		public float sensitivity = 100f;
+		private float clampAngle = 85f, verticalRotation, horizontalRotation, mouseVertical, mouseHorizontal;
 
 		private void Start()
 		{
@@ -26,11 +24,11 @@ namespace NetworkTutorial.Client.Player
 
 		private void Look()
 		{
-			float _mouseVertical = -Input.GetAxis("Mouse Y");
-			float _mouseHorizontal = Input.GetAxis("Mouse X");
+			mouseVertical = -Input.GetAxis("Mouse Y");
+			mouseHorizontal = Input.GetAxis("Mouse X");
 
-			verticalRotation += _mouseVertical * sensitivity * Time.deltaTime;
-			horizontalRotation += _mouseHorizontal * sensitivity * Time.deltaTime;
+			verticalRotation += mouseVertical * sensitivity * Time.deltaTime;
+			horizontalRotation += mouseHorizontal * sensitivity * Time.deltaTime;
 
 			verticalRotation = Mathf.Clamp(verticalRotation, -clampAngle, clampAngle);
 

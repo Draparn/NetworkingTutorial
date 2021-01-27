@@ -44,15 +44,11 @@ namespace NetworkTutorial.Client.Gameplay
 
 		public List<LocalPredictionData> LocalPositionPredictions = new List<LocalPredictionData>();
 
-		public GameObject LocalPlayerPrefab;
-		public GameObject RemotePlayerPrefab;
-		public GameObject HealthpackPrefab;
+		public GameObject LocalPlayerPrefab, RemotePlayerPrefab, HealthpackPrefab;
 
-		[SerializeField] private Transform projectilePool;
-		[SerializeField] private Transform pickups;
+		[SerializeField] private Transform projectilePool, pickups;
 
-		private float lerpValue;
-		private float bufferTimeMultiplier = 1;
+		private float lerpValue, bufferTimeMultiplier = 1;
 
 		private void Awake()
 		{

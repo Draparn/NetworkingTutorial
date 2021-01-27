@@ -9,8 +9,7 @@ namespace NetworkTutorial.Client.Player
 {
 	public class PlayerClient : MonoBehaviour
 	{
-		public GameObject PlayerMesh;
-		public GameObject WeaponMeshHolder;
+		public GameObject PlayerMesh, WeaponMeshHolder;
 		private GameObject currentWeapon;
 		private MeshRenderer PlayerMeshRenderer;
 
@@ -18,10 +17,8 @@ namespace NetworkTutorial.Client.Player
 
 		public float currentHealth;
 		public float maxHealth = 100.0f;
-
 		private string PlayerName;
 		private byte PlayerId;
-
 		private bool flickering = false;
 
 		public void Init(byte id, string playerName)

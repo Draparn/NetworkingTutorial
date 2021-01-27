@@ -4,11 +4,7 @@ namespace NetworkTutorial.Shared.Utils
 {
 	public struct InputsStruct
 	{
-		public bool Forward;
-		public bool Back;
-		public bool Left;
-		public bool Right;
-		public bool Jump;
+		public bool Forward, Back, Left, Right, Jump;
 
 		public InputsStruct(bool forward, bool back, bool left, bool right, bool jump)
 		{

@@ -16,7 +16,6 @@ namespace NetworkTutorial.Server
 
 		public static Dictionary<byte, PacketHandler> PacketHandlers;
 		public static Dictionary<byte, ClientServer> Clients = new Dictionary<byte, ClientServer>();
-
 		private static UdpClient udpListener;
 
 		public static int MaxPlayers { get; set; }
