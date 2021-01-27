@@ -24,18 +24,17 @@ namespace NetworkTutorial.Server
 
 	public class ServerSnapshot
 	{
-		public ServerSnapshot(ServerSnapshot snapshot = null)
-		{
-			if (snapshot != null)
-			{
-				SequenceNumber = snapshot.SequenceNumber;
-				PlayerPositions = snapshot.PlayerPositions;
-				ProjectilePositions = snapshot.ProjectilePositions;
-			}
-		}
-
 		public static List<ServerSnapshot> OldSnapshots = new List<ServerSnapshot>();
 		public static ServerSnapshot currentSnapshot = new ServerSnapshot();
+
+		public ServerSnapshot() { }
+		public ServerSnapshot(uint sequenceNumber, Dictionary<byte, PlayerPosData> PlayerPositions, List<ProjectileServer> ProjectilePositions)
+		{
+			SequenceNumber = sequenceNumber;
+			this.PlayerPositions = new Dictionary<byte, PlayerPosData>(PlayerPositions);
+			this.ProjectilePositions = new List<ProjectileServer>(ProjectilePositions);
+		}
+
 		public Dictionary<byte, PlayerPosData> PlayerPositions = new Dictionary<byte, PlayerPosData>();
 		public List<ProjectileServer> ProjectilePositions = new List<ProjectileServer>();
 
@@ -73,12 +72,13 @@ namespace NetworkTutorial.Server
 					return OldSnapshots[i];
 			}
 
+			//old snapshot wasn't found, returning the oldest one
 			return OldSnapshots[0];
 		}
 
 		public static void ClearSnapshot()
 		{
-			OldSnapshots.Add(new ServerSnapshot(currentSnapshot));
+			OldSnapshots.Add(new ServerSnapshot(currentSnapshot.SequenceNumber, currentSnapshot.PlayerPositions, currentSnapshot.ProjectilePositions));
 
 			if (OldSnapshots.Count > 1 / ConstantValues.SERVER_TICK_RATE) //One second's worth of snapshots
 				OldSnapshots.RemoveAt(0);

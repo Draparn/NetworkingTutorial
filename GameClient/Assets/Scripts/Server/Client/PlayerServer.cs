@@ -60,9 +60,7 @@ namespace NetworkTutorial.Server.Client
 				if (Physics.Raycast(ShootOrigin.position, viewDirection, out RaycastHit hit))
 				{
 					if (hit.collider.CompareTag("Player"))
-					{
 						hit.collider.GetComponent<PlayerServer>().TakeDamage(pickedUpWeapons[currentWeaponSlot].Damage);
-					}
 				}
 				RestorePlayerPositions();
 			}
@@ -135,8 +133,7 @@ namespace NetworkTutorial.Server.Client
 			prevPos = transform.position;
 			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(playerInput, transform, ref yVelocity, controller.isGrounded));
 
-			if (transform.position != prevPos || transform.rotation != prevRot)
-				ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, transform.rotation, SequenceNumber);
+			ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, transform.rotation, SequenceNumber);
 		}
 
 		private bool IsMoreRecent(ushort newSequenceNumber)
@@ -150,7 +147,7 @@ namespace NetworkTutorial.Server.Client
 			for (byte i = 1; i < Server.Clients.Count; i++)
 			{
 				client = Server.Clients[i];
-				if (client.Connection.endPoint != null && oldSnapshot.PlayerPositions.ContainsKey(client.Id))
+				if (client.Connection.endPoint != null && oldSnapshot.PlayerPositions.ContainsKey(client.PlayerObject.PlayerId))
 				{
 					currentPositions.Add(client.Id, client.PlayerObject.transform.position);
 					client.PlayerObject.transform.position = oldSnapshot.PlayerPositions[client.Id].Position;
@@ -164,10 +161,6 @@ namespace NetworkTutorial.Server.Client
 			{
 				if (Server.Clients[kvp.Key].PlayerObject.CurrentHealth > 0)
 					Server.Clients[kvp.Key].PlayerObject.transform.position = kvp.Value;
-				else
-				{
-
-				}
 			}
 		}
 
