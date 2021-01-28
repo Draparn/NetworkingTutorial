@@ -35,25 +35,48 @@ namespace NetworkTutorial.Shared
 				Damage = 40
 			}
 		};
+
+		public static List<Weapon> GetNewWeapons()
+		{
+			var tempList = new List<Weapon>();
+
+			for (int i = 0; i < AllWeapons.Count; i++)
+			{
+				tempList.Add(new Weapon
+				{
+					Ammo = AllWeapons[i].Ammo,
+					ClientPrefab = AllWeapons[i].ClientPrefab,
+					Damage = AllWeapons[i].Damage,
+					IsPickedUp = AllWeapons[i].IsPickedUp,
+					ProjectilePrefabClient = AllWeapons[i].ProjectilePrefabClient,
+					ProjectilePrefabServer = AllWeapons[i].ProjectilePrefabServer,
+					ProjectileType = AllWeapons[i].ProjectileType,
+					projExitVelocity = AllWeapons[i].projExitVelocity,
+					WeaponName = AllWeapons[i].WeaponName
+				});
+			}
+
+			return tempList;
+		}
 	}
+}
 
-	public class Weapon
-	{
-		public GameObject ClientPrefab, ProjectilePrefabClient, ProjectilePrefabServer;
+public class Weapon
+{
+	public GameObject ClientPrefab, ProjectilePrefabClient, ProjectilePrefabServer;
 
-		public ProjectileType ProjectileType;
+	public ProjectileType ProjectileType;
 
-		public string WeaponName;
-		public float projExitVelocity;
-		public ushort Ammo;
-		public bool IsPickedUp;
-		public byte Damage;
-	}
+	public string WeaponName;
+	public float projExitVelocity;
+	public ushort Ammo;
+	public bool IsPickedUp;
+	public byte Damage;
+}
 
-	public enum ProjectileType
-	{
-		Hitscan = 0,
-		Grenade,
-		Rocket
-	}
+public enum ProjectileType
+{
+	Hitscan = 0,
+	Grenade,
+	Rocket
 }

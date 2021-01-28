@@ -32,8 +32,7 @@ namespace NetworkTutorial.Server.Client
 		{
 			controller = gameObject.GetComponent<CharacterController>();
 
-			pickedUpWeapons = Weapons.AllWeapons;
-			pickedUpWeapons[2].IsPickedUp = true;
+			pickedUpWeapons = Weapons.GetNewWeapons();
 			currentWeaponSlot = 1;
 		}
 
@@ -73,7 +72,7 @@ namespace NetworkTutorial.Server.Client
 
 		public void WeaponSwitch(byte weaponSlot)
 		{
-			if (pickedUpWeapons[weaponSlot].IsPickedUp)
+			if (weaponSlot < pickedUpWeapons.Count && pickedUpWeapons[weaponSlot].IsPickedUp)
 			{
 				currentWeaponSlot = weaponSlot;
 				ServerSend.SendPlayerSwitchedWeapon_ALL(this);
@@ -112,8 +111,7 @@ namespace NetworkTutorial.Server.Client
 			CurrentHealth = MaxHealth;
 			controller.enabled = true;
 
-			pickedUpWeapons = Weapons.AllWeapons;
-			pickedUpWeapons[2].IsPickedUp = true;
+			pickedUpWeapons = Weapons.GetNewWeapons();
 			currentWeaponSlot = 1;
 
 			ServerSend.SendPlayerRespawned_ALL(this);
@@ -163,6 +161,5 @@ namespace NetworkTutorial.Server.Client
 					Server.Clients[kvp.Key].PlayerObject.transform.position = kvp.Value;
 			}
 		}
-
 	}
 }

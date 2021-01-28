@@ -65,7 +65,14 @@ namespace NetworkTutorial.Server.Gameplay
 
 		public void Init(Vector3 viewDirection, Weapon shotFromWeapon, byte shotByPlayer)
 		{
-			this.shotFromWeapon = (byte)Weapons.AllWeapons.IndexOf(shotFromWeapon);
+			for (int i = 0; i < Weapons.AllWeapons.Count; i++)
+			{
+				if (Weapons.AllWeapons[i].WeaponName == shotFromWeapon.WeaponName)
+				{
+					this.shotFromWeapon = (byte)i;
+					break;
+				}
+			}
 			this.shotByPlayer = shotByPlayer;
 			initialForce = viewDirection * shotFromWeapon.projExitVelocity;
 		}

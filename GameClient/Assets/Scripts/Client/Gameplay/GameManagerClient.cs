@@ -164,7 +164,6 @@ namespace NetworkTutorial.Client.Gameplay
 				Projectiles[id].transform.position = position;
 			else
 			{
-
 				var projectileManagerComponent =
 					Instantiate(Weapons.AllWeapons[shotFromWeapon].ProjectilePrefabClient, position, Quaternion.identity, projectilePool).GetComponent<ProjectileClient>();
 				Projectiles.Add(id, projectileManagerComponent);

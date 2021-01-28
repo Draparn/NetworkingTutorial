@@ -9,12 +9,13 @@ namespace NetworkTutorial.Client.Player
 	public class UIManager : MonoBehaviour
 	{
 		public static UIManager Instance;
-		public GameObject StartMenu, CrossHair, Connecting, InputFields, IngameMenu, ExitGame;
+		public Image[] WeaponsBar = new Image[2];
+		public GameObject StartMenu, CrossHair, Connecting, InputFields, IngameMenu, ExitGame, Weapons;
 		public Image HurtScreen;
 		public InputField ConnectToIPField, UserNameField;
 		public Text HealthText;
 
-		private Color healed = new Color(0, 1, 0, 0.2f), hurt = new Color(1, 0, 0, 0.2f), dead = new Color(0.5f, 0, 0, 0.8f);
+		private Color healed = new Color(0, 1, 0, 0.2f), hurt = new Color(1, 0, 0, 0.2f), dead = new Color(0.5f, 0, 0, 0.8f), dimmed = new Color(1, 1, 1, 0.15f), full = new Color(1, 1, 1, 1);
 
 		public bool MenuIsActive = true;
 
@@ -33,6 +34,7 @@ namespace NetworkTutorial.Client.Player
 			IngameMenu.SetActive(false);
 		}
 
+		//Menu
 		public void ConnectToServer()
 		{
 			Connecting.SetActive(true);
@@ -87,6 +89,7 @@ namespace NetworkTutorial.Client.Player
 			StartMenu.SetActive(false);
 			ExitGame.SetActive(false);
 			CrossHair.SetActive(true);
+			Weapons.SetActive(true);
 			HealthText.transform.parent.gameObject.SetActive(true);
 			MenuIsActive = false;
 		}
@@ -97,6 +100,7 @@ namespace NetworkTutorial.Client.Player
 			ExitGame.SetActive(true);
 			IngameMenu.SetActive(false);
 			CrossHair.SetActive(false);
+			Weapons.SetActive(false);
 			HealthText.transform.parent.gameObject.SetActive(false);
 			MenuIsActive = true;
 		}
@@ -112,6 +116,7 @@ namespace NetworkTutorial.Client.Player
 			Application.Quit();
 		}
 
+		//In-game
 		public void TakeDamage(bool isDead)
 		{
 			if (!isDead)
@@ -149,10 +154,19 @@ namespace NetworkTutorial.Client.Player
 			HurtScreen.enabled = false;
 		}
 
+		public void PickedUpNewWeapon(byte weaponSlot)
+		{
+			WeaponsBar[weaponSlot - 1].color = full;
+		}
+
 		public void Respawn()
 		{
 			HurtScreen.color = hurt;
 			HurtScreen.enabled = false;
+
+			for (int i = 1; i < WeaponsBar.Length; i++)
+				WeaponsBar[i].color = dimmed;
 		}
+
 	}
 }

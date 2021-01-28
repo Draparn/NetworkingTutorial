@@ -20,7 +20,7 @@ namespace NetworkTutorial.Client.Player
 
 		private float yVelocity, yVelocityPreMove, clientTickRate;
 		private byte? PressedWeaponKey = null;
-		private byte currentWeapon = 1;
+		private byte currentWeapon;
 		private bool isGroundedPreMove, isSwitchingWeapon;
 		public List<Weapon> pickedUpWeapons;
 
@@ -43,8 +43,8 @@ namespace NetworkTutorial.Client.Player
 			prevPos = gameObject.transform.position;
 			nextPos = gameObject.transform.position;
 
-			pickedUpWeapons = Weapons.AllWeapons;
-			pickedUpWeapons[2].IsPickedUp = true;
+			pickedUpWeapons = Weapons.GetNewWeapons();
+			currentWeapon = 1;
 		}
 
 		private void Update()
@@ -54,7 +54,7 @@ namespace NetworkTutorial.Client.Player
 
 			//Switched weapon
 			PressedWeaponKey = GetPressedWeaponKey();
-			if (PressedWeaponKey != null && PressedWeaponKey != currentWeapon && HasWeapon())
+			if (PressedWeaponKey.HasValue && PressedWeaponKey != currentWeapon && HasWeapon())
 			{
 				ClientSend.SendWeaponSwitch((byte)PressedWeaponKey);
 				StartCoroutine(SwitchWeapon());
@@ -129,8 +129,8 @@ namespace NetworkTutorial.Client.Player
 		{
 			prevPos = transform.position;
 			nextPos = transform.position;
-			pickedUpWeapons = Weapons.AllWeapons;
-			pickedUpWeapons[2].IsPickedUp = true;
+
+			pickedUpWeapons = Weapons.GetNewWeapons();
 			currentWeapon = 1;
 		}
 
@@ -147,7 +147,7 @@ namespace NetworkTutorial.Client.Player
 
 		private bool HasWeapon()
 		{
-			if (pickedUpWeapons[(byte)PressedWeaponKey].IsPickedUp)
+			if (PressedWeaponKey < pickedUpWeapons.Count && pickedUpWeapons[(byte)PressedWeaponKey].IsPickedUp)
 				return true;
 
 			return false;
