@@ -16,11 +16,13 @@ namespace NetworkTutorial.Shared.Net
 		playerRespawn,
 		playerHealth,
 		playerWeaponSwitch,
+		weaponSpawn,
+		weaponStatusUpdate,
+		weaponPickup,
 		projectileSpawn,
 		projectileExplosion,
 		healthpackSpawn,
-		healthpackActivate,
-		healthpackDeactivate,
+		healthpackStatusUpdate,
 		serverSnapshot
 	}
 

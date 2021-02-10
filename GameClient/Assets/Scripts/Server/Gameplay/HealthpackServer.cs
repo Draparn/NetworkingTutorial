@@ -12,7 +12,7 @@ namespace NetworkTutorial.Server.Gameplay
 
 		private void Start()
 		{
-			GameManagerServer.AddHealthpackToDict(this);
+			GameManagerServer.Instance.AddHealthpackToDict(this);
 		}
 
 		private void OnTriggerEnter(Collider other)
@@ -27,7 +27,7 @@ namespace NetworkTutorial.Server.Gameplay
 				ServerSend.SendPlayerHealthUpdate_ALL(playerComp);
 
 				currentRespawnTime = RespawnTime;
-				GameManagerServer.DeactivateHealthpack(MyId);
+				GameManagerServer.Instance.DeactivateHealthpack(MyId);
 			}
 		}
 

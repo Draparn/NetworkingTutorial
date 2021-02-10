@@ -9,7 +9,8 @@ namespace NetworkTutorial.Server.Gameplay
 	public class GameManagerServer : MonoBehaviour
 	{
 		public static GameManagerServer Instance;
-		public static Dictionary<byte, HealthpackServer> healthpacks = new Dictionary<byte, HealthpackServer>();
+
+		private Dictionary<byte, HealthpackServer> healthpacks = new Dictionary<byte, HealthpackServer>();
 		public List<Vector3> respawnPoints = new List<Vector3>();
 		public GameObject PlayerPrefab;
 
@@ -58,24 +59,28 @@ namespace NetworkTutorial.Server.Gameplay
 			return Instantiate(projectilePrefab, shootOrigin.position + viewDirection * 0.7f, Quaternion.identity).GetComponent<ProjectileServer>();
 		}
 
-		public static void AddHealthpackToDict(HealthpackServer hps)
+		public void AddHealthpackToDict(HealthpackServer hps)
 		{
 			hps.MyId = nextHealthpackId;
 			healthpacks.Add(nextHealthpackId, hps);
 			nextHealthpackId++;
 		}
-		public static void DeactivateHealthpack(byte id)
+		public void DeactivateHealthpack(byte id)
 		{
 			healthpacks[id].IsActive = false;
-			ServerSend.SendHealthpackDeactivate_ALL(id);
+			ServerSend.SendHealthpackStatusUpdate_ALL(id, false);
 		}
 		private static void ActivateHealthpack(HealthpackServer hp)
 		{
 			if (!hp.RespawnCollisionCheck())
 			{
 				hp.IsActive = true;
-				ServerSend.SendHealthpackActivate_ALL(hp.MyId);
+				ServerSend.SendHealthpackStatusUpdate_ALL(hp.MyId, hp.IsActive);
 			}
+		}
+		public Dictionary<byte, HealthpackServer> GetHealthpacks()
+		{
+			return healthpacks;
 		}
 
 	}

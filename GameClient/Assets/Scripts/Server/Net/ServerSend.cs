@@ -1,5 +1,6 @@
 ﻿using NetworkTutorial.Server.Client;
 using NetworkTutorial.Server.Gameplay;
+using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Net;
 using NetworkTutorial.Shared.Utils;
 using System.Net;
@@ -110,20 +111,12 @@ namespace NetworkTutorial.Server.Net
 			packet.Reset();
 		}
 
-		public static void SendHealthpackDeactivate_ALL(byte healthpackId)
+		public static void SendHealthpackStatusUpdate_ALL(byte healthpackId, bool isActive)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.healthpackDeactivate);
+			var packet = PacketFactory.GetServerPacketType(ServerPackets.healthpackStatusUpdate);
 
 			packet.Write(healthpackId);
-
-			SendToAllClients(packet);
-			packet.Reset();
-		}
-		public static void SendHealthpackActivate_ALL(byte healthpackId)
-		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.healthpackActivate);
-
-			packet.Write(healthpackId);
+			packet.Write(isActive);
 
 			SendToAllClients(packet);
 			packet.Reset();
@@ -151,13 +144,45 @@ namespace NetworkTutorial.Server.Net
 			SendToAllClients(packet);
 			packet.Reset();
 		}
-
 		public static void SendProjectileExplosion_ALL(ProjectileServer projectile)
 		{
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.projectileExplosion);
 
 			packet.Write(projectile.id);
 			packet.Write(projectile.transform.position);
+
+			SendToAllClients(packet);
+			packet.Reset();
+		}
+
+		public static void SendWeaponSpawn_CLIENT(byte clientId, WeaponSlot weaponSlot, byte weaponId, Vector3 position, bool isActive)
+		{
+			var packet = PacketFactory.GetServerPacketType(ServerPackets.weaponSpawn);
+
+			packet.Write(weaponId);
+			packet.Write((byte)weaponSlot);
+			packet.Write(position);
+			packet.Write(isActive);
+
+			SendToClient(clientId, packet);
+			packet.Reset();
+		}
+		public static void SendWeaponPickup_CLIENT(byte playerId, WeaponSlot slot, bool isPickedUp, ushort ammoCount)
+		{
+			var packet = PacketFactory.GetServerPacketType(ServerPackets.weaponPickup);
+
+			packet.Write((byte)slot);
+			packet.Write(isPickedUp);
+			packet.Write(ammoCount);
+
+			SendToClient(playerId, packet);
+		}
+		public static void SendWeaponUpdate_ALL(byte id, bool isActive)
+		{
+			var packet = PacketFactory.GetServerPacketType(ServerPackets.weaponStatusUpdate);
+
+			packet.Write(id);
+			packet.Write(isActive);
 
 			SendToAllClients(packet);
 			packet.Reset();

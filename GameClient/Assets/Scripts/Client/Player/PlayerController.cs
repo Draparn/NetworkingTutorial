@@ -14,7 +14,7 @@ namespace NetworkTutorial.Client.Player
 
 		private Transform cameraTransform;
 		private CharacterController controller;
-		private PlayerClient playerObject;
+		private PlayerClient player;
 		private InputsStruct inputs = new InputsStruct();
 		private Vector3 prevPos, nextPos;
 
@@ -37,7 +37,7 @@ namespace NetworkTutorial.Client.Player
 		private void Start()
 		{
 			cameraTransform = GetComponentInChildren<CameraController>().transform;
-			playerObject = GetComponent<PlayerClient>();
+			player = GetComponent<PlayerClient>();
 			controller = GetComponent<CharacterController>();
 
 			prevPos = gameObject.transform.position;
@@ -49,7 +49,7 @@ namespace NetworkTutorial.Client.Player
 
 		private void Update()
 		{
-			if (playerObject.currentHealth <= 0)
+			if (player.currentHealth <= 0)
 				return;
 
 			//Switched weapon
@@ -64,7 +64,7 @@ namespace NetworkTutorial.Client.Player
 			if (Input.GetKeyDown(KeyCode.Mouse0) && !UIManager.Instance.MenuIsActive && !isSwitchingWeapon)
 			{
 				ClientSend.SendPlayerPrimaryFire(cameraTransform.forward);
-				playerObject.FireWeapon();
+				player.FireWeapon();
 			}
 
 			if (Input.GetButtonDown("Cancel"))

@@ -113,10 +113,12 @@ namespace NetworkTutorial.Client.Net
 				packethandlers.Add((int)ServerPackets.playerHealth, ClientHandle.OnPlayerHealthUpdate);
 				packethandlers.Add((int)ServerPackets.playerRespawn, ClientHandle.OnPlayerRespawn);
 				packethandlers.Add((int)ServerPackets.playerWeaponSwitch, ClientHandle.OnPlayerWeaponSwitch);
+				packethandlers.Add((int)ServerPackets.weaponPickup, ClientHandle.OnPlayerWeaponPickup);
+				packethandlers.Add((int)ServerPackets.weaponSpawn, ClientHandle.OnWeaponSpawn);
+				packethandlers.Add((int)ServerPackets.weaponStatusUpdate, ClientHandle.OnWeaponUpdate);
 				packethandlers.Add((int)ServerPackets.projectileSpawn, ClientHandle.OnProjectileSpawn);
 				packethandlers.Add((int)ServerPackets.projectileExplosion, ClientHandle.OnProjectieExplosion);
-				packethandlers.Add((int)ServerPackets.healthpackActivate, ClientHandle.OnHealthpackActivate);
-				packethandlers.Add((int)ServerPackets.healthpackDeactivate, ClientHandle.OnHealthpackDeactivate);
+				packethandlers.Add((int)ServerPackets.healthpackStatusUpdate, ClientHandle.OnHealthpackUpdate);
 				packethandlers.Add((int)ServerPackets.healthpackSpawn, ClientHandle.OnHealthpackSpawn);
 				packethandlers.Add((int)ServerPackets.serverSnapshot, ClientHandle.OnNewSnapshot);
 			}

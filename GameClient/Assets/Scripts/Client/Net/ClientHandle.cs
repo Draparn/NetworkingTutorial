@@ -1,5 +1,6 @@
 ﻿using NetworkTutorial.Client.Gameplay;
 using NetworkTutorial.Client.Player;
+using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Net;
 using NetworkTutorial.Shared.Utils;
 using System.Collections.Generic;
@@ -138,6 +139,18 @@ namespace NetworkTutorial.Client.Net
 
 			GameManagerClient.Instance.Players[clientId].SetWeaponMesh(weaponSlot);
 		}
+		public static void OnPlayerWeaponPickup(Packet packet)
+		{
+			var slot = packet.ReadByte();
+			var isPickedUp = packet.ReadBool();
+			var ammoCount = packet.ReadUShort();
+
+			var weapon = PlayerController.Instance.pickedUpWeapons[slot];
+			weapon.IsPickedUp = isPickedUp;
+			weapon.Ammo = ammoCount;
+
+			UIManager.Instance.PickedUpNewWeapon(slot);
+		}
 		public static void OnPlayerRespawn(Packet packet)
 		{
 			var id = packet.ReadByte();
@@ -146,13 +159,23 @@ namespace NetworkTutorial.Client.Net
 			GameManagerClient.Instance.Players[id].Respawn(position, id);
 		}
 
-		public static void OnHealthpackActivate(Packet packet)
+		public static void OnWeaponSpawn(Packet packet)
 		{
-			GameManagerClient.Instance.HealthpackActivate(packet.ReadByte());
+			var id = packet.ReadByte();
+			var type = (WeaponSlot)packet.ReadByte();
+			var position = packet.ReadVector3();
+			var isActive = packet.ReadBool();
+
+			GameManagerClient.Instance.SpawnWeapon(id, type, position, isActive);
 		}
-		public static void OnHealthpackDeactivate(Packet packet)
+		public static void OnWeaponUpdate(Packet packet)
 		{
-			GameManagerClient.Instance.HealthpackDeactivate(packet.ReadByte());
+			GameManagerClient.Instance.WeaponUpdate(packet.ReadByte(), packet.ReadBool());
+		}
+
+		public static void OnHealthpackUpdate(Packet packet)
+		{
+			GameManagerClient.Instance.HealthpackUpdate(packet.ReadByte(), packet.ReadBool());
 		}
 		public static void OnHealthpackSpawn(Packet packet)
 		{

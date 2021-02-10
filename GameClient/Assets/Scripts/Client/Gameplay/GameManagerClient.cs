@@ -39,6 +39,7 @@ namespace NetworkTutorial.Client.Gameplay
 		public Dictionary<int, PlayerClient> Players = new Dictionary<int, PlayerClient>();
 		public Dictionary<int, ProjectileClient> Projectiles = new Dictionary<int, ProjectileClient>();
 		public Dictionary<byte, GameObject> Healthpacks = new Dictionary<byte, GameObject>();
+		public Dictionary<byte, GameObject> WeaponPickups = new Dictionary<byte, GameObject>();
 		private Dictionary<int, Vector3> projectilesOriginalPositions = new Dictionary<int, Vector3>();
 		private Dictionary<int, Tuple<Vector3, Quaternion>> playersOriginalPosAndRot = new Dictionary<int, Tuple<Vector3, Quaternion>>();
 
@@ -170,6 +171,18 @@ namespace NetworkTutorial.Client.Gameplay
 			}
 		}
 
+		public void SpawnWeapon(byte id, WeaponSlot slot, Vector3 pos, bool isActive)
+		{
+			if (!WeaponPickups.ContainsKey(id))
+				WeaponPickups.Add(id, Instantiate(Weapons.AllWeapons[(int)slot].ClientPrefab, pos, Quaternion.identity, pickups));
+
+			WeaponPickups[id].SetActive(isActive);
+		}
+		public void WeaponUpdate(byte id, bool isActive)
+		{
+			WeaponPickups[id].SetActive(isActive);
+		}
+
 		public void SpawnHealthPack(byte id, Vector3 position, bool isActive)
 		{
 			if (!Healthpacks.ContainsKey(id))
@@ -177,13 +190,9 @@ namespace NetworkTutorial.Client.Gameplay
 			
 			Healthpacks[id].SetActive(isActive);
 		}
-		public void HealthpackActivate(byte id)
+		public void HealthpackUpdate(byte id, bool isActive)
 		{
-			Healthpacks[id].SetActive(true);
-		}
-		public void HealthpackDeactivate(byte id)
-		{
-			Healthpacks[id].SetActive(false);
+			Healthpacks[id].SetActive(isActive);
 		}
 
 	}

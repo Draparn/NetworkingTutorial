@@ -27,7 +27,8 @@ namespace NetworkTutorial.Server.Client
 			PlayerObject.Init(Id, playerName);
 
 			//Players
-			foreach (var client in Server.Clients.Values)
+			var clients = Server.Clients.Values;
+			foreach (var client in clients)
 			{
 				if (client.PlayerObject != null)
 				{
@@ -39,9 +40,17 @@ namespace NetworkTutorial.Server.Client
 			}
 
 			//Healthpacks
-			foreach (var kvp in GameManagerServer.healthpacks)
+			var healthpacks = GameManagerServer.Instance.GetHealthpacks();
+			foreach (var kvp in healthpacks)
 			{
 				ServerSend.SendHealthpackSpawn_CLIENT(Id, kvp.Key, kvp.Value.gameObject.transform.position, kvp.Value.IsActive);
+			}
+
+			//Weapon pickups
+			var grenadeLaunchers = GrenadeLauncherServer.GrenadeLaunchers;
+			foreach (var gl in grenadeLaunchers)
+			{
+				ServerSend.SendWeaponSpawn_CLIENT(Id, gl.WeaponSlot, gl.MyId, gl.gameObject.transform.position, gl.IsActive);
 			}
 
 		}

@@ -10,7 +10,7 @@ namespace NetworkTutorial.Server.Client
 	public class PlayerServer : MonoBehaviour
 	{
 		private Dictionary<byte, Vector3> currentPositions;
-		private List<Weapon> pickedUpWeapons;
+		public List<Weapon> pickedUpWeapons;
 		public Transform ShootOrigin;
 		private CharacterController controller;
 		private ServerSnapshot oldSnapshot;

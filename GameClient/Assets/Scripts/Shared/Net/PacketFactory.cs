@@ -13,11 +13,13 @@ namespace NetworkTutorial.Shared.Net
 			{ServerPackets.playerWeaponSwitch, new Packet((int)ServerPackets.playerWeaponSwitch) },
 			{ServerPackets.playerRespawn, new Packet((int)ServerPackets.playerRespawn) },
 			{ServerPackets.playerHealth, new Packet((int)ServerPackets.playerHealth) },
+			{ServerPackets.weaponSpawn, new Packet((int)ServerPackets.weaponSpawn) },
+			{ServerPackets.weaponPickup, new Packet((int)ServerPackets.weaponPickup) },
+			{ServerPackets.weaponStatusUpdate, new Packet((int)ServerPackets.weaponStatusUpdate) },
 			{ServerPackets.projectileSpawn, new Packet((int)ServerPackets.projectileSpawn) },
 			{ServerPackets.projectileExplosion, new Packet((int)ServerPackets.projectileExplosion) },
 			{ServerPackets.healthpackSpawn, new Packet((int)ServerPackets.healthpackSpawn) },
-			{ServerPackets.healthpackActivate, new Packet((int)ServerPackets.healthpackActivate) },
-			{ServerPackets.healthpackDeactivate, new Packet((int)ServerPackets.healthpackDeactivate) },
+			{ServerPackets.healthpackStatusUpdate, new Packet((int)ServerPackets.healthpackStatusUpdate) },
 			{ServerPackets.serverSnapshot, new Packet((int)ServerPackets.serverSnapshot) },
 		};
 

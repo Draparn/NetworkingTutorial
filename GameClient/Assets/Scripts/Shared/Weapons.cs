@@ -3,6 +3,13 @@ using UnityEngine;
 
 namespace NetworkTutorial.Shared
 {
+	public enum WeaponSlot
+	{
+		BFG = 0,
+		Pistol,
+		GrenadeLauncher
+	}
+
 	public class Weapons
 	{
 		public static List<Weapon> AllWeapons = new List<Weapon>()
@@ -13,6 +20,7 @@ namespace NetworkTutorial.Shared
 				WeaponName = "BFG", //PLACEHOLDER NAME! CHANGE THIS!
 				ProjectileType = ProjectileType.Hitscan,
 				Ammo = 1,
+				MaxAmmo = 1,
 				Damage = byte.MaxValue
 			},
 			new Weapon
@@ -26,13 +34,14 @@ namespace NetworkTutorial.Shared
 			},
 			new Weapon
 			{
-				ClientPrefab = (GameObject)Resources.Load("Prefabs/Client/Weapons/GrenadeLauncher"),
+				ClientPrefab = (GameObject)Resources.Load("Prefabs/Client/Weapons/GrenadeLauncherClient"),
 				ProjectilePrefabClient = (GameObject)Resources.Load("Prefabs/Client/Weapons/ClientGrenade"),
 				ProjectilePrefabServer = (GameObject)Resources.Load("Prefabs/Server/ServerGrenade"),
 				WeaponName = "GrenadeLauncher",
 				ProjectileType = ProjectileType.Grenade,
 				projExitVelocity = 600.0f,
-				Damage = 40
+				Damage = 40,
+				MaxAmmo = 20
 			}
 		};
 
@@ -59,24 +68,25 @@ namespace NetworkTutorial.Shared
 			return tempList;
 		}
 	}
-}
 
-public class Weapon
-{
-	public GameObject ClientPrefab, ProjectilePrefabClient, ProjectilePrefabServer;
+	public class Weapon
+	{
+		public GameObject ClientPrefab, ProjectilePrefabClient, ProjectilePrefabServer;
 
-	public ProjectileType ProjectileType;
+		public ProjectileType ProjectileType;
 
-	public string WeaponName;
-	public float projExitVelocity;
-	public ushort Ammo;
-	public bool IsPickedUp;
-	public byte Damage;
-}
+		public string WeaponName;
+		public float projExitVelocity;
+		public ushort Ammo;
+		public bool IsPickedUp;
+		public byte Damage;
+		public byte MaxAmmo;
+	}
 
-public enum ProjectileType
-{
-	Hitscan = 0,
-	Grenade,
-	Rocket
+	public enum ProjectileType
+	{
+		Hitscan = 0,
+		Grenade,
+		Rocket
+	}
 }

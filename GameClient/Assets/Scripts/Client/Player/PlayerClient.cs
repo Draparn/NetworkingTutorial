@@ -55,7 +55,7 @@ namespace NetworkTutorial.Client.Player
 
 		public void FireWeapon()
 		{
-			currentWeapon.GetComponent<ClientWeapon>()?.Shoot();
+			currentWeapon.GetComponent<WeaponClient>().Shoot();
 		}
 
 		public void SetWeaponMesh(byte weaponSlot)
