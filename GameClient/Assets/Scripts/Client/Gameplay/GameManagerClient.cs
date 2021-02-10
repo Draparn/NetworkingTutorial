@@ -170,10 +170,12 @@ namespace NetworkTutorial.Client.Gameplay
 			}
 		}
 
-		public void SpawnHealthPack(byte id, Vector3 position)
+		public void SpawnHealthPack(byte id, Vector3 position, bool isActive)
 		{
 			if (!Healthpacks.ContainsKey(id))
 				Healthpacks.Add(id, Instantiate(HealthpackPrefab, position, Quaternion.identity, pickups));
+			
+			Healthpacks[id].SetActive(isActive);
 		}
 		public void HealthpackActivate(byte id)
 		{

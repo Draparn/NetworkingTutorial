@@ -41,7 +41,7 @@ namespace NetworkTutorial.Server.Client
 			//Healthpacks
 			foreach (var kvp in GameManagerServer.healthpacks)
 			{
-				ServerSend.SendHealthpackSpawn_CLIENT(Id, kvp.Key, kvp.Value.gameObject.transform.position);
+				ServerSend.SendHealthpackSpawn_CLIENT(Id, kvp.Key, kvp.Value.gameObject.transform.position, kvp.Value.IsActive);
 			}
 
 		}

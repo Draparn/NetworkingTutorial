@@ -158,8 +158,9 @@ namespace NetworkTutorial.Client.Net
 		{
 			var id = packet.ReadByte();
 			var position = packet.ReadVector3();
+			var isActive = packet.ReadBool();
 
-			GameManagerClient.Instance.SpawnHealthPack(id, position);
+			GameManagerClient.Instance.SpawnHealthPack(id, position, isActive);
 		}
 
 		public static void OnProjectileSpawn(Packet packet)
