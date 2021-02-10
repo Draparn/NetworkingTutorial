@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NetworkTutorial.Client.Gameplay.WeaponScrips
 {
-	public class ClientWeapon : MonoBehaviour
+	public class PistolClient : WeaponClient
 	{
 		private SpriteRenderer muzzleFlash;
 
@@ -13,7 +13,7 @@ namespace NetworkTutorial.Client.Gameplay.WeaponScrips
 			muzzleFlash.enabled = false;
 		}
 
-		public void Shoot()
+		public override void Shoot()
 		{
 			StartCoroutine(Flash());
 		}
