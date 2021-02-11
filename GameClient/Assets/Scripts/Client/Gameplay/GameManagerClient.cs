@@ -176,6 +176,7 @@ namespace NetworkTutorial.Client.Gameplay
 			if (!WeaponPickups.ContainsKey(id))
 				WeaponPickups.Add(id, Instantiate(Weapons.AllWeapons[(int)slot].ClientPrefab, pos, Quaternion.identity, pickups));
 
+			WeaponPickups[id].AddComponent<PickupMovement>();
 			WeaponPickups[id].SetActive(isActive);
 		}
 		public void WeaponUpdate(byte id, bool isActive)

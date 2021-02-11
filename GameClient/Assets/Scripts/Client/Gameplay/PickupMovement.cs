@@ -2,7 +2,7 @@
 
 namespace NetworkTutorial.Client.Gameplay
 {
-	public class HealthpackClient : MonoBehaviour
+	public class PickupMovement : MonoBehaviour
 	{
 		Vector3 startPos;
 
