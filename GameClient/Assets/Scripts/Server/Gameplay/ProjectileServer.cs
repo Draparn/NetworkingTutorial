@@ -45,7 +45,7 @@ namespace NetworkTutorial.Server.Gameplay
 			rb = GetComponent<Rigidbody>();
 			rb.AddForce(initialForce);
 
-			Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), Server.Clients[shotByPlayer].PlayerObject.GetComponent<CharacterController>());
+			Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), Server.Clients[shotByPlayer].Player.GetComponent<CharacterController>());
 
 			Invoke(nameof(Explode), fuseTimer);
 		}

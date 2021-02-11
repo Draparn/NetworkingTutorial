@@ -18,7 +18,6 @@ namespace NetworkTutorial.Client.Net
 		{
 			var packet = PacketFactory.GetClientPacketType(ClientPackets.welcomeReceived);
 
-			packet.Write(LocalClient.Instance.MyId);
 			packet.Write(LocalClient.Instance.playerName);
 
 			SendPacket(packet);

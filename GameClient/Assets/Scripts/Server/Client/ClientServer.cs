@@ -9,7 +9,7 @@ namespace NetworkTutorial.Server.Client
 {
 	public class ClientServer
 	{
-		public PlayerServer PlayerObject;
+		public PlayerServer Player;
 		public UDP Connection;
 
 		public float DisconnectTimer;
@@ -23,19 +23,19 @@ namespace NetworkTutorial.Server.Client
 
 		public void SendIntoGame(string playerName)
 		{
-			PlayerObject = GameManagerServer.Instance.InstantiatePlayer();
-			PlayerObject.Init(Id, playerName);
+			Player = GameManagerServer.Instance.InstantiatePlayer();
+			Player.Init(Id, playerName);
 
 			//Players
 			var clients = Server.Clients.Values;
 			foreach (var client in clients)
 			{
-				if (client.PlayerObject != null)
+				if (client.Player != null)
 				{
-					ServerSend.SendPlayerConnected_CLIENT(client.Id, PlayerObject);
+					ServerSend.SendPlayerConnected_CLIENT(client.Id, Player);
 
 					if (client.Id != Id)
-						ServerSend.SendPlayerConnected_CLIENT(Id, client.PlayerObject);
+						ServerSend.SendPlayerConnected_CLIENT(Id, client.Player);
 				}
 			}
 
@@ -62,9 +62,9 @@ namespace NetworkTutorial.Server.Client
 
 			ThreadManager.ExecuteOnMainThread(() =>
 			{
-				ServerSnapshot.RemovePlayerMovement(PlayerObject);
-				GameObject.Destroy(PlayerObject.gameObject);
-				PlayerObject = null;
+				ServerSnapshot.RemovePlayerMovement(Player);
+				GameObject.Destroy(Player.gameObject);
+				Player = null;
 			});
 
 			ServerSend.SendPlayerDisconnected_ALL(Id);

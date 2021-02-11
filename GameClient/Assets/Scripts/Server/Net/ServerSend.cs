@@ -20,6 +20,16 @@ namespace NetworkTutorial.Server.Net
 			packet.Reset();
 		}
 
+		public static void SendNameTaken(byte clientId)
+		{
+			var packet = PacketFactory.GetServerPacketType(ServerPackets.nameTaken);
+
+			packet.Write("Connection error: Name was already taken.");
+
+			SendToClient(clientId, packet);
+			packet.Reset();
+		}
+
 		public static void SendServerFull(IPEndPoint endpoint)
 		{
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.serverFull);

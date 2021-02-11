@@ -159,10 +159,10 @@ namespace NetworkTutorial.Server.Client
 			for (byte i = 1; i < Server.Clients.Count; i++)
 			{
 				client = Server.Clients[i];
-				if (client.Connection.endPoint != null && oldSnapshot.PlayerPositions.ContainsKey(client.PlayerObject.PlayerId))
+				if (client.Connection.endPoint != null && oldSnapshot.PlayerPositions.ContainsKey(client.Player.PlayerId))
 				{
-					currentPositions.Add(client.Id, client.PlayerObject.transform.position);
-					client.PlayerObject.transform.position = oldSnapshot.PlayerPositions[client.Id].Position;
+					currentPositions.Add(client.Id, client.Player.transform.position);
+					client.Player.transform.position = oldSnapshot.PlayerPositions[client.Id].Position;
 				}
 			}
 		}
@@ -171,8 +171,8 @@ namespace NetworkTutorial.Server.Client
 		{
 			foreach (var kvp in currentPositions)
 			{
-				if (Server.Clients[kvp.Key].PlayerObject.CurrentHealth > 0)
-					Server.Clients[kvp.Key].PlayerObject.transform.position = kvp.Value;
+				if (Server.Clients[kvp.Key].Player.CurrentHealth > 0)
+					Server.Clients[kvp.Key].Player.transform.position = kvp.Value;
 			}
 		}
 	}

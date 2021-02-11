@@ -11,6 +11,7 @@ namespace NetworkTutorial.Shared.Net
 	{
 		welcome = 1,
 		serverFull,
+		nameTaken,
 		playerSpawn,
 		playerDisconnected,
 		playerRespawn,

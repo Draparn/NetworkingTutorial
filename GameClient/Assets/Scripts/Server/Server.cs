@@ -27,7 +27,7 @@ namespace NetworkTutorial.Server
 			Debug.Log("Starting server...");
 			InitializeServerData();
 
-			udpListener = new UdpClient(ConstantValues.SERVER_PORT);			
+			udpListener = new UdpClient(ConstantValues.SERVER_PORT);
 			udpListener.BeginReceive(UDPReceiveCallback, null);
 
 			Debug.Log($"Server started on port {ConstantValues.SERVER_PORT}.");
@@ -114,11 +114,13 @@ namespace NetworkTutorial.Server
 
 		private static bool ServerHasEmptySlot(IPEndPoint endPoint)
 		{
+			ClientServer client;
 			for (byte i = 1; i <= MaxPlayers; i++)
 			{
-				if (Clients[i].Connection.endPoint == null)
+				client = Clients[i];
+				if (client.Connection.endPoint == null)
 				{
-					Clients[i].Connection.Connect(endPoint);
+					client.Connection.Connect(endPoint);
 					ServerSend.SendWelcomeMessage_CLIENT(i);
 					return true;
 				}
@@ -126,6 +128,22 @@ namespace NetworkTutorial.Server
 
 			ServerSend.SendServerFull(endPoint);
 			Debug.Log($"{endPoint.Address} failed to connect: Server was full.");
+
+			return false;
+		}
+
+		public static bool CheckNames(byte clientId, string name)
+		{
+			ClientServer client;
+			for (byte i = 1; i < Clients.Count; i++)
+			{
+				if (i == clientId)
+					continue;
+
+				client = Clients[i];
+				if (client.Connection.endPoint != null && client.Player.PlayerName == name)
+					return true;
+			}
 
 			return false;
 		}

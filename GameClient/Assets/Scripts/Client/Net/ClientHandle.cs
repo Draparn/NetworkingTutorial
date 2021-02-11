@@ -58,6 +58,17 @@ namespace NetworkTutorial.Client.Net
 			LocalClient.Instance.StopConnectionTimer();
 		}
 
+		public static void OnNameTaken(Packet packet)
+		{
+			UIManager.Instance.ShowErrorMessage(packet.ReadString());
+
+			if (LocalClient.Instance.isConnected)
+			{
+				LocalClient.Instance.Disconnect();
+				UIManager.Instance.ShowMainMenu();
+			}
+		}
+
 		public static void OnNewSnapshot(Packet packet)
 		{
 			byte amount, playerId;

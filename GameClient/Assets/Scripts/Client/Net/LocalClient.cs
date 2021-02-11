@@ -108,6 +108,7 @@ namespace NetworkTutorial.Client.Net
 				packethandlers = new Dictionary<int, PacketHandler>();
 				packethandlers.Add((int)ServerPackets.welcome, ClientHandle.OnWelcomeMessage);
 				packethandlers.Add((int)ServerPackets.serverFull, ClientHandle.OnServerFull);
+				packethandlers.Add((int)ServerPackets.nameTaken, ClientHandle.OnNameTaken);
 				packethandlers.Add((int)ServerPackets.playerSpawn, ClientHandle.OnPlayerConnected);
 				packethandlers.Add((int)ServerPackets.playerDisconnected, ClientHandle.OnPlayerDisconnected);
 				packethandlers.Add((int)ServerPackets.playerHealth, ClientHandle.OnPlayerHealthUpdate);
