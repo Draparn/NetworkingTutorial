@@ -13,7 +13,7 @@ namespace NetworkTutorial.Client.Player
 		public GameObject StartMenu, CrossHair, Connecting, InputFields, IngameMenu, ExitGame, Weapons;
 		public Image HurtScreen;
 		public InputField ConnectToIPField, UserNameField;
-		[SerializeField] private Text HealthText, AmmoCount;
+		[SerializeField] private Text healthText, ammoCount, errorMessage;
 
 		private Color healed = new Color(0, 1, 0, 0.2f), hurt = new Color(1, 0, 0, 0.2f), dead = new Color(0.5f, 0, 0, 0.8f), dimmed = new Color(1, 1, 1, 0.15f), full = new Color(1, 1, 1, 1);
 
@@ -28,8 +28,8 @@ namespace NetworkTutorial.Client.Player
 
 			ConnectToIPField.text = "127.0.0.1";
 			UserNameField.text = "ClientName";
-			HealthText.text = "100";
-			AmmoCount.text = "Inf";
+			healthText.text = "100";
+			ammoCount.text = "Inf";
 
 			StartMenu.SetActive(true);
 			IngameMenu.SetActive(false);
@@ -56,6 +56,12 @@ namespace NetworkTutorial.Client.Player
 			GameObject.Destroy(GameManagerClient.Instance.Players[LocalClient.Instance.MyId].gameObject);
 			GameManagerClient.Instance.Players.Remove(LocalClient.Instance.MyId);
 			ShowMainMenu();
+		}
+
+		public void ShowErrorMessage(string message)
+		{
+			errorMessage.text = message;
+			errorMessage.gameObject.SetActive(true);
 		}
 
 		public void ShowMainMenu()
@@ -92,8 +98,9 @@ namespace NetworkTutorial.Client.Player
 			ExitGame.SetActive(false);
 			CrossHair.SetActive(true);
 			Weapons.SetActive(true);
-			HealthText.transform.parent.gameObject.SetActive(true);
-			AmmoCount.transform.parent.gameObject.SetActive(true);
+			healthText.transform.parent.gameObject.SetActive(true);
+			ammoCount.transform.parent.gameObject.SetActive(true);
+			errorMessage.gameObject.SetActive(false);
 			MenuIsActive = false;
 		}
 
@@ -104,8 +111,8 @@ namespace NetworkTutorial.Client.Player
 			IngameMenu.SetActive(false);
 			CrossHair.SetActive(false);
 			Weapons.SetActive(false);
-			HealthText.transform.parent.gameObject.SetActive(false);
-			AmmoCount.transform.parent.gameObject.SetActive(false);
+			healthText.transform.parent.gameObject.SetActive(false);
+			ammoCount.transform.parent.gameObject.SetActive(false);
 			MenuIsActive = true;
 		}
 
@@ -140,14 +147,14 @@ namespace NetworkTutorial.Client.Player
 
 		public void SetHealthText(float healthValue)
 		{
-			HealthText.text = healthValue.ToString();
+			healthText.text = healthValue.ToString();
 		}
 
 		public void SetHealthTextColor(float healthValue)
 		{
-			Color.RGBToHSV(HealthText.color, out _, out float S, out float V);
+			Color.RGBToHSV(healthText.color, out _, out float S, out float V);
 
-			HealthText.color = Color.HSVToRGB(healthValue / 360, S, V);
+			healthText.color = Color.HSVToRGB(healthValue / 360, S, V);
 		}
 
 		private IEnumerator DamageTint(Color color)
@@ -165,7 +172,7 @@ namespace NetworkTutorial.Client.Player
 
 		public void SetAmmoCount(string ammoCount)
 		{
-			AmmoCount.text = ammoCount;
+			this.ammoCount.text = ammoCount;
 		}
 
 		public void Respawn()
