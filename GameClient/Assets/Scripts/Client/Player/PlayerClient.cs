@@ -11,6 +11,7 @@ namespace NetworkTutorial.Client.Player
 	{
 		public GameObject PlayerMesh, WeaponMeshHolder;
 		private GameObject currentWeapon;
+		private WeaponClient wc;
 		private MeshRenderer PlayerMeshRenderer;
 
 		private Color originalColor;
@@ -28,7 +29,7 @@ namespace NetworkTutorial.Client.Player
 			currentHealth = maxHealth;
 			PlayerMeshRenderer = PlayerMesh.GetComponent<MeshRenderer>();
 			originalColor = PlayerMeshRenderer.material.color;
-			SetWeaponMesh(1);
+			SetWeaponMesh(PlayerId, (byte)WeaponSlot.Pistol);
 		}
 
 		public void SetHealth(byte clientId, float newHealthValue)
@@ -55,15 +56,19 @@ namespace NetworkTutorial.Client.Player
 
 		public void FireWeapon()
 		{
-			currentWeapon.GetComponent<WeaponClient>().Shoot();
+			wc.Shoot();
 		}
 
-		public void SetWeaponMesh(byte weaponSlot)
+		public void SetWeaponMesh(byte clientId, byte weaponSlot)
 		{
 			if (WeaponMeshHolder.transform.childCount > 0)
 				Destroy(WeaponMeshHolder.transform.GetChild(0).gameObject);
 
 			currentWeapon = Instantiate(Weapons.AllWeapons[weaponSlot].ClientPrefab, WeaponMeshHolder.transform);
+			wc = currentWeapon.GetComponent<WeaponClient>();
+
+			if (clientId == LocalClient.Instance.MyId)
+				UIManager.Instance.SetAmmoCount(weaponSlot == (byte)WeaponSlot.Pistol ? "Inf" : PlayerController.Instance.pickedUpWeapons[weaponSlot].Ammo.ToString());
 		}
 
 		private void FlashUI(float newHealthValue)
@@ -87,7 +92,7 @@ namespace NetworkTutorial.Client.Player
 		{
 			gameObject.transform.position = position;
 			PlayerController.Instance.SetRespawnValues();
-			SetWeaponMesh(1);
+			SetWeaponMesh(playerId, (byte)WeaponSlot.Pistol);
 
 			currentHealth = maxHealth;
 			PlayerMeshRenderer.gameObject.SetActive(true);

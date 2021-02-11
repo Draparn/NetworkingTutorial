@@ -29,6 +29,7 @@ namespace NetworkTutorial.Shared
 				WeaponName = "Pistol",
 				ProjectileType = ProjectileType.Hitscan,
 				Ammo = ushort.MaxValue,
+				MaxAmmo = ushort.MaxValue,
 				IsPickedUp = true,
 				Damage = 15
 			},
@@ -78,9 +79,9 @@ namespace NetworkTutorial.Shared
 		public string WeaponName;
 		public float projExitVelocity;
 		public ushort Ammo;
+		public ushort MaxAmmo;
 		public bool IsPickedUp;
 		public byte Damage;
-		public byte MaxAmmo;
 	}
 
 	public enum ProjectileType

@@ -31,7 +31,7 @@ namespace NetworkTutorial.Server.Gameplay
 				if (CurrentRespawnTime <= 0)
 				{
 					IsActive = true;
-					ServerSend.SendWeaponUpdate_ALL(MyId, IsActive);
+					ServerSend.SendWeaponPickupStatus_ALL(MyId, IsActive);
 				}
 			}
 		}
@@ -41,7 +41,7 @@ namespace NetworkTutorial.Server.Gameplay
 			if (other.CompareTag("Player") && IsActive)
 			{
 				var playerComp = other.GetComponent<PlayerServer>();
-				var weapon = playerComp.pickedUpWeapons[(int)WeaponSlot.GrenadeLauncher];
+				var weapon = playerComp.pickedUpWeapons[(byte)WeaponSlot.GrenadeLauncher];
 
 				if (weapon.IsPickedUp)
 				{
@@ -52,15 +52,15 @@ namespace NetworkTutorial.Server.Gameplay
 				}
 				else
 				{
-					playerComp.pickedUpWeapons[(int)WeaponSlot.GrenadeLauncher].IsPickedUp = true;
-					playerComp.pickedUpWeapons[(int)WeaponSlot.GrenadeLauncher].Ammo = AmmoPickup;
+					playerComp.pickedUpWeapons[(byte)WeaponSlot.GrenadeLauncher].IsPickedUp = true;
+					playerComp.pickedUpWeapons[(byte)WeaponSlot.GrenadeLauncher].Ammo = AmmoPickup;
 				}
 
 				IsActive = false;
 				CurrentRespawnTime = RespawnTime;
 
-				ServerSend.SendWeaponPickup_CLIENT(playerComp.PlayerId, WeaponSlot.GrenadeLauncher, weapon.IsPickedUp, weapon.Ammo);
-				ServerSend.SendWeaponUpdate_ALL(MyId, IsActive);
+				ServerSend.SendWeaponPickedUp_CLIENT(playerComp.PlayerId, WeaponSlot.GrenadeLauncher, weapon.IsPickedUp, weapon.Ammo);
+				ServerSend.SendWeaponPickupStatus_ALL(MyId, IsActive);
 			}
 		}
 

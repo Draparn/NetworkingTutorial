@@ -100,6 +100,15 @@ namespace NetworkTutorial.Server.Net
 			SendToAllClients(packet);
 			packet.Reset();
 		}
+		public static void SendPlayerFiredWeapon_ALL(byte playerId)
+		{
+			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerFiredWeapon);
+
+			packet.Write(playerId);
+
+			SendToAllClients(packet);
+			packet.Reset();
+		}
 		public static void SendPlayerRespawned_ALL(PlayerServer player)
 		{
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerRespawn);
@@ -167,7 +176,7 @@ namespace NetworkTutorial.Server.Net
 			SendToClient(clientId, packet);
 			packet.Reset();
 		}
-		public static void SendWeaponPickup_CLIENT(byte playerId, WeaponSlot slot, bool isPickedUp, ushort ammoCount)
+		public static void SendWeaponPickedUp_CLIENT(byte playerId, WeaponSlot slot, bool isPickedUp, ushort ammoCount)
 		{
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.weaponPickup);
 
@@ -176,10 +185,20 @@ namespace NetworkTutorial.Server.Net
 			packet.Write(ammoCount);
 
 			SendToClient(playerId, packet);
+			packet.Reset();
 		}
-		public static void SendWeaponUpdate_ALL(byte id, bool isActive)
+		public static void SendWeaponAmmoUpdate_CLIENT(byte playerId, ushort ammoCount)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.weaponStatusUpdate);
+			var packet = PacketFactory.GetServerPacketType(ServerPackets.weaponAmmoUpdate);
+
+			packet.Write(ammoCount);
+
+			SendToClient(playerId, packet);
+			packet.Reset();
+		}
+		public static void SendWeaponPickupStatus_ALL(byte id, bool isActive)
+		{
+			var packet = PacketFactory.GetServerPacketType(ServerPackets.weaponPickupStatus);
 
 			packet.Write(id);
 			packet.Write(isActive);

@@ -130,14 +130,14 @@ namespace NetworkTutorial.Client.Net
 			var wholeNumber = packet.ReadByte();
 			var decimalsValue = ValueTypeConversions.ReturnShortAsFloat(packet.ReadShort());
 
-			GameManagerClient.Instance.Players[clientId].SetHealth(clientId, (float)wholeNumber + decimalsValue);
+			GameManagerClient.Instance.Players[clientId].SetHealth(clientId, wholeNumber + decimalsValue);
 		}
 		public static void OnPlayerWeaponSwitch(Packet packet)
 		{
 			var clientId = packet.ReadByte();
 			var weaponSlot = packet.ReadByte();
 
-			GameManagerClient.Instance.Players[clientId].SetWeaponMesh(weaponSlot);
+			GameManagerClient.Instance.Players[clientId].SetWeaponMesh(clientId, weaponSlot);
 		}
 		public static void OnPlayerWeaponPickup(Packet packet)
 		{
@@ -151,6 +151,19 @@ namespace NetworkTutorial.Client.Net
 
 			UIManager.Instance.PickedUpNewWeapon(slot);
 		}
+		public static void OnPlayerWeaponAmmoUpdate(Packet packet)
+		{
+			var ammoCount = packet.ReadUShort();
+
+			PlayerController.Instance.NewAmmoCount(ammoCount);
+		}
+		public static void OnPlayerFiredWeapon(Packet packet)
+		{
+			var clientId = packet.ReadByte();
+
+			GameManagerClient.Instance.Players[clientId].FireWeapon();
+		}
+
 		public static void OnPlayerRespawn(Packet packet)
 		{
 			var id = packet.ReadByte();
@@ -168,7 +181,7 @@ namespace NetworkTutorial.Client.Net
 
 			GameManagerClient.Instance.SpawnWeapon(id, type, position, isActive);
 		}
-		public static void OnWeaponUpdate(Packet packet)
+		public static void OnWeaponPickupStatusUpdate(Packet packet)
 		{
 			GameManagerClient.Instance.WeaponUpdate(packet.ReadByte(), packet.ReadBool());
 		}

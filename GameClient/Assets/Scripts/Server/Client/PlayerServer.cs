@@ -50,8 +50,16 @@ namespace NetworkTutorial.Server.Client
 			if (CurrentHealth <= 0)
 				return;
 
+			if (pickedUpWeapons[currentWeaponSlot].Ammo <= 0)
+			{
+				WeaponSwitch((byte)WeaponSlot.Pistol);
+				return;
+			}
+
 			if (pickedUpWeapons[currentWeaponSlot].ProjectileType == ProjectileType.Hitscan)
 			{
+				ServerSend.SendPlayerFiredWeapon_ALL(PlayerId);
+
 				oldSnapshot = ServerSnapshot.GetOldSnapshot(sequenceNumber);
 				currentPositions = new Dictionary<byte, Vector3>();
 
@@ -67,6 +75,12 @@ namespace NetworkTutorial.Server.Client
 			{
 				GameManagerServer.Instance.InstantiateProjectile(ShootOrigin, viewDirection, pickedUpWeapons[currentWeaponSlot].ProjectilePrefabServer)
 					.Init(viewDirection, pickedUpWeapons[currentWeaponSlot], PlayerId);
+			}
+
+			if (currentWeaponSlot != (byte)WeaponSlot.Pistol)
+			{
+				pickedUpWeapons[currentWeaponSlot].Ammo--;
+				ServerSend.SendWeaponAmmoUpdate_CLIENT(PlayerId, pickedUpWeapons[currentWeaponSlot].Ammo);
 			}
 		}
 

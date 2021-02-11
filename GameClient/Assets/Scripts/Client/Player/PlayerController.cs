@@ -2,7 +2,6 @@
 using NetworkTutorial.Client.Net;
 using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Utils;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,7 +20,7 @@ namespace NetworkTutorial.Client.Player
 		private float yVelocity, yVelocityPreMove, clientTickRate;
 		private byte? PressedWeaponKey = null;
 		private byte currentWeapon;
-		private bool isGroundedPreMove, isSwitchingWeapon;
+		private bool isGroundedPreMove;
 		public List<Weapon> pickedUpWeapons;
 
 		private ushort sequenceNumber = 0;
@@ -32,6 +31,8 @@ namespace NetworkTutorial.Client.Player
 				Instance = this;
 			else if (Instance != this)
 				Destroy(this);
+
+			pickedUpWeapons = Weapons.GetNewWeapons();
 		}
 
 		private void Start()
@@ -43,7 +44,6 @@ namespace NetworkTutorial.Client.Player
 			prevPos = gameObject.transform.position;
 			nextPos = gameObject.transform.position;
 
-			pickedUpWeapons = Weapons.GetNewWeapons();
 			currentWeapon = 1;
 		}
 
@@ -57,14 +57,24 @@ namespace NetworkTutorial.Client.Player
 			if (PressedWeaponKey.HasValue && PressedWeaponKey != currentWeapon && HasWeapon())
 			{
 				ClientSend.SendWeaponSwitch((byte)PressedWeaponKey);
-				StartCoroutine(SwitchWeapon());
+				currentWeapon = (byte)PressedWeaponKey;
 			}
 
 			//Primary Fire
-			if (Input.GetKeyDown(KeyCode.Mouse0) && !UIManager.Instance.MenuIsActive && !isSwitchingWeapon)
+			if (Input.GetKeyDown(KeyCode.Mouse0) && !UIManager.Instance.MenuIsActive)
 			{
+				if (pickedUpWeapons[currentWeapon].Ammo <= 0)
+				{
+					ClientSend.SendWeaponSwitch((byte)WeaponSlot.Pistol);
+					currentWeapon = (byte)WeaponSlot.Pistol;
+					return;
+				}
+
 				ClientSend.SendPlayerPrimaryFire(cameraTransform.forward);
 				player.FireWeapon();
+
+				if (currentWeapon != (byte)WeaponSlot.Pistol)
+					UIManager.Instance.SetAmmoCount(pickedUpWeapons[currentWeapon].Ammo.ToString());
 			}
 
 			if (Input.GetButtonDown("Cancel"))
@@ -153,15 +163,10 @@ namespace NetworkTutorial.Client.Player
 			return false;
 		}
 
-		private IEnumerator SwitchWeapon()
+		public void NewAmmoCount(ushort ammoCount)
 		{
-			isSwitchingWeapon = true;
-
-			//Play animation here
-
-			currentWeapon = (byte)PressedWeaponKey;
-			yield return new WaitForSeconds(ConstantValues.PLAYER_WEAPON_SWITCH_TIME);
-			isSwitchingWeapon = false;
+			pickedUpWeapons[currentWeapon].Ammo = ammoCount;
+			UIManager.Instance.SetAmmoCount(ammoCount.ToString());
 		}
 
 	}

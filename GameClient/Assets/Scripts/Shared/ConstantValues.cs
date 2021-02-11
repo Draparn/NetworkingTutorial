@@ -13,7 +13,6 @@ namespace NetworkTutorial.Shared
 		public const float PLAYER_RESPAWN_TIME = 3.0f;
 		public const float PLAYER_MOVE_SPEED = 10.0f;
 		public const float PLAYER_JUMP_SPEED = 5.0f;
-		public const float PLAYER_WEAPON_SWITCH_TIME = 1.0f;
 		public const float WORLD_GRAVITY = -15.0f;
 
 		//Connection

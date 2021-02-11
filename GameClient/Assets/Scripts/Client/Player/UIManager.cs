@@ -13,7 +13,7 @@ namespace NetworkTutorial.Client.Player
 		public GameObject StartMenu, CrossHair, Connecting, InputFields, IngameMenu, ExitGame, Weapons;
 		public Image HurtScreen;
 		public InputField ConnectToIPField, UserNameField;
-		public Text HealthText;
+		[SerializeField] private Text HealthText, AmmoCount;
 
 		private Color healed = new Color(0, 1, 0, 0.2f), hurt = new Color(1, 0, 0, 0.2f), dead = new Color(0.5f, 0, 0, 0.8f), dimmed = new Color(1, 1, 1, 0.15f), full = new Color(1, 1, 1, 1);
 
@@ -29,9 +29,11 @@ namespace NetworkTutorial.Client.Player
 			ConnectToIPField.text = "127.0.0.1";
 			UserNameField.text = "ClientName";
 			HealthText.text = "100";
+			AmmoCount.text = "Inf";
 
 			StartMenu.SetActive(true);
 			IngameMenu.SetActive(false);
+			GameOff();
 		}
 
 		//Menu
@@ -91,6 +93,7 @@ namespace NetworkTutorial.Client.Player
 			CrossHair.SetActive(true);
 			Weapons.SetActive(true);
 			HealthText.transform.parent.gameObject.SetActive(true);
+			AmmoCount.transform.parent.gameObject.SetActive(true);
 			MenuIsActive = false;
 		}
 
@@ -102,6 +105,7 @@ namespace NetworkTutorial.Client.Player
 			CrossHair.SetActive(false);
 			Weapons.SetActive(false);
 			HealthText.transform.parent.gameObject.SetActive(false);
+			AmmoCount.transform.parent.gameObject.SetActive(false);
 			MenuIsActive = true;
 		}
 
@@ -157,6 +161,11 @@ namespace NetworkTutorial.Client.Player
 		public void PickedUpNewWeapon(byte weaponSlot)
 		{
 			WeaponsBar[weaponSlot - 1].color = full;
+		}
+
+		public void SetAmmoCount(string ammoCount)
+		{
+			AmmoCount.text = ammoCount;
 		}
 
 		public void Respawn()
