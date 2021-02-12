@@ -42,7 +42,7 @@ namespace NetworkTutorial.Client.Net
 			{
 				disconnectTimer += Time.deltaTime;
 
-				if (disconnectTimer >= 10.0)
+				if (disconnectTimer >= ConstantValues.CONNECTION_TIMEOUT_TIMER)
 				{
 					Debug.Log("Server not responding. Disconnecting...");
 					ClientSend.SendDisconnect();
@@ -138,7 +138,7 @@ namespace NetworkTutorial.Client.Net
 				}
 				catch (Exception ex)
 				{
-					Debug.Log($"Error sending data to server via UDP: {ex}");
+					Debug.Log($"Error sending data to server: {ex}");
 				}
 			}
 

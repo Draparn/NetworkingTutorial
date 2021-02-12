@@ -69,7 +69,7 @@ namespace NetworkTutorial.Server
 			}
 			catch (Exception ex)
 			{
-				Debug.Log($"Error receiving UDP data: {ex}");
+				Debug.Log($"Error receiving data: {ex}");
 			}
 		}
 
@@ -84,7 +84,7 @@ namespace NetworkTutorial.Server
 			}
 			catch (Exception ex)
 			{
-				Debug.Log($"Error sending data to {endPoint} via UDP: {ex}");
+				Debug.Log($"Error sending data to {endPoint}: {ex}");
 			}
 		}
 

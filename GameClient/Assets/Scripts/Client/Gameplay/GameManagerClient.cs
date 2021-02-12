@@ -188,7 +188,7 @@ namespace NetworkTutorial.Client.Gameplay
 		{
 			if (!Healthpacks.ContainsKey(id))
 				Healthpacks.Add(id, Instantiate(HealthpackPrefab, position, Quaternion.identity, pickups));
-			
+
 			Healthpacks[id].SetActive(isActive);
 		}
 		public void HealthpackUpdate(byte id, bool isActive)

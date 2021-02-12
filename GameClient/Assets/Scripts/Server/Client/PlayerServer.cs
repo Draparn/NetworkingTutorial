@@ -124,10 +124,8 @@ namespace NetworkTutorial.Server.Client
 			transform.position = GameManagerServer.Instance.respawnPoints[Random.Range(0, GameManagerServer.Instance.respawnPoints.Count)];
 			CurrentHealth = MaxHealth;
 			controller.enabled = true;
-
 			pickedUpWeapons = Weapons.GetNewWeapons();
 			currentWeaponSlot = 1;
-
 			ServerSend.SendPlayerRespawned_ALL(this);
 		}
 

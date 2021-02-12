@@ -12,7 +12,7 @@ namespace NetworkTutorial.Server.Net
 
 			if (Server.CheckNames(clientId, userName))
 			{
-				Debug.Log($"A player with user name: \"{userName}\" was already connected. Disconnecting new client...");
+				Debug.Log($"Connecting player had duplicate name: \"{userName}\". Disconnecting new client...");
 				ServerSend.SendNameTaken(clientId);
 				Server.Clients[clientId].Connection.Disconnect();
 				return;
