@@ -91,7 +91,6 @@ namespace NetworkTutorial.Client.Player
 		public void Respawn(Vector3 position, byte playerId)
 		{
 			gameObject.transform.position = position;
-			PlayerController.Instance.SetRespawnValues();
 			SetWeaponMesh(playerId, (byte)WeaponSlot.Pistol);
 
 			currentHealth = maxHealth;
@@ -99,6 +98,7 @@ namespace NetworkTutorial.Client.Player
 
 			if (playerId == LocalClient.Instance.MyId)
 			{
+				PlayerController.Instance.SetRespawnValues();
 				UIManager.Instance.Respawn();
 				UIManager.Instance.SetHealthText(maxHealth);
 				UIManager.Instance.SetHealthTextColor(maxHealth);

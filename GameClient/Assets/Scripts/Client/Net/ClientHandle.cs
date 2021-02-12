@@ -52,9 +52,7 @@ namespace NetworkTutorial.Client.Net
 
 		public static void OnServerFull(Packet packet)
 		{
-			var message = packet.ReadString();
-
-			Debug.Log($"Message from server: {message}");
+			UIManager.Instance.ShowErrorMessage(packet.ReadString());
 			LocalClient.Instance.StopConnectionTimer();
 		}
 
@@ -156,11 +154,14 @@ namespace NetworkTutorial.Client.Net
 			var isPickedUp = packet.ReadBool();
 			var ammoCount = packet.ReadUShort();
 
-			var weapon = PlayerController.Instance.pickedUpWeapons[slot];
+			var player = PlayerController.Instance;
+			var weapon = player.pickedUpWeapons[slot];
 			weapon.IsPickedUp = isPickedUp;
 			weapon.Ammo = ammoCount;
 
-			UIManager.Instance.PickedUpNewWeapon(slot);
+			UIManager.Instance.NewWeaponAvailable(slot);
+			if (player.currentWeapon == slot)
+				UIManager.Instance.SetAmmoCount(weapon.Ammo.ToString());
 		}
 		public static void OnPlayerWeaponAmmoUpdate(Packet packet)
 		{

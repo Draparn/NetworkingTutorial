@@ -19,7 +19,7 @@ namespace NetworkTutorial.Client.Player
 
 		private float yVelocity, yVelocityPreMove, clientTickRate;
 		private byte? PressedWeaponKey = null;
-		private byte currentWeapon;
+		public byte currentWeapon;
 		private bool isGroundedPreMove;
 		public List<Weapon> pickedUpWeapons;
 

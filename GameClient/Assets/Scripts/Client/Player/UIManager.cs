@@ -165,7 +165,7 @@ namespace NetworkTutorial.Client.Player
 			HurtScreen.enabled = false;
 		}
 
-		public void PickedUpNewWeapon(byte weaponSlot)
+		public void NewWeaponAvailable(byte weaponSlot)
 		{
 			WeaponsBar[weaponSlot - 1].color = full;
 		}
