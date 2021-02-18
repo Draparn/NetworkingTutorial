@@ -4,7 +4,7 @@ using UnityEngine;
 public class ElevatorServer : MonoBehaviour
 {
 	private Vector3 startpoint;
-	private Vector3 endpoint;
+	[SerializeField] private Transform endpoint;
 
 	private float lerpValue = 0;
 
@@ -12,17 +12,18 @@ public class ElevatorServer : MonoBehaviour
 
 	void Start()
 	{
-		startpoint = transform.position;
-		endpoint = GetComponentInChildren<Transform>().position;
+		startpoint = transform.localPosition;
 	}
 
 	private void OnTriggerEnter(Collider other)
 	{
+		other.gameObject.transform.SetParent(transform);
 		MoveElevator(other, true);
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
+		other.gameObject.transform.SetParent(null);
 		MoveElevator(other, false);
 	}
 
@@ -38,12 +39,12 @@ public class ElevatorServer : MonoBehaviour
 
 	private IEnumerator Move(bool goingUp)
 	{
-		Vector3 sp = goingUp ? startpoint : endpoint, ep = goingUp ? endpoint : startpoint;
+		Vector3 sp = goingUp ? startpoint : endpoint.localPosition, ep = goingUp ? endpoint.localPosition: startpoint;
 		do
 		{
 			lerpValue += Time.deltaTime;
-			Vector3.Lerp(sp, ep, lerpValue);
-			yield return new WaitForEndOfFrame();
+			transform.localPosition = Vector3.Lerp(sp, ep, lerpValue);
+			yield return new WaitForSeconds(Time.deltaTime);
 
 			if (lerpValue >= 1)
 				isMoving = false;
