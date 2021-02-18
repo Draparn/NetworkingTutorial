@@ -6,14 +6,14 @@ namespace NetworkTutorial.Server.Gameplay
 {
 	public enum Size
 	{
-		Small,
+		Small = 0,
 		Big,
 		Mega
 	}
 
 	public class HealthpackServer : MonoBehaviour
 	{
-		public float HealthGain = 50.0f, RespawnTime = 30.0f, currentRespawnTime;
+		public float HealthGain, RespawnTime = 30.0f, currentRespawnTime;
 		public byte MyId;
 		public Size size;
 		public bool IsActive = true;

@@ -1,5 +1,6 @@
 ﻿using NetworkTutorial.Client.Gameplay;
 using NetworkTutorial.Client.Player;
+using NetworkTutorial.Server.Gameplay;
 using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Net;
 using NetworkTutorial.Shared.Utils;
@@ -207,8 +208,9 @@ namespace NetworkTutorial.Client.Net
 			var id = packet.ReadByte();
 			var position = packet.ReadVector3();
 			var isActive = packet.ReadBool();
+			var size = packet.ReadByte();
 
-			GameManagerClient.Instance.SpawnHealthPack(id, position, isActive);
+			GameManagerClient.Instance.SpawnHealthPack(id, position, isActive, size);
 		}
 
 		public static void OnProjectileSpawn(Packet packet)

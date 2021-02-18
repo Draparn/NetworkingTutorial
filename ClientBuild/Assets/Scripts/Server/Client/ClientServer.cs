@@ -43,7 +43,7 @@ namespace NetworkTutorial.Server.Client
 			var healthpacks = GameManagerServer.Instance.GetHealthpacks();
 			foreach (var kvp in healthpacks)
 			{
-				ServerSend.SendHealthpackSpawn_CLIENT(Id, kvp.Key, kvp.Value.gameObject.transform.position, kvp.Value.IsActive);
+				ServerSend.SendHealthpackSpawn_CLIENT(Id, kvp.Key, kvp.Value);
 			}
 
 			//Weapon pickups

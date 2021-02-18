@@ -1,5 +1,6 @@
 ﻿using NetworkTutorial.Client.Net;
 using NetworkTutorial.Client.Player;
+using NetworkTutorial.Server.Gameplay;
 using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Utils;
 using System;
@@ -45,7 +46,8 @@ namespace NetworkTutorial.Client.Gameplay
 
 		public List<LocalPredictionData> LocalPositionPredictions = new List<LocalPredictionData>();
 
-		public GameObject LocalPlayerPrefab, RemotePlayerPrefab, HealthpackPrefab;
+		public GameObject LocalPlayerPrefab, RemotePlayerPrefab;
+		public GameObject[] HealthpackPrefabs = new GameObject[3];
 
 		[SerializeField] private Transform projectilePool, pickups;
 
@@ -184,10 +186,10 @@ namespace NetworkTutorial.Client.Gameplay
 			WeaponPickups[id].SetActive(isActive);
 		}
 
-		public void SpawnHealthPack(byte id, Vector3 position, bool isActive)
+		public void SpawnHealthPack(byte id, Vector3 position, bool isActive, byte size)
 		{
 			if (!Healthpacks.ContainsKey(id))
-				Healthpacks.Add(id, Instantiate(HealthpackPrefab, position, Quaternion.identity, pickups));
+				Healthpacks.Add(id, Instantiate(HealthpackPrefabs[size], position, Quaternion.identity, pickups));
 
 			Healthpacks[id].SetActive(isActive);
 		}

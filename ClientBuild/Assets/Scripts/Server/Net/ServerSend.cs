@@ -140,13 +140,14 @@ namespace NetworkTutorial.Server.Net
 			SendToAllClients(packet);
 			packet.Reset();
 		}
-		public static void SendHealthpackSpawn_CLIENT(byte clientId, byte healthPackId, Vector3 position, bool isActive)
+		public static void SendHealthpackSpawn_CLIENT(byte clientId, byte healthpackId, HealthpackServer hps)
 		{
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.healthpackSpawn);
 
-			packet.Write(healthPackId);
-			packet.Write(position);
-			packet.Write(isActive);
+			packet.Write(healthpackId);
+			packet.Write(hps.gameObject.transform.position);
+			packet.Write(hps.IsActive);
+			packet.Write((byte)hps.size);
 
 			SendToClient(clientId, packet);
 			packet.Reset();
