@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 391242334400799884}
   - component: {fileID: 3890062150079789297}
   m_Layer: 0
-  m_Name: BigHealthpackServer
+  m_Name: SuperHealthpackServer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 4480148216521664882}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5.2, y: 0.09999736, z: -8.15}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -724,7 +724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f17699f17ef352b4c96410f09b145f4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthGain: 50
+  HealthGain: 200
   RespawnTime: 15
   currentRespawnTime: 0
   MyId: 0

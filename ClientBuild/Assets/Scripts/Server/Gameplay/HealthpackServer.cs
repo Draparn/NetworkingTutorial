@@ -4,10 +4,18 @@ using UnityEngine;
 
 namespace NetworkTutorial.Server.Gameplay
 {
+	public enum Size
+	{
+		Small,
+		Big,
+		Mega
+	}
+
 	public class HealthpackServer : MonoBehaviour
 	{
 		public float HealthGain = 50.0f, RespawnTime = 30.0f, currentRespawnTime;
 		public byte MyId;
+		public Size size;
 		public bool IsActive = true;
 
 		private void Start()
@@ -20,10 +28,14 @@ namespace NetworkTutorial.Server.Gameplay
 			if (other.CompareTag("Player") && IsActive)
 			{
 				var playerComp = other.GetComponent<PlayerServer>();
-				if (playerComp.CurrentHealth >= playerComp.MaxHealth)
+				if (size != Size.Mega && playerComp.CurrentHealth >= playerComp.MaxHealth)
 					return;
 
-				playerComp.HealDamage(HealthGain);
+				if (size == Size.Mega)
+					playerComp.CurrentHealth = playerComp.MaxHealth * 2;
+				else
+					playerComp.HealDamage(HealthGain);
+
 				ServerSend.SendPlayerHealthUpdate_ALL(playerComp);
 
 				currentRespawnTime = RespawnTime;
