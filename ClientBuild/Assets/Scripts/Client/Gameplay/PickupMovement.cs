@@ -4,7 +4,7 @@ namespace NetworkTutorial.Client.Gameplay
 {
 	public class PickupMovement : MonoBehaviour
 	{
-		Vector3 startPos;
+		private Vector3 startPos;
 
 		private void Start()
 		{
@@ -14,7 +14,7 @@ namespace NetworkTutorial.Client.Gameplay
 		private void Update()
 		{
 			transform.position = startPos + new Vector3(0, Mathf.Sin(Time.time) * 0.2f, 0);
-			transform.parent.Rotate(0, Time.deltaTime * 100, 0);
+			transform.Rotate(0, Time.deltaTime * 100, 0);
 		}
 
 	}
