@@ -20,7 +20,7 @@ namespace NetworkTutorial.Server.Gameplay
 			if (other.CompareTag("Player") && IsActive)
 			{
 				var playerComp = other.GetComponent<PlayerServer>();
-				if (playerComp.CurrentHealth == playerComp.MaxHealth)
+				if (playerComp.CurrentHealth >= playerComp.MaxHealth)
 					return;
 
 				playerComp.HealDamage(HealthGain);
