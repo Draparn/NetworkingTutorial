@@ -1,6 +1,7 @@
 ﻿using NetworkTutorial.Server.Client;
 using NetworkTutorial.Server.Gameplay;
 using NetworkTutorial.Shared;
+using NetworkTutorial.Shared.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -37,6 +38,7 @@ namespace NetworkTutorial.Server
 
 		public Dictionary<byte, PlayerPosData> PlayerPositions = new Dictionary<byte, PlayerPosData>();
 		public List<ProjectileServer> ProjectilePositions = new List<ProjectileServer>();
+		public byte? lerpValue;
 
 		public uint SequenceNumber;
 
@@ -62,6 +64,14 @@ namespace NetworkTutorial.Server
 		public static void RemoveProjectileMovement(ProjectileServer proj)
 		{
 			currentSnapshot.ProjectilePositions.Remove(proj);
+		}
+
+		public static void AddElevatorMovement(float lerpValue)
+		{
+			if (lerpValue < 0 || lerpValue > 1)
+				currentSnapshot.lerpValue = null;
+			else
+				currentSnapshot.lerpValue = ValueTypeConversions.ReturnDecimalsAsByte(lerpValue);
 		}
 
 		public static ServerSnapshot GetOldSnapshot(uint sequenceNumber)

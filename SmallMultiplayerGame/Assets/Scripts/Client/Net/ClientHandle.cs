@@ -1,6 +1,5 @@
 ﻿using NetworkTutorial.Client.Gameplay;
 using NetworkTutorial.Client.Player;
-using NetworkTutorial.Server.Gameplay;
 using NetworkTutorial.Shared;
 using NetworkTutorial.Shared.Net;
 using NetworkTutorial.Shared.Utils;
@@ -103,6 +102,13 @@ namespace NetworkTutorial.Client.Net
 
 				if (GameManagerClient.Instance.Projectiles.ContainsKey(projId))
 					projectiles.Add(new ProjectileData(projId, position));
+			}
+
+			//Elevator
+			if (packet.ReadBool())
+			{
+				var lerpValue = ValueTypeConversions.ReturnByteAsFloat(packet.ReadByte());
+				GameManagerClient.Instance.MoveElevator(lerpValue);
 			}
 
 			ClientSnapshot.Snapshots.Add(new ClientSnapshot(snapshotSequenceNumber, players, projectiles));

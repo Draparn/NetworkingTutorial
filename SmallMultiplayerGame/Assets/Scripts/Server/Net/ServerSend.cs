@@ -46,8 +46,10 @@ namespace NetworkTutorial.Server.Net
 
 			packet.Write(ServerSnapshot.currentSnapshot.SequenceNumber);
 
-			packet.Write((byte)ServerSnapshot.currentSnapshot.PlayerPositions.Count);
-			foreach (var playerPosData in ServerSnapshot.currentSnapshot.PlayerPositions.Values)
+			//Players
+			var playerPositions = ServerSnapshot.currentSnapshot.PlayerPositions;
+			packet.Write((byte)playerPositions.Count);
+			foreach (var playerPosData in playerPositions.Values)
 			{
 				packet.Write(playerPosData.Id);
 				packet.Write(playerPosData.SequenceNumber);
@@ -55,12 +57,20 @@ namespace NetworkTutorial.Server.Net
 				packet.Write(playerPosData.Rotation);
 			}
 
-			packet.Write((byte)ServerSnapshot.currentSnapshot.ProjectilePositions.Count);
-			foreach (var proj in ServerSnapshot.currentSnapshot.ProjectilePositions)
+			//Projectiles
+			var projectilePositions = ServerSnapshot.currentSnapshot.ProjectilePositions;
+			packet.Write((byte)projectilePositions.Count);
+			foreach (var proj in projectilePositions)
 			{
 				packet.Write(proj.id);
 				packet.Write(proj.transform.position);
 			}
+
+			//Elevator
+			var lerpValue = ServerSnapshot.currentSnapshot.lerpValue;
+			packet.Write(lerpValue != null);
+			if (lerpValue != null)
+				packet.Write((byte)lerpValue);
 
 			SendToAllClients(packet);
 			packet.Reset();

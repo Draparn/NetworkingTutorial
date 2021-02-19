@@ -1,53 +1,61 @@
 using System.Collections;
 using UnityEngine;
 
-public class ElevatorServer : MonoBehaviour
+namespace NetworkTutorial.Server.Gameplay
 {
-	private Vector3 startpoint;
-	[SerializeField] private Transform endpoint;
-
-	private float lerpValue = 0;
-
-	private bool isMoving;
-
-	void Start()
+	public class ElevatorServer : MonoBehaviour
 	{
-		startpoint = transform.localPosition;
-	}
+		private Vector3 startpoint;
+		[SerializeField] private Transform endpoint;
 
-	private void OnTriggerEnter(Collider other)
-	{
-		other.gameObject.transform.SetParent(transform);
-		MoveElevator(other, true);
-	}
+		private float lerpValue = 0;
 
-	private void OnTriggerExit(Collider other)
-	{
-		other.gameObject.transform.SetParent(null);
-		MoveElevator(other, false);
-	}
+		private bool isMoving;
 
-	private void MoveElevator(Collider other, bool enteredElevator)
-	{
-		if (!isMoving && other.CompareTag("Player"))
+		void Start()
 		{
-			lerpValue = 0;
-			isMoving = true;
-			StartCoroutine(Move(enteredElevator));
+			startpoint = transform.localPosition;
 		}
-	}
 
-	private IEnumerator Move(bool goingUp)
-	{
-		Vector3 sp = goingUp ? startpoint : endpoint.localPosition, ep = goingUp ? endpoint.localPosition: startpoint;
-		do
+		public void OnTriggerEnter(Collider other)
 		{
-			lerpValue += Time.deltaTime;
-			transform.localPosition = Vector3.Lerp(sp, ep, lerpValue);
-			yield return new WaitForSeconds(Time.deltaTime);
+			MoveElevator(other, true);
+		}
 
-			if (lerpValue >= 1)
-				isMoving = false;
-		} while (lerpValue < 1);
+		public void OnTriggerExit(Collider other)
+		{
+			MoveElevator(other, false);
+		}
+
+		private void MoveElevator(Collider other, bool enteredElevator)
+		{
+			if (!isMoving && other.CompareTag("Player"))
+			{
+				isMoving = true;
+				StartCoroutine(ServerElevatorMove(enteredElevator));
+			}
+		}
+
+		private IEnumerator ServerElevatorMove(bool goingUp)
+		{
+			do
+			{
+				lerpValue = goingUp ? lerpValue + Time.deltaTime : lerpValue - Time.deltaTime;
+				transform.localPosition = Vector3.Lerp(startpoint, endpoint.localPosition, lerpValue);
+				ServerSnapshot.AddElevatorMovement(lerpValue);
+
+				yield return new WaitForSeconds(Time.deltaTime);
+
+				if (lerpValue <= 0 || lerpValue >= 1)
+					isMoving = false;
+			} while (isMoving);
+		}
+
+		public void ClientElevatorMove(float lerpValue)
+		{
+			transform.localPosition = Vector3.Lerp(startpoint, endpoint.localPosition, lerpValue);
+		}
+
 	}
+
 }

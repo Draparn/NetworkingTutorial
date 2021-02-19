@@ -43,6 +43,7 @@ namespace NetworkTutorial.Client.Gameplay
 		public Dictionary<byte, GameObject> WeaponPickups = new Dictionary<byte, GameObject>();
 		private Dictionary<int, Vector3> projectilesOriginalPositions = new Dictionary<int, Vector3>();
 		private Dictionary<int, Tuple<Vector3, Quaternion>> playersOriginalPosAndRot = new Dictionary<int, Tuple<Vector3, Quaternion>>();
+		public ElevatorServer elevator;
 
 		public List<LocalPredictionData> LocalPositionPredictions = new List<LocalPredictionData>();
 
@@ -196,6 +197,11 @@ namespace NetworkTutorial.Client.Gameplay
 		public void HealthpackUpdate(byte id, bool isActive)
 		{
 			Healthpacks[id].SetActive(isActive);
+		}
+
+		public void MoveElevator(float lerpValue)
+		{
+			elevator.ClientElevatorMove(lerpValue);
 		}
 
 	}
