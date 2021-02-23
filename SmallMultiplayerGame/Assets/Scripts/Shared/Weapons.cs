@@ -54,15 +54,16 @@ namespace NetworkTutorial.Shared
 			{
 				tempList.Add(new Weapon
 				{
-					Ammo = AllWeapons[i].Ammo,
 					ClientPrefab = AllWeapons[i].ClientPrefab,
-					Damage = AllWeapons[i].Damage,
-					IsPickedUp = AllWeapons[i].IsPickedUp,
 					ProjectilePrefabClient = AllWeapons[i].ProjectilePrefabClient,
 					ProjectilePrefabServer = AllWeapons[i].ProjectilePrefabServer,
 					ProjectileType = AllWeapons[i].ProjectileType,
+					WeaponName = AllWeapons[i].WeaponName,
 					projExitVelocity = AllWeapons[i].projExitVelocity,
-					WeaponName = AllWeapons[i].WeaponName
+					Ammo = AllWeapons[i].Ammo,
+					MaxAmmo = AllWeapons[i].MaxAmmo,
+					IsPickedUp = AllWeapons[i].IsPickedUp,
+					Damage = AllWeapons[i].Damage
 				});
 			}
 
