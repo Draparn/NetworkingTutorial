@@ -1,9 +1,9 @@
-﻿using NetworkTutorial.Client.Gameplay;
-using NetworkTutorial.Shared.Utils;
+﻿using SmallMultiplayerGame.Client.Gameplay;
+using SmallMultiplayerGame.Shared.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NetworkTutorial.Client.Net
+namespace SmallMultiplayerGame.Client.Net
 {
 	public class ClientSnapshot
 	{

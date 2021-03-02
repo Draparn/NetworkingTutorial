@@ -1,10 +1,10 @@
-﻿using NetworkTutorial.Shared.Utils;
+﻿using SmallMultiplayerGame.Shared.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace NetworkTutorial.Shared.Net
+namespace SmallMultiplayerGame.Shared.Net
 {
 	/// <summary>Sent from server to client.</summary>
 	public enum ServerPackets

@@ -1,8 +1,8 @@
-﻿using NetworkTutorial.Shared.Net;
-using NetworkTutorial.Shared.Utils;
+﻿using SmallMultiplayerGame.Shared.Net;
+using SmallMultiplayerGame.Shared.Utils;
 using UnityEngine;
 
-namespace NetworkTutorial.Server.Net
+namespace SmallMultiplayerGame.Server.Net
 {
 	public class ServerHandle
 	{

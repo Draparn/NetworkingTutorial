@@ -1,11 +1,11 @@
-﻿using NetworkTutorial.Client.Gameplay;
-using NetworkTutorial.Client.Gameplay.WeaponScrips;
-using NetworkTutorial.Client.Net;
-using NetworkTutorial.Shared;
+﻿using SmallMultiplayerGame.Client.Gameplay;
+using SmallMultiplayerGame.Client.Gameplay.WeaponScrips;
+using SmallMultiplayerGame.Client.Net;
+using SmallMultiplayerGame.Shared;
 using System.Collections;
 using UnityEngine;
 
-namespace NetworkTutorial.Client.Player
+namespace SmallMultiplayerGame.Client.Player
 {
 	public class PlayerClient : MonoBehaviour
 	{

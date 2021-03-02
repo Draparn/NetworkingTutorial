@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace NetworkTutorial.Client.Gameplay
+namespace SmallMultiplayerGame.Client.Gameplay
 {
 	public class ProjectileClient : MonoBehaviour
 	{

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace NetworkTutorial.Shared.Utils
+namespace SmallMultiplayerGame.Shared.Utils
 {
 	public struct InputsStruct
 	{

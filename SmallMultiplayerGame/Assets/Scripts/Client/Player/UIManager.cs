@@ -1,10 +1,10 @@
-﻿using NetworkTutorial.Client.Gameplay;
-using NetworkTutorial.Client.Net;
+﻿using SmallMultiplayerGame.Client.Gameplay;
+using SmallMultiplayerGame.Client.Net;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NetworkTutorial.Client.Player
+namespace SmallMultiplayerGame.Client.Player
 {
 	public class UIManager : MonoBehaviour
 	{

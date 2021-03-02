@@ -1,8 +1,8 @@
-﻿using NetworkTutorial.Server.Client;
-using NetworkTutorial.Server.Net;
+﻿using SmallMultiplayerGame.Server.Client;
+using SmallMultiplayerGame.Server.Net;
 using UnityEngine;
 
-namespace NetworkTutorial.Server.Gameplay
+namespace SmallMultiplayerGame.Server.Gameplay
 {
 	public enum Size
 	{

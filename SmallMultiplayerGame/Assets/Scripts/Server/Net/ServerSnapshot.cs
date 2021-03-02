@@ -1,11 +1,11 @@
-﻿using NetworkTutorial.Server.Client;
-using NetworkTutorial.Server.Gameplay;
-using NetworkTutorial.Shared;
-using NetworkTutorial.Shared.Utils;
+﻿using SmallMultiplayerGame.Server.Client;
+using SmallMultiplayerGame.Server.Gameplay;
+using SmallMultiplayerGame.Shared;
+using SmallMultiplayerGame.Shared.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NetworkTutorial.Server
+namespace SmallMultiplayerGame.Server.Net
 {
 	public struct PlayerPosData
 	{

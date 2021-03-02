@@ -1,11 +1,11 @@
-﻿using NetworkTutorial.Client.Gameplay;
-using NetworkTutorial.Client.Net;
-using NetworkTutorial.Shared;
-using NetworkTutorial.Shared.Utils;
+﻿using SmallMultiplayerGame.Client.Gameplay;
+using SmallMultiplayerGame.Client.Net;
+using SmallMultiplayerGame.Shared;
+using SmallMultiplayerGame.Shared.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NetworkTutorial.Client.Player
+namespace SmallMultiplayerGame.Client.Player
 {
 	public class PlayerController : MonoBehaviour
 	{

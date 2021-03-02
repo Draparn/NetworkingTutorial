@@ -1,7 +1,7 @@
-﻿using NetworkTutorial.Shared;
+﻿using SmallMultiplayerGame.Shared;
 using UnityEngine;
 
-namespace NetworkTutorial.Server.Net
+namespace SmallMultiplayerGame.Server.Net
 {
 	public class NetworkManager : MonoBehaviour
 	{

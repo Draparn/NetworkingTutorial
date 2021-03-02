@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NetworkTutorial.Shared
+namespace SmallMultiplayerGame.Shared
 {
 	public class ThreadManager : MonoBehaviour
 	{

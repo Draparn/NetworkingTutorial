@@ -1,8 +1,8 @@
-﻿using NetworkTutorial.Shared.Net;
-using NetworkTutorial.Shared.Utils;
+﻿using SmallMultiplayerGame.Shared.Net;
+using SmallMultiplayerGame.Shared.Utils;
 using UnityEngine;
 
-namespace NetworkTutorial.Client.Net
+namespace SmallMultiplayerGame.Client.Net
 {
 	public class ClientSend
 	{

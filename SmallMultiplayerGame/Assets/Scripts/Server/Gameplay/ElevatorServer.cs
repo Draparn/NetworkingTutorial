@@ -1,7 +1,8 @@
 using System.Collections;
 using UnityEngine;
+using SmallMultiplayerGame.Server.Net;
 
-namespace NetworkTutorial.Server.Gameplay
+namespace SmallMultiplayerGame.Server.Gameplay
 {
 	public class ElevatorServer : MonoBehaviour
 	{

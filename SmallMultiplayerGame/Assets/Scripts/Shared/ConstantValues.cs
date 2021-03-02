@@ -1,6 +1,6 @@
 ﻿
 
-namespace NetworkTutorial.Shared
+namespace SmallMultiplayerGame.Shared
 {
 	public class ConstantValues
 	{

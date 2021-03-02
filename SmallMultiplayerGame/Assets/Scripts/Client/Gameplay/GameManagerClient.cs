@@ -1,13 +1,13 @@
-﻿using NetworkTutorial.Client.Net;
-using NetworkTutorial.Client.Player;
-using NetworkTutorial.Server.Gameplay;
-using NetworkTutorial.Shared;
-using NetworkTutorial.Shared.Utils;
+﻿using SmallMultiplayerGame.Client.Net;
+using SmallMultiplayerGame.Client.Player;
+using SmallMultiplayerGame.Server.Gameplay;
+using SmallMultiplayerGame.Shared;
+using SmallMultiplayerGame.Shared.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NetworkTutorial.Client.Gameplay
+namespace SmallMultiplayerGame.Client.Gameplay
 {
 	public struct LocalPredictionData
 	{

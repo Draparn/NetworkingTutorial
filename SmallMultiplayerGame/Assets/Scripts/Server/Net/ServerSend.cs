@@ -1,12 +1,12 @@
-﻿using NetworkTutorial.Server.Client;
-using NetworkTutorial.Server.Gameplay;
-using NetworkTutorial.Shared;
-using NetworkTutorial.Shared.Net;
-using NetworkTutorial.Shared.Utils;
+﻿using SmallMultiplayerGame.Server.Client;
+using SmallMultiplayerGame.Server.Gameplay;
+using SmallMultiplayerGame.Shared;
+using SmallMultiplayerGame.Shared.Net;
+using SmallMultiplayerGame.Shared.Utils;
 using System.Net;
 using UnityEngine;
 
-namespace NetworkTutorial.Server.Net
+namespace SmallMultiplayerGame.Server.Net
 {
 	public class ServerSend
 	{

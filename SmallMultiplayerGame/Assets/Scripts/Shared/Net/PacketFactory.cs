@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NetworkTutorial.Shared.Net
+namespace SmallMultiplayerGame.Shared.Net
 {
 	class PacketFactory
 	{

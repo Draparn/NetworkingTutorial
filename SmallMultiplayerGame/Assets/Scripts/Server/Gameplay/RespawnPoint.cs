@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace NetworkTutorial.Server.Gameplay
+namespace SmallMultiplayerGame.Server.Gameplay
 {
 	public class RespawnPoint : MonoBehaviour
 	{

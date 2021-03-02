@@ -1,11 +1,11 @@
-﻿using NetworkTutorial.Server.Gameplay;
-using NetworkTutorial.Server.Net;
-using NetworkTutorial.Shared;
-using NetworkTutorial.Shared.Net;
+﻿using SmallMultiplayerGame.Server.Gameplay;
+using SmallMultiplayerGame.Server.Net;
+using SmallMultiplayerGame.Shared;
+using SmallMultiplayerGame.Shared.Net;
 using System.Net;
 using UnityEngine;
 
-namespace NetworkTutorial.Server.Client
+namespace SmallMultiplayerGame.Server.Client
 {
 	public class ClientServer
 	{

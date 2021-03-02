@@ -1,7 +1,7 @@
-﻿using NetworkTutorial.Client.Gameplay;
-using NetworkTutorial.Client.Player;
-using NetworkTutorial.Shared;
-using NetworkTutorial.Shared.Net;
+﻿using SmallMultiplayerGame.Client.Gameplay;
+using SmallMultiplayerGame.Client.Player;
+using SmallMultiplayerGame.Shared;
+using SmallMultiplayerGame.Shared.Net;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
-namespace NetworkTutorial.Client.Net
+namespace SmallMultiplayerGame.Client.Net
 {
 	public class LocalClient : MonoBehaviour
 	{
