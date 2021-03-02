@@ -39,7 +39,7 @@ namespace SmallMultiplayerGame.Shared.Utils
 				yVelocity = 0;
 
 				if (inputs.Jump) //Spacebar
-					yVelocity = ConstantValues.PLAYER_JUMP_SPEED * ConstantValues.SERVER_TICK_RATE;
+					yVelocity = ConstantValues.PLAYER_JUMP_FORCE * ConstantValues.SERVER_TICK_RATE;
 			}
 			else
 				yVelocity += ConstantValues.WORLD_GRAVITY * ConstantValues.SERVER_TICK_RATE * ConstantValues.SERVER_TICK_RATE;
@@ -70,7 +70,7 @@ namespace SmallMultiplayerGame.Shared.Utils
 				yVelocity = 0;
 
 				if (inputs.Jump) //Spacebar
-					yVelocity = ConstantValues.PLAYER_JUMP_SPEED * ConstantValues.SERVER_TICK_RATE;
+					yVelocity = ConstantValues.PLAYER_JUMP_FORCE * ConstantValues.SERVER_TICK_RATE;
 			}
 			else
 				yVelocity += ConstantValues.WORLD_GRAVITY * ConstantValues.SERVER_TICK_RATE * ConstantValues.SERVER_TICK_RATE;
@@ -78,6 +78,36 @@ namespace SmallMultiplayerGame.Shared.Utils
 			moveDirection.y = yVelocity;
 
 			return moveDirection;
+		}
+
+		public static void NewMovement(InputsStruct inputs, Transform transform, ref Rigidbody rb)
+		{
+			var inputDirection = Vector3.zero;
+			if (inputs.Forward)  //W
+				inputDirection.z += 1;
+			if (inputs.Back)  //S
+				inputDirection.z -= 1;
+			if (inputs.Left)  //A
+				inputDirection.x -= 1;
+			if (inputs.Right)  //D
+				inputDirection.x += 1;
+
+			var velocity = transform.right * inputDirection.x + transform.forward * inputDirection.z;
+			velocity.Normalize();
+
+			Debug.Log(rb.velocity.magnitude);
+			if (rb.velocity.magnitude < ConstantValues.PLAYER_MOVE_SPEED)
+			{
+				rb.AddForce(velocity * ConstantValues.PLAYER_MOVE_SPEED * 4);
+			}
+
+			if (rb.velocity.y > -0.01f && rb.velocity.y < 0.01f)
+			{
+				if (inputs.Jump) //Spacebar
+				{
+					rb.AddForce(Vector3.up * ConstantValues.PLAYER_JUMP_FORCE, ForceMode.Impulse);
+				}
+			}
 		}
 	}
 }

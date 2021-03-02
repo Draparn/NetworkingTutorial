@@ -21,6 +21,7 @@ namespace SmallMultiplayerGame.Server.Net
 		{
 			QualitySettings.vSyncCount = 0;
 			Application.targetFrameRate = 60;
+			Physics.gravity = new Vector3(0, ConstantValues.WORLD_GRAVITY, 0);
 			Server.StartServer(ConstantValues.SERVER_MAX_PLAYERS);
 		}
 
