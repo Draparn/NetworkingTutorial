@@ -21,17 +21,20 @@ namespace SmallMultiplayerGame.Server.Client
 		private Vector2 inputDirection;
 		private Vector3 prevPos;
 
+		private RaycastHit[] hits = new RaycastHit[7];
+
 		public string PlayerName;
 		public float CurrentHealth = 100.0f, MaxHealth = 100.0f;
-		private float yVelocity;
 		public byte PlayerId, currentWeaponSlot;
-		public ushort SequenceNumber = ushort.MaxValue;
+
+		private ushort SequenceNumber = ushort.MaxValue;
+		private float yVelocity, distance;
+		private byte hitCount, index;
 
 
 		private void Start()
 		{
 			controller = gameObject.GetComponent<CharacterController>();
-
 			pickedUpWeapons = Weapons.GetNewWeapons();
 			currentWeaponSlot = 1;
 		}
@@ -64,11 +67,26 @@ namespace SmallMultiplayerGame.Server.Client
 				currentPositions = new Dictionary<byte, Vector3>();
 
 				RewindPlayerPositions();
-				if (Physics.Raycast(ShootOrigin.position, viewDirection, out RaycastHit hit))
+
+				hitCount = (byte)Physics.RaycastNonAlloc(ShootOrigin.position, viewDirection, hits);
+				index = 0;
+				distance = float.MaxValue;
+
+				for (int i = 0; i < hitCount; i++)
 				{
-					if (hit.collider.CompareTag("Player"))
-						hit.collider.GetComponent<PlayerServer>().TakeDamage(pickedUpWeapons[currentWeaponSlot].Damage);
+					if (hits[i].transform == transform)
+						continue;
+
+					if (hits[i].distance < distance)
+					{
+						distance = hits[i].distance;
+						index = (byte)i;
+					}
 				}
+
+				if (hits[index].collider.CompareTag("Player"))
+					hits[index].collider.GetComponent<PlayerServer>().TakeDamage(pickedUpWeapons[currentWeaponSlot].Damage);
+
 				RestorePlayerPositions();
 			}
 			else if (pickedUpWeapons[currentWeaponSlot].ProjectileType == ProjectileType.Grenade || pickedUpWeapons[currentWeaponSlot].ProjectileType == ProjectileType.Rocket)
