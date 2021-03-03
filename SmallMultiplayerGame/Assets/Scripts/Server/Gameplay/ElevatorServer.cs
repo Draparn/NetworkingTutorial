@@ -1,6 +1,6 @@
+using SmallMultiplayerGame.Server.Net;
 using System.Collections;
 using UnityEngine;
-using SmallMultiplayerGame.Server.Net;
 
 namespace SmallMultiplayerGame.Server.Gameplay
 {

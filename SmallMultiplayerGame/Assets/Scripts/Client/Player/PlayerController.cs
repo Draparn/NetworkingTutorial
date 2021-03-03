@@ -13,8 +13,6 @@ namespace SmallMultiplayerGame.Client.Player
 
 		private Transform cameraTransform;
 		private CharacterController controller;
-		private Rigidbody rb;
-		private CapsuleCollider col;
 		private PlayerClient player;
 		private InputsStruct inputs = new InputsStruct();
 		private Vector3 prevPos, nextPos;
@@ -42,8 +40,6 @@ namespace SmallMultiplayerGame.Client.Player
 			cameraTransform = GetComponentInChildren<CameraController>().transform;
 			player = GetComponent<PlayerClient>();
 			controller = GetComponent<CharacterController>();
-			rb = GetComponent<Rigidbody>();
-			col = GetComponent<CapsuleCollider>();
 
 			prevPos = gameObject.transform.position;
 			nextPos = gameObject.transform.position;
@@ -125,8 +121,6 @@ namespace SmallMultiplayerGame.Client.Player
 			controller.enabled = true;
 			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(inputs, transform, ref yVelocity, controller.isGrounded));
 			controller.enabled = false;
-
-			//PlayerMovementCalculations.NewMovement(inputs, transform, ref rb);
 
 			GameManagerClient.Instance.LocalPositionPredictions.Add(new LocalPredictionData(
 				sequenceNumber,
