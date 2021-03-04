@@ -10,17 +10,18 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
 	{
 		public static PlayerController Instance;
 
+		public List<Weapon> pickedUpWeapons;
 		private Transform cameraTransform;
 		private CharacterController controller;
 		private PlayerObjectClient player;
-		private InputsStruct inputs = new InputsStruct();
+
+		private InputsStruct inputs;
 		private Vector3 prevPos, nextPos;
 
 		private float yVelocity, yVelocityPreMove, clientTickRate;
 		private byte? PressedWeaponKey = null;
 		public byte currentWeapon;
 		private bool isGroundedPreMove;
-		public List<Weapon> pickedUpWeapons;
 
 		private ushort sequenceNumber = 0;
 
@@ -30,8 +31,6 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
 				Instance = this;
 			else if (Instance != this)
 				Destroy(this);
-
-			pickedUpWeapons = Weapons.GetNewWeapons();
 		}
 
 		private void Start()
@@ -39,10 +38,10 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
 			cameraTransform = GetComponentInChildren<CameraController>().transform;
 			player = GetComponent<PlayerObjectClient>();
 			controller = GetComponent<CharacterController>();
-
+			inputs = new InputsStruct();
+			pickedUpWeapons = Weapons.GetNewWeapons();
 			prevPos = gameObject.transform.position;
 			nextPos = gameObject.transform.position;
-
 			currentWeapon = 1;
 		}
 
@@ -129,6 +128,7 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
 				yVelocityPreMove,
 				isGroundedPreMove
 				));
+
 			nextPos = gameObject.transform.position;
 			gameObject.transform.position = prevPos;
 		}

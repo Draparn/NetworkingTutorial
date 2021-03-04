@@ -44,16 +44,21 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay
 		public Dictionary<byte, GameObject> WeaponPickups = new Dictionary<byte, GameObject>();
 		private Dictionary<int, Vector3> projectilesOriginalPositions = new Dictionary<int, Vector3>();
 		private Dictionary<int, Tuple<Vector3, Quaternion>> playersOriginalPosAndRot = new Dictionary<int, Tuple<Vector3, Quaternion>>();
-		public Elevator elevator;
 
 		public List<LocalPredictionData> LocalPositionPredictions = new List<LocalPredictionData>();
+		private List<ProjectileData> projectiles;
+		private ProjectileData projData;
+		private List<PlayerPosData> players;
+		private PlayerPosData playerData;
 
-		public GameObject LocalPlayerPrefab, RemotePlayerPrefab;
 		public GameObject[] HealthpackPrefabs = new GameObject[3];
+		public GameObject LocalPlayerPrefab, RemotePlayerPrefab;
 
 		[SerializeField] private Transform projectilePool, pickups;
+		public Elevator elevator;
 
 		private float lerpValue, bufferTimeMultiplier = 1;
+		private int count;
 
 		private void Awake()
 		{
@@ -67,10 +72,45 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay
 		{
 			if (ClientSnapshot.Snapshots.Count > 0)
 			{
+				players = ClientSnapshot.Snapshots[0].players;
+
 				//players
-				if (ClientSnapshot.Snapshots[0].players != null)
+				if (players != null)
 				{
-					foreach (var playerData in ClientSnapshot.Snapshots[0].players)
+					count = players.Count;
+					for (int i = 0; i < count; i++)
+					{
+						playerData = players[i];
+
+						if (Players.ContainsKey(playerData.PlayerId))
+						{
+							if (playerData.PlayerId == LocalClient.Instance.MyId)
+								continue;
+							else
+							{
+								if (!playersOriginalPosAndRot.ContainsKey(playerData.PlayerId))
+									playersOriginalPosAndRot.Add(playerData.PlayerId, new Tuple<Vector3, Quaternion>(
+											Players[playerData.PlayerId].transform.position,
+											Players[playerData.PlayerId].transform.rotation));
+
+								//position
+								Players[playerData.PlayerId].transform.position = Vector3.Lerp(
+									playersOriginalPosAndRot[playerData.PlayerId].Item1,
+									playerData.Position,
+									lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier)
+									);
+
+								//rotation
+								Players[playerData.PlayerId].transform.rotation = Quaternion.Lerp(
+									playersOriginalPosAndRot[playerData.PlayerId].Item2,
+									playerData.Rotation,
+									lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier)
+									);
+							}
+						}
+					}
+					/*
+					foreach (var playerData in players)
 					{
 						if (Players.ContainsKey(playerData.PlayerId))
 						{
@@ -99,11 +139,28 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay
 							}
 						}
 					}
+					*/
 				}
 
 				//projectiles
-				if (ClientSnapshot.Snapshots[0].projectiles != null)
+				projectiles = ClientSnapshot.Snapshots[0].projectiles;
+				if (projectiles != null)
 				{
+					count = projectiles.Count;
+					for (int i = 0; i < count; i++)
+					{
+						projData = projectiles[i];
+
+						if (Projectiles.ContainsKey(projData.ProjectileId))
+						{
+							if (!projectilesOriginalPositions.ContainsKey(projData.ProjectileId))
+								projectilesOriginalPositions.Add(projData.ProjectileId, Projectiles[projData.ProjectileId].transform.position);
+
+							Projectiles[projData.ProjectileId].transform.position = Vector3.Lerp(projectilesOriginalPositions[projData.ProjectileId], projData.Position, lerpValue / (ConstantValues.SERVER_TICK_RATE));
+						}
+					}
+
+					/*
 					foreach (var projData in ClientSnapshot.Snapshots[0].projectiles)
 					{
 						if (Projectiles.ContainsKey(projData.ProjectileId))
@@ -114,6 +171,7 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay
 							Projectiles[projData.ProjectileId].transform.position = Vector3.Lerp(projectilesOriginalPositions[projData.ProjectileId], projData.Position, lerpValue / (ConstantValues.SERVER_TICK_RATE));
 						}
 					}
+					*/
 				}
 
 				lerpValue += Time.deltaTime;
@@ -133,14 +191,12 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay
 
 		public Vector3 GetLastPredictedPos()
 		{
-			if (LocalPositionPredictions.Count < 1)
-				return Vector3.zero;
-
-			return LocalPositionPredictions[LocalPositionPredictions.Count - 1].Position;
+			return LocalPositionPredictions.Count < 1 ? Vector3.zero : LocalPositionPredictions[LocalPositionPredictions.Count - 1].Position;
 		}
 
 		public Vector3 GetPredictedPositionBySequence(ushort targetSequenceNumber)
 		{
+			//This is here for later optimization
 			for (int i = 0; i < LocalPositionPredictions.Count; i++)
 			{
 				if (LocalPositionPredictions[i].SequenceNumber == targetSequenceNumber)

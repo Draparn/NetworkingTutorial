@@ -12,7 +12,10 @@ namespace SmallMultiplayerGame.ClientLol.Net
 		internal List<PlayerPosData> players;
 		internal List<ProjectileData> projectiles;
 
+		private LocalPredictionData predData;
+
 		public uint sequenceNumber;
+		private int count;
 
 		public ClientSnapshot(uint sequenceNumber, List<PlayerPosData> players, List<ProjectileData> projectiles)
 		{
@@ -32,26 +35,29 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 		private void CheckPosAndReconcile(PlayerPosData playerData)
 		{
-			for (int i = 0; i < GameManagerClient.Instance.LocalPositionPredictions.Count; i++)
+			count = GameManagerClient.Instance.LocalPositionPredictions.Count;
+
+			for (int i = 0; i < count; i++)
 			{
-				if (GameManagerClient.Instance.LocalPositionPredictions[i].SequenceNumber == playerData.Sequencenumber)
+				predData = GameManagerClient.Instance.LocalPositionPredictions[i];
+
+				if (predData.SequenceNumber == playerData.Sequencenumber)
 				{
-					if (Vector3.Distance(GameManagerClient.Instance.LocalPositionPredictions[i].Position, playerData.Position) > 0.1f)
+					if (Vector3.Distance(predData.Position, playerData.Position) > 0.1f)
 					{
 						GameManagerClient.Instance.LocalPositionPredictions.RemoveRange(0, i);
 
-						for (int j = 0; j < GameManagerClient.Instance.LocalPositionPredictions.Count; j++)
+						count = GameManagerClient.Instance.LocalPositionPredictions.Count;
+						for (int j = 0; j < count; j++)
 						{
-							var prediction = GameManagerClient.Instance.LocalPositionPredictions[j];
-
 							if (j == 0)
 							{
-								prediction.Position = playerData.Position;
-								GameManagerClient.Instance.LocalPositionPredictions[j] = new LocalPredictionData(prediction);
+								predData.Position = playerData.Position;
+								GameManagerClient.Instance.LocalPositionPredictions[j] = new LocalPredictionData(predData);
 							}
 							else
 							{
-								prediction.Position = GameManagerClient.Instance.LocalPositionPredictions[j - 1].Position +
+								predData.Position = GameManagerClient.Instance.LocalPositionPredictions[j - 1].Position +
 									PlayerMovementCalculations.ReCalculatePlayerPosition(
 									GameManagerClient.Instance.LocalPositionPredictions[j].Inputs,
 									GameManagerClient.Instance.LocalPositionPredictions[j].Transform,
@@ -59,7 +65,7 @@ namespace SmallMultiplayerGame.ClientLol.Net
 									GameManagerClient.Instance.LocalPositionPredictions[j].IsGroundedPreMove
 									);
 
-								GameManagerClient.Instance.LocalPositionPredictions[j] = new LocalPredictionData(prediction);
+								GameManagerClient.Instance.LocalPositionPredictions[j] = new LocalPredictionData(predData);
 							}
 						}
 
