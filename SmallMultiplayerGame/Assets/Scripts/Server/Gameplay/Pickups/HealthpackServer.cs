@@ -13,7 +13,7 @@ namespace SmallMultiplayerGame.Server.Gameplay.Pickups
 
 	public class HealthpackServer : MonoBehaviour
 	{
-		public float HealthGain, RespawnTime = 30.0f, currentRespawnTime;
+		public float HealthGain, RespawnTime, currentRespawnTime;
 		public byte MyId;
 		public Size size;
 		public bool IsActive = true;
@@ -21,6 +21,7 @@ namespace SmallMultiplayerGame.Server.Gameplay.Pickups
 		private void Start()
 		{
 			GameManagerServer.Instance.AddHealthpackToDict(this);
+			RespawnTime = (int)size + 1 * 20;
 		}
 
 		private void OnTriggerEnter(Collider other)

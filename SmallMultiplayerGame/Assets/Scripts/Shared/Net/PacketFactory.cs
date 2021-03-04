@@ -9,6 +9,7 @@ namespace SmallMultiplayerGame.Shared.Net
 			{ServerPackets.welcome, new Packet((int)ServerPackets.welcome) },
 			{ServerPackets.serverFull, new Packet((int)ServerPackets.serverFull) },
 			{ServerPackets.nameTaken, new Packet((int)ServerPackets.nameTaken) },
+			{ServerPackets.newClientInfo, new Packet((int)ServerPackets.newClientInfo) },
 			{ServerPackets.playerSpawn, new Packet((int)ServerPackets.playerSpawn) },
 			{ServerPackets.playerDisconnected, new Packet((int)ServerPackets.playerDisconnected) },
 			{ServerPackets.playerWeaponSwitch, new Packet((int)ServerPackets.playerWeaponSwitch) },

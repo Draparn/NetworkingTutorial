@@ -25,6 +25,8 @@ namespace SmallMultiplayerGame.Server.Client
 			Player = GameManagerServer.Instance.InstantiatePlayer();
 			Player.Init(Id, playerName);
 
+			//ServerSend.SendNewClientInfo(Id);
+
 			//Players
 			var clients = Server.Clients.Values;
 			foreach (var client in clients)

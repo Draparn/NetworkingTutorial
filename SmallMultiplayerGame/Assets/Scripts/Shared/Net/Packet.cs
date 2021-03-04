@@ -12,6 +12,7 @@ namespace SmallMultiplayerGame.Shared.Net
 		welcome = 1,
 		serverFull,
 		nameTaken,
+		newClientInfo,
 		playerSpawn,
 		playerDisconnected,
 		playerRespawn,

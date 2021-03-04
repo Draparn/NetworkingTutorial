@@ -41,6 +41,16 @@ namespace SmallMultiplayerGame.Server.Net
 			packet.Reset();
 		}
 
+		public static void SendNewClientInfo(byte clientId)
+		{
+			var packet = PacketFactory.GetServerPacketType(ServerPackets.newClientInfo);
+
+			//All new info here...
+
+			SendToClient(clientId, packet);
+			packet.Reset();
+		}
+
 		public static void SendSnapshot()
 		{
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.serverSnapshot);

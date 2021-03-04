@@ -169,7 +169,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 891b8d06d6dcb56469f701f90a1490b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 92c3c8eb325e8004290b93f35c441b64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &60343500
@@ -5475,15 +5475,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d52a038d5b2a09444afe54d4b2ba8c90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  elevator: {fileID: 40919616}
-  LocalPlayerPrefab: {fileID: 4591549347349979242, guid: 6b0eeaa04764f2540ad0715591dc953e, type: 3}
-  RemotePlayerPrefab: {fileID: 4132987940020096212, guid: 6e72ac017ea0d694f8f81a4bf388399c, type: 3}
   HealthpackPrefabs:
   - {fileID: 4480148216521664882, guid: d41f615ac7dc5334b835319a224994a4, type: 3}
   - {fileID: 4480148216521664882, guid: b700db005a50ac640897442441057580, type: 3}
   - {fileID: 4480148216521664882, guid: 0c08f7ec82a70564eb124819cf1dc49f, type: 3}
+  LocalPlayerPrefab: {fileID: 4591549347349979242, guid: 6b0eeaa04764f2540ad0715591dc953e, type: 3}
+  RemotePlayerPrefab: {fileID: 4132987940020096212, guid: 6e72ac017ea0d694f8f81a4bf388399c, type: 3}
   projectilePool: {fileID: 1794765119}
   pickups: {fileID: 332370955}
+  elevator: {fileID: 40919616}
 --- !u!1 &610934496
 GameObject:
   m_ObjectHideFlags: 0
@@ -6583,7 +6583,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh33706
+  m_Name: pb_Mesh19068
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

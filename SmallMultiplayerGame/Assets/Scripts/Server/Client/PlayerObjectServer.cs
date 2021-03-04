@@ -149,7 +149,7 @@ namespace SmallMultiplayerGame.Server.Client
 
 		public void UpdatePosAndRot(ushort sequenceNumber, InputsStruct inputs, Quaternion rot)
 		{
-			if (!IsMoreRecent(sequenceNumber) && controller.enabled == true)
+			if (!IsMoreRecent(sequenceNumber) && controller.enabled)
 				return;
 
 			prevRot = transform.rotation;

@@ -11,10 +11,12 @@ namespace SmallMultiplayerGame.Server.Gameplay
 	{
 		public static GameManagerServer Instance;
 
-		private Dictionary<byte, HealthpackServer> healthpacks = new Dictionary<byte, HealthpackServer>();
 		public List<Vector3> respawnPoints = new List<Vector3>();
 		public GameObject PlayerPrefab;
+		private Dictionary<byte, HealthpackServer> healthpacks = new Dictionary<byte, HealthpackServer>();
+		private HealthpackServer healthpack;
 
+		private int count;
 		private static byte nextHealthpackId = 0;
 
 		private void Awake()
@@ -28,8 +30,11 @@ namespace SmallMultiplayerGame.Server.Gameplay
 		private void Update()
 		{
 			//Healthpacks
-			foreach (var healthpack in healthpacks.Values)
+			count = healthpacks.Values.Count;
+			for (byte i = 0; i < count; i++)
 			{
+				healthpack = healthpacks[i];
+
 				if (healthpack.IsActive)
 					continue;
 
