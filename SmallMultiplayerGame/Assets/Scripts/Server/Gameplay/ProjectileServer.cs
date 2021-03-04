@@ -57,7 +57,7 @@ namespace SmallMultiplayerGame.Server.Gameplay
 
 		private void OnCollisionEnter(Collision other)
 		{
-			var playerComp = other.transform.GetComponent<PlayerServer>();
+			var playerComp = other.transform.GetComponent<PlayerObjectServer>();
 
 			if (playerComp != null && playerComp.PlayerId != shotByPlayer && playerComp.CurrentHealth > 0)
 				Explode();
@@ -86,7 +86,7 @@ namespace SmallMultiplayerGame.Server.Gameplay
 			foreach (var collider in nearbyColliders)
 			{
 				if (collider.CompareTag("Player"))
-					collider.GetComponent<PlayerServer>().TakeDamage(Weapons.AllWeapons[shotFromWeapon].Damage);
+					collider.GetComponent<PlayerObjectServer>().TakeDamage(Weapons.AllWeapons[shotFromWeapon].Damage);
 			}
 
 			Projectiles.Remove(id);

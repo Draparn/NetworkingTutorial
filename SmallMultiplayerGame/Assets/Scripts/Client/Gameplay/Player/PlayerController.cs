@@ -1,11 +1,10 @@
-﻿using SmallMultiplayerGame.Client.Gameplay;
-using SmallMultiplayerGame.Client.Net;
+﻿using SmallMultiplayerGame.ClientLol.Net;
 using SmallMultiplayerGame.Shared;
 using SmallMultiplayerGame.Shared.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SmallMultiplayerGame.Client.Player
+namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
 {
 	public class PlayerController : MonoBehaviour
 	{
@@ -13,7 +12,7 @@ namespace SmallMultiplayerGame.Client.Player
 
 		private Transform cameraTransform;
 		private CharacterController controller;
-		private PlayerClient player;
+		private PlayerObjectClient player;
 		private InputsStruct inputs = new InputsStruct();
 		private Vector3 prevPos, nextPos;
 
@@ -38,7 +37,7 @@ namespace SmallMultiplayerGame.Client.Player
 		private void Start()
 		{
 			cameraTransform = GetComponentInChildren<CameraController>().transform;
-			player = GetComponent<PlayerClient>();
+			player = GetComponent<PlayerObjectClient>();
 			controller = GetComponent<CharacterController>();
 
 			prevPos = gameObject.transform.position;

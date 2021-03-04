@@ -1,17 +1,16 @@
-﻿using SmallMultiplayerGame.Client.Gameplay;
-using SmallMultiplayerGame.Client.Gameplay.WeaponScrips;
-using SmallMultiplayerGame.Client.Net;
+﻿using SmallMultiplayerGame.ClientLol.Gameplay.WeaponScrips;
+using SmallMultiplayerGame.ClientLol.Net;
 using SmallMultiplayerGame.Shared;
 using System.Collections;
 using UnityEngine;
 
-namespace SmallMultiplayerGame.Client.Player
+namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
 {
-	public class PlayerClient : MonoBehaviour
+	public class PlayerObjectClient : MonoBehaviour
 	{
 		public GameObject PlayerMesh, WeaponMeshHolder;
 		private GameObject currentWeapon;
-		private WeaponClient wc;
+		private WeaponClient weapon;
 		private MeshRenderer PlayerMeshRenderer;
 
 		private Color originalColor;
@@ -56,7 +55,7 @@ namespace SmallMultiplayerGame.Client.Player
 
 		public void FireWeapon()
 		{
-			wc.Shoot();
+			weapon.Shoot();
 		}
 
 		public void SetWeaponMesh(byte clientId, byte weaponSlot)
@@ -65,7 +64,7 @@ namespace SmallMultiplayerGame.Client.Player
 				Destroy(WeaponMeshHolder.transform.GetChild(0).gameObject);
 
 			currentWeapon = Instantiate(Weapons.AllWeapons[weaponSlot].ClientPrefab, WeaponMeshHolder.transform);
-			wc = currentWeapon.GetComponent<WeaponClient>();
+			weapon = currentWeapon.GetComponent<WeaponClient>();
 
 			if (clientId == LocalClient.Instance.MyId)
 				UIManager.Instance.SetAmmoCount(weaponSlot == (byte)WeaponSlot.Pistol ? "Inf" : PlayerController.Instance.pickedUpWeapons[weaponSlot].Ammo.ToString());

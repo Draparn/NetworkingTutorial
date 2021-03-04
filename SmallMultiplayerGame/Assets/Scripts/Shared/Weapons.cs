@@ -10,6 +10,13 @@ namespace SmallMultiplayerGame.Shared
 		GrenadeLauncher
 	}
 
+	public enum ProjectileType
+	{
+		Hitscan = 0,
+		Grenade,
+		Rocket
+	}
+
 	public class Weapons
 	{
 		public static List<Weapon> AllWeapons = new List<Weapon>()
@@ -83,12 +90,5 @@ namespace SmallMultiplayerGame.Shared
 		public ushort MaxAmmo;
 		public bool IsPickedUp;
 		public byte Damage;
-	}
-
-	public enum ProjectileType
-	{
-		Hitscan = 0,
-		Grenade,
-		Rocket
 	}
 }

@@ -7,14 +7,14 @@ using UnityEngine;
 
 namespace SmallMultiplayerGame.Server.Client
 {
-	public class PlayerServer : MonoBehaviour
+	public class PlayerObjectServer : MonoBehaviour
 	{
 		private Dictionary<byte, Vector3> currentPositions;
 		public List<Weapon> pickedUpWeapons;
 		public Transform ShootOrigin;
 		private CharacterController controller;
 		private ServerSnapshot oldSnapshot;
-		private ClientServer client;
+		private Client client;
 
 		private InputsStruct playerInput;
 		private Quaternion prevRot;
@@ -85,7 +85,7 @@ namespace SmallMultiplayerGame.Server.Client
 				}
 
 				if (hits[index].collider.CompareTag("Player"))
-					hits[index].collider.GetComponent<PlayerServer>().TakeDamage(pickedUpWeapons[currentWeaponSlot].Damage);
+					hits[index].collider.GetComponent<PlayerObjectServer>().TakeDamage(pickedUpWeapons[currentWeaponSlot].Damage);
 
 				RestorePlayerPositions();
 			}

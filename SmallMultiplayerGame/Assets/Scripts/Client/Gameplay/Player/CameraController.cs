@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-namespace SmallMultiplayerGame.Client.Player
+namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
 {
 	public class CameraController : MonoBehaviour
 	{
-		public PlayerClient player;
+		public PlayerObjectClient player;
 
-		public float sensitivity = 100f;
+		public float sensitivity = 200f;
 		private float clampAngle = 85f, verticalRotation, horizontalRotation, mouseVertical, mouseHorizontal;
 
 		private void Start()

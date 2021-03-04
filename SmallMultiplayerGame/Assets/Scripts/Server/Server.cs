@@ -1,5 +1,4 @@
-﻿using SmallMultiplayerGame.Server.Client;
-using SmallMultiplayerGame.Server.Net;
+﻿using SmallMultiplayerGame.Server.Net;
 using SmallMultiplayerGame.Shared;
 using SmallMultiplayerGame.Shared.Net;
 using System;
@@ -15,7 +14,7 @@ namespace SmallMultiplayerGame.Server
 		public delegate void PacketHandler(byte clientId, Packet packet);
 
 		public static Dictionary<byte, PacketHandler> PacketHandlers;
-		public static Dictionary<byte, ClientServer> Clients = new Dictionary<byte, ClientServer>();
+		public static Dictionary<byte, Client.Client> Clients = new Dictionary<byte, Client.Client>();
 		private static UdpClient udpListener;
 
 		public static int MaxPlayers { get; set; }
@@ -91,7 +90,7 @@ namespace SmallMultiplayerGame.Server
 		private static void InitializeServerData()
 		{
 			for (byte i = 1; i <= MaxPlayers; i++)
-				Clients.Add(i, new ClientServer(i));
+				Clients.Add(i, new Client.Client(i));
 
 			PacketHandlers = new Dictionary<byte, PacketHandler>();
 			PacketHandlers.Add((byte)ClientPackets.welcomeReceived, ServerHandle.OnWelcomeReceived);
@@ -114,7 +113,7 @@ namespace SmallMultiplayerGame.Server
 
 		private static bool ServerHasEmptySlot(IPEndPoint endPoint)
 		{
-			ClientServer client;
+			Client.Client client;
 			for (byte i = 1; i <= MaxPlayers; i++)
 			{
 				client = Clients[i];
@@ -134,7 +133,7 @@ namespace SmallMultiplayerGame.Server
 
 		public static bool CheckNames(byte clientId, string name)
 		{
-			ClientServer client;
+			Client.Client client;
 			for (byte i = 1; i < Clients.Count; i++)
 			{
 				if (i == clientId)

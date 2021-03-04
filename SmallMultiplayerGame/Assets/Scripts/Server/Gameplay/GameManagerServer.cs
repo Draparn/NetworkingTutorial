@@ -1,4 +1,5 @@
 ﻿using SmallMultiplayerGame.Server.Client;
+using SmallMultiplayerGame.Server.Gameplay.Pickups;
 using SmallMultiplayerGame.Server.Net;
 using SmallMultiplayerGame.Shared;
 using System.Collections.Generic;
@@ -49,9 +50,9 @@ namespace SmallMultiplayerGame.Server.Gameplay
 			}
 		}
 
-		public PlayerServer InstantiatePlayer()
+		public PlayerObjectServer InstantiatePlayer()
 		{
-			return Instantiate(PlayerPrefab, respawnPoints[Random.Range(0, respawnPoints.Count)], Quaternion.identity).GetComponent<PlayerServer>();
+			return Instantiate(PlayerPrefab, respawnPoints[Random.Range(0, respawnPoints.Count)], Quaternion.identity).GetComponent<PlayerObjectServer>();
 		}
 
 		public ProjectileServer InstantiateProjectile(Transform shootOrigin, Vector3 viewDirection, GameObject projectilePrefab)

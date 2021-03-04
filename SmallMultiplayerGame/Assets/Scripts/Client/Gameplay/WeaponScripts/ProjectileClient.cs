@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SmallMultiplayerGame.Client.Gameplay
+namespace SmallMultiplayerGame.ClientLol.Gameplay.WeaponScrips
 {
 	public class ProjectileClient : MonoBehaviour
 	{

@@ -4,7 +4,7 @@ namespace SmallMultiplayerGame.Server.Gameplay
 {
 	public class RespawnPoint : MonoBehaviour
 	{
-		void Start()
+		void Awake()
 		{
 			GameManagerServer.Instance.respawnPoints.Add(transform.position);
 		}

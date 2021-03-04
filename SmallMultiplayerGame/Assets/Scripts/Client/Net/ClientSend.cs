@@ -2,7 +2,7 @@
 using SmallMultiplayerGame.Shared.Utils;
 using UnityEngine;
 
-namespace SmallMultiplayerGame.Client.Net
+namespace SmallMultiplayerGame.ClientLol.Net
 {
 	public class ClientSend
 	{

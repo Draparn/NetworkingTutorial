@@ -1,21 +1,20 @@
 ﻿using SmallMultiplayerGame.Server.Gameplay;
+using SmallMultiplayerGame.Server.Gameplay.Pickups;
 using SmallMultiplayerGame.Server.Net;
 using SmallMultiplayerGame.Shared;
-using SmallMultiplayerGame.Shared.Net;
-using System.Net;
 using UnityEngine;
 
 namespace SmallMultiplayerGame.Server.Client
 {
-	public class ClientServer
+	public partial class Client
 	{
-		public PlayerServer Player;
+		public PlayerObjectServer Player;
 		public UDP Connection;
 
 		public float DisconnectTimer;
 		public byte Id;
 
-		public ClientServer(byte id)
+		public Client(byte id)
 		{
 			Id = id;
 			Connection = new UDP(Id);
@@ -68,49 +67,6 @@ namespace SmallMultiplayerGame.Server.Client
 			});
 
 			ServerSend.SendPlayerDisconnected_ALL(Id);
-		}
-
-		public class UDP
-		{
-			public IPEndPoint endPoint;
-
-			private byte clientId;
-
-			public UDP(byte id)
-			{
-				clientId = id;
-			}
-
-			public void Connect(IPEndPoint endPoint)
-			{
-				this.endPoint = endPoint;
-			}
-
-			public void SendData(Packet packet)
-			{
-				Server.SendPacket(endPoint, packet);
-			}
-
-			public void HandleData(Packet packet)
-			{
-				int packetLength = packet.ReadUShort();
-				byte[] packetBytes = packet.ReadBytes(packetLength);
-
-				ThreadManager.ExecuteOnMainThread(() =>
-				{
-					using (Packet pkt = new Packet(packetBytes))
-					{
-						var packetId = pkt.ReadByte();
-						Server.PacketHandlers[packetId](clientId, pkt);
-					}
-				});
-			}
-
-			public void Disconnect()
-			{
-				endPoint = null;
-			}
-
 		}
 
 	}

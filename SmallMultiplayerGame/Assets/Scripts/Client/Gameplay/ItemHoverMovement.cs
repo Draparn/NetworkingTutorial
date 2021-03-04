@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace SmallMultiplayerGame.Client.Gameplay
+namespace SmallMultiplayerGame.ClientLol.Gameplay
 {
-	public class PickupMovement : MonoBehaviour
+	public class ItemHoverMovement : MonoBehaviour
 	{
 		private Vector3 startPos;
 

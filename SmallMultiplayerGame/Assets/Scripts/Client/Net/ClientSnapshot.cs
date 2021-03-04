@@ -1,9 +1,9 @@
-﻿using SmallMultiplayerGame.Client.Gameplay;
+﻿using SmallMultiplayerGame.ClientLol.Gameplay;
 using SmallMultiplayerGame.Shared.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SmallMultiplayerGame.Client.Net
+namespace SmallMultiplayerGame.ClientLol.Net
 {
 	public class ClientSnapshot
 	{

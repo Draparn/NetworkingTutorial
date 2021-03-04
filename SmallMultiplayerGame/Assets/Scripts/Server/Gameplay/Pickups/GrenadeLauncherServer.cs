@@ -4,7 +4,7 @@ using SmallMultiplayerGame.Shared;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SmallMultiplayerGame.Server.Gameplay
+namespace SmallMultiplayerGame.Server.Gameplay.Pickups
 {
 	public class GrenadeLauncherServer : MonoBehaviour
 	{
@@ -40,7 +40,7 @@ namespace SmallMultiplayerGame.Server.Gameplay
 		{
 			if (other.CompareTag("Player") && IsActive)
 			{
-				var playerComp = other.GetComponent<PlayerServer>();
+				var playerComp = other.GetComponent<PlayerObjectServer>();
 				var weapon = playerComp.pickedUpWeapons[(byte)WeaponSlot.GrenadeLauncher];
 
 				if (weapon.IsPickedUp)

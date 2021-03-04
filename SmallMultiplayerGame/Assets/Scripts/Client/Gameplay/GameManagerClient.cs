@@ -1,13 +1,14 @@
-﻿using SmallMultiplayerGame.Client.Net;
-using SmallMultiplayerGame.Client.Player;
-using SmallMultiplayerGame.Server.Gameplay;
+﻿using SmallMultiplayerGame.ClientLol.Gameplay.Player;
+using SmallMultiplayerGame.ClientLol.Gameplay.WeaponScrips;
+using SmallMultiplayerGame.ClientLol.Net;
+using SmallMultiplayerGame.Server.Gameplay.Environment;
 using SmallMultiplayerGame.Shared;
 using SmallMultiplayerGame.Shared.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SmallMultiplayerGame.Client.Gameplay
+namespace SmallMultiplayerGame.ClientLol.Gameplay
 {
 	public struct LocalPredictionData
 	{
@@ -37,13 +38,13 @@ namespace SmallMultiplayerGame.Client.Gameplay
 	{
 		public static GameManagerClient Instance;
 
-		public Dictionary<int, PlayerClient> Players = new Dictionary<int, PlayerClient>();
+		public Dictionary<int, PlayerObjectClient> Players = new Dictionary<int, PlayerObjectClient>();
 		public Dictionary<int, ProjectileClient> Projectiles = new Dictionary<int, ProjectileClient>();
 		public Dictionary<byte, GameObject> Healthpacks = new Dictionary<byte, GameObject>();
 		public Dictionary<byte, GameObject> WeaponPickups = new Dictionary<byte, GameObject>();
 		private Dictionary<int, Vector3> projectilesOriginalPositions = new Dictionary<int, Vector3>();
 		private Dictionary<int, Tuple<Vector3, Quaternion>> playersOriginalPosAndRot = new Dictionary<int, Tuple<Vector3, Quaternion>>();
-		public ElevatorServer elevator;
+		public Elevator elevator;
 
 		public List<LocalPredictionData> LocalPositionPredictions = new List<LocalPredictionData>();
 
@@ -122,10 +123,7 @@ namespace SmallMultiplayerGame.Client.Gameplay
 					lerpValue = 0;
 					ClientSnapshot.Snapshots.RemoveAt(0);
 
-					if (ClientSnapshot.Snapshots.Count > 1)
-						bufferTimeMultiplier = 0.5f;
-					else
-						bufferTimeMultiplier = 1.0f;
+					bufferTimeMultiplier = ClientSnapshot.Snapshots.Count > 1 ? 0.5f : 1f;
 
 					playersOriginalPosAndRot.Clear();
 					projectilesOriginalPositions.Clear();
@@ -156,7 +154,7 @@ namespace SmallMultiplayerGame.Client.Gameplay
 		public void SpawnPlayer(byte playerId, string playerName, Vector3 pos, Quaternion rot)
 		{
 			var player = Instantiate(playerId == LocalClient.Instance.MyId ? LocalPlayerPrefab : RemotePlayerPrefab, pos, rot);
-			var playerComponent = player.GetComponent<PlayerClient>();
+			var playerComponent = player.GetComponent<PlayerObjectClient>();
 			playerComponent.Init(playerId, playerName);
 
 			Players.Add(playerId, playerComponent);
@@ -179,7 +177,7 @@ namespace SmallMultiplayerGame.Client.Gameplay
 			if (!WeaponPickups.ContainsKey(id))
 				WeaponPickups.Add(id, Instantiate(Weapons.AllWeapons[(int)slot].ClientPrefab, pos, Quaternion.identity, pickups));
 
-			WeaponPickups[id].AddComponent<PickupMovement>();
+			WeaponPickups[id].AddComponent<ItemHoverMovement>();
 			WeaponPickups[id].SetActive(isActive);
 		}
 		public void WeaponUpdate(byte id, bool isActive)
@@ -197,11 +195,6 @@ namespace SmallMultiplayerGame.Client.Gameplay
 		public void HealthpackUpdate(byte id, bool isActive)
 		{
 			Healthpacks[id].SetActive(isActive);
-		}
-
-		public void MoveElevator(float lerpValue)
-		{
-			elevator.ClientElevatorMove(lerpValue);
 		}
 
 	}

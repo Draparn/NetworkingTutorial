@@ -2,7 +2,7 @@
 using SmallMultiplayerGame.Server.Net;
 using UnityEngine;
 
-namespace SmallMultiplayerGame.Server.Gameplay
+namespace SmallMultiplayerGame.Server.Gameplay.Pickups
 {
 	public enum Size
 	{
@@ -27,7 +27,7 @@ namespace SmallMultiplayerGame.Server.Gameplay
 		{
 			if (other.CompareTag("Player") && IsActive)
 			{
-				var playerComp = other.GetComponent<PlayerServer>();
+				var playerComp = other.GetComponent<PlayerObjectServer>();
 				if (size != Size.Mega && playerComp.CurrentHealth >= playerComp.MaxHealth)
 					return;
 
@@ -48,7 +48,7 @@ namespace SmallMultiplayerGame.Server.Gameplay
 			var overlappingColliders = Physics.OverlapSphere(transform.position, 1);
 			foreach (var col in overlappingColliders)
 			{
-				var playerComp = col.GetComponent<PlayerServer>();
+				var playerComp = col.GetComponent<PlayerObjectServer>();
 				if (playerComp != null && playerComp.CurrentHealth < playerComp.MaxHealth)
 				{
 					playerComp.HealDamage(HealthGain);

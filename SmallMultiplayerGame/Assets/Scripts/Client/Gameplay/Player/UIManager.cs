@@ -1,10 +1,9 @@
-﻿using SmallMultiplayerGame.Client.Gameplay;
-using SmallMultiplayerGame.Client.Net;
+﻿using SmallMultiplayerGame.ClientLol.Net;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SmallMultiplayerGame.Client.Player
+namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
 {
 	public class UIManager : MonoBehaviour
 	{

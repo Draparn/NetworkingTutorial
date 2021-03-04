@@ -1,12 +1,12 @@
-﻿using SmallMultiplayerGame.Client.Gameplay;
-using SmallMultiplayerGame.Client.Player;
+﻿using SmallMultiplayerGame.ClientLol.Gameplay;
+using SmallMultiplayerGame.ClientLol.Gameplay.Player;
 using SmallMultiplayerGame.Shared;
 using SmallMultiplayerGame.Shared.Net;
 using SmallMultiplayerGame.Shared.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SmallMultiplayerGame.Client.Net
+namespace SmallMultiplayerGame.ClientLol.Net
 {
 	public struct PlayerPosData
 	{
@@ -108,8 +108,10 @@ namespace SmallMultiplayerGame.Client.Net
 			if (packet.ReadBool())
 			{
 				var lerpValue = ValueTypeConversions.ReturnByteAsFloat(packet.ReadByte());
-				GameManagerClient.Instance.MoveElevator(lerpValue);
+				GameManagerClient.Instance.elevator.ClientElevatorMove(lerpValue);
 			}
+			else
+				GameManagerClient.Instance.elevator.ClientElevatorMove(null);
 
 			ClientSnapshot.Snapshots.Add(new ClientSnapshot(snapshotSequenceNumber, players, projectiles));
 		}

@@ -1,5 +1,6 @@
 ﻿using SmallMultiplayerGame.Server.Client;
 using SmallMultiplayerGame.Server.Gameplay;
+using SmallMultiplayerGame.Server.Gameplay.Pickups;
 using SmallMultiplayerGame.Shared;
 using SmallMultiplayerGame.Shared.Net;
 using SmallMultiplayerGame.Shared.Utils;
@@ -77,7 +78,7 @@ namespace SmallMultiplayerGame.Server.Net
 			ServerSnapshot.ClearSnapshot();
 		}
 
-		public static void SendPlayerConnected_CLIENT(byte clientId, PlayerServer player)
+		public static void SendPlayerConnected_CLIENT(byte clientId, PlayerObjectServer player)
 		{
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerSpawn);
 
@@ -99,7 +100,7 @@ namespace SmallMultiplayerGame.Server.Net
 			packet.Reset();
 		}
 
-		public static void SendPlayerHealthUpdate_ALL(PlayerServer player)
+		public static void SendPlayerHealthUpdate_ALL(PlayerObjectServer player)
 		{
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerHealth);
 
@@ -110,7 +111,7 @@ namespace SmallMultiplayerGame.Server.Net
 			SendToAllClients(packet);
 			packet.Reset();
 		}
-		public static void SendPlayerSwitchedWeapon_ALL(PlayerServer player)
+		public static void SendPlayerSwitchedWeapon_ALL(PlayerObjectServer player)
 		{
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerWeaponSwitch);
 
@@ -129,7 +130,7 @@ namespace SmallMultiplayerGame.Server.Net
 			SendToAllClients(packet);
 			packet.Reset();
 		}
-		public static void SendPlayerRespawned_ALL(PlayerServer player)
+		public static void SendPlayerRespawned_ALL(PlayerObjectServer player)
 		{
 			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerRespawn);
 

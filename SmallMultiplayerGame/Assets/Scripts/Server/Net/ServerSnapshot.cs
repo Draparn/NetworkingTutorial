@@ -49,7 +49,7 @@ namespace SmallMultiplayerGame.Server.Net
 			else
 				currentSnapshot.PlayerPositions.Add(id, new PlayerPosData(id, pos, rot, sequenceNumber));
 		}
-		public static void RemovePlayerMovement(PlayerServer player)
+		public static void RemovePlayerMovement(PlayerObjectServer player)
 		{
 			currentSnapshot.PlayerPositions.Remove(player.PlayerId);
 		}
