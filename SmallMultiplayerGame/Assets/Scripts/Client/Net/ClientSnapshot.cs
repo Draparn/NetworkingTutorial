@@ -13,6 +13,7 @@ namespace SmallMultiplayerGame.ClientLol.Net
 		internal List<ProjectileData> projectiles;
 
 		private LocalPredictionData predData;
+		private PlayerPosData playerData;
 
 		public uint sequenceNumber;
 		private int count;
@@ -23,8 +24,11 @@ namespace SmallMultiplayerGame.ClientLol.Net
 			this.players = players.Count > 0 ? players : null;
 			this.projectiles = projectiles.Count > 0 ? projectiles : null;
 
-			foreach (var playerData in players)
+			count = players.Count;
+			for (int i = 0; i < count; i++)
 			{
+				playerData = players[i];
+
 				if (LocalClient.Instance.MyId == playerData.PlayerId)
 				{
 					CheckPosAndReconcile(playerData);

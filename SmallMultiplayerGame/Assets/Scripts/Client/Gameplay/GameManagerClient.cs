@@ -109,37 +109,7 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay
 							}
 						}
 					}
-					/*
-					foreach (var playerData in players)
-					{
-						if (Players.ContainsKey(playerData.PlayerId))
-						{
-							if (playerData.PlayerId == LocalClient.Instance.MyId)
-								continue;
-							else
-							{
-								if (!playersOriginalPosAndRot.ContainsKey(playerData.PlayerId))
-									playersOriginalPosAndRot.Add(playerData.PlayerId, new Tuple<Vector3, Quaternion>(
-											Players[playerData.PlayerId].transform.position,
-											Players[playerData.PlayerId].transform.rotation));
-
-								//position
-								Players[playerData.PlayerId].transform.position = Vector3.Lerp(
-									playersOriginalPosAndRot[playerData.PlayerId].Item1,
-									playerData.Position,
-									lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier)
-									);
-
-								//rotation
-								Players[playerData.PlayerId].transform.rotation = Quaternion.Lerp(
-									playersOriginalPosAndRot[playerData.PlayerId].Item2,
-									playerData.Rotation,
-									lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier)
-									);
-							}
-						}
-					}
-					*/
+					
 				}
 
 				//projectiles
@@ -158,20 +128,7 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay
 
 							Projectiles[projData.ProjectileId].transform.position = Vector3.Lerp(projectilesOriginalPositions[projData.ProjectileId], projData.Position, lerpValue / (ConstantValues.SERVER_TICK_RATE));
 						}
-					}
-
-					/*
-					foreach (var projData in ClientSnapshot.Snapshots[0].projectiles)
-					{
-						if (Projectiles.ContainsKey(projData.ProjectileId))
-						{
-							if (!projectilesOriginalPositions.ContainsKey(projData.ProjectileId))
-								projectilesOriginalPositions.Add(projData.ProjectileId, Projectiles[projData.ProjectileId].transform.position);
-
-							Projectiles[projData.ProjectileId].transform.position = Vector3.Lerp(projectilesOriginalPositions[projData.ProjectileId], projData.Position, lerpValue / (ConstantValues.SERVER_TICK_RATE));
-						}
-					}
-					*/
+					}					
 				}
 
 				lerpValue += Time.deltaTime;
