@@ -10,20 +10,18 @@ namespace SmallMultiplayerGame.ClientLol.Net
 {
 	public partial class LocalClient : MonoBehaviour
 	{
+		protected delegate void PacketHandler(Packet packet);
+
 		public static LocalClient Instance;
 
-		protected delegate void PacketHandler(Packet packet);
 		protected static Dictionary<int, PacketHandler> packethandlers;
 
 		public UDP Connection;
 
 		public string playerName;
-
 		private float disconnectTimer;
-
-		[HideInInspector] public byte MyId = 0;
-
 		public bool isConnected = false;
+		[HideInInspector] public byte MyId = 0;
 
 		private void Awake()
 		{

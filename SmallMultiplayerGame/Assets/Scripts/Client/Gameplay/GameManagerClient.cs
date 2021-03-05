@@ -12,12 +12,14 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay
 {
 	public struct LocalPredictionData
 	{
-		public ushort SequenceNumber;
-		public Vector3 Position;
 		public Transform Transform;
+
+		public InputsStruct Inputs;
+		public Vector3 Position;
+
+		public ushort SequenceNumber;
 		public float yVelocityPreMove;
 		public bool IsGroundedPreMove;
-		public InputsStruct Inputs;
 
 		public LocalPredictionData(ushort sequenceNumber, InputsStruct inputs, Vector3 position, Transform transform, float yVelocityPreMove, bool isGroundedPreMove)
 		{
@@ -44,19 +46,18 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay
 		public Dictionary<byte, GameObject> WeaponPickups = new Dictionary<byte, GameObject>();
 		private Dictionary<int, Vector3> projectilesOriginalPositions = new Dictionary<int, Vector3>();
 		private Dictionary<int, Tuple<Vector3, Quaternion>> playersOriginalPosAndRot = new Dictionary<int, Tuple<Vector3, Quaternion>>();
+		public GameObject[] HealthpackPrefabs = new GameObject[3];
 
 		public List<LocalPredictionData> LocalPositionPredictions = new List<LocalPredictionData>();
 		private List<ProjectileData> projectiles;
-		private ProjectileData projData;
 		private List<PlayerPosData> players;
+		private ProjectileData projData;
 		private PlayerPosData playerData;
 
-		public GameObject[] HealthpackPrefabs = new GameObject[3];
 		public GameObject LocalPlayerPrefab, RemotePlayerPrefab;
-
-		[SerializeField] private Transform projectilePool, pickups;
 		public Elevator elevator;
 
+		[SerializeField] private Transform projectilePool, pickups;
 		private float lerpValue, bufferTimeMultiplier = 1;
 		private int count;
 
@@ -86,30 +87,29 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay
 						{
 							if (playerData.PlayerId == LocalClient.Instance.MyId)
 								continue;
-							else
-							{
-								if (!playersOriginalPosAndRot.ContainsKey(playerData.PlayerId))
-									playersOriginalPosAndRot.Add(playerData.PlayerId, new Tuple<Vector3, Quaternion>(
-											Players[playerData.PlayerId].transform.position,
-											Players[playerData.PlayerId].transform.rotation));
 
-								//position
-								Players[playerData.PlayerId].transform.position = Vector3.Lerp(
-									playersOriginalPosAndRot[playerData.PlayerId].Item1,
-									playerData.Position,
-									lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier)
-									);
+							if (!playersOriginalPosAndRot.ContainsKey(playerData.PlayerId))
+								playersOriginalPosAndRot.Add(playerData.PlayerId, new Tuple<Vector3, Quaternion>(
+										Players[playerData.PlayerId].transform.position,
+										Players[playerData.PlayerId].transform.rotation));
 
-								//rotation
-								Players[playerData.PlayerId].transform.rotation = Quaternion.Lerp(
-									playersOriginalPosAndRot[playerData.PlayerId].Item2,
-									playerData.Rotation,
-									lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier)
-									);
-							}
+							//position
+							Players[playerData.PlayerId].transform.position = Vector3.Lerp(
+								playersOriginalPosAndRot[playerData.PlayerId].Item1,
+								playerData.Position,
+								lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier)
+								);
+
+							//rotation
+							Players[playerData.PlayerId].transform.rotation = Quaternion.Lerp(
+								playersOriginalPosAndRot[playerData.PlayerId].Item2,
+								playerData.Rotation,
+								lerpValue / (ConstantValues.SERVER_TICK_RATE * bufferTimeMultiplier)
+								);
+
 						}
 					}
-					
+
 				}
 
 				//projectiles
@@ -128,7 +128,7 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay
 
 							Projectiles[projData.ProjectileId].transform.position = Vector3.Lerp(projectilesOriginalPositions[projData.ProjectileId], projData.Position, lerpValue / (ConstantValues.SERVER_TICK_RATE));
 						}
-					}					
+					}
 				}
 
 				lerpValue += Time.deltaTime;

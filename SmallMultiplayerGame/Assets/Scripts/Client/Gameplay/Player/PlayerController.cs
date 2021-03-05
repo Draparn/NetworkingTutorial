@@ -19,11 +19,10 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
 		private Vector3 prevPos, nextPos;
 
 		private float yVelocity, yVelocityPreMove, clientTickRate;
+		private ushort sequenceNumber = 0;
 		private byte? PressedWeaponKey = null;
 		public byte currentWeapon;
 		private bool isGroundedPreMove;
-
-		private ushort sequenceNumber = 0;
 
 		private void Awake()
 		{
@@ -155,10 +154,7 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
 
 		private bool HasWeapon()
 		{
-			if (PressedWeaponKey < pickedUpWeapons.Count && pickedUpWeapons[(byte)PressedWeaponKey].IsPickedUp)
-				return true;
-
-			return false;
+			return PressedWeaponKey < pickedUpWeapons.Count && pickedUpWeapons[(byte)PressedWeaponKey].IsPickedUp;
 		}
 
 		public void NewAmmoCount(ushort ammoCount)

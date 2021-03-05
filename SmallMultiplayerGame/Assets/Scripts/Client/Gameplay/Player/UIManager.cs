@@ -14,7 +14,12 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
 		public InputField ConnectToIPField, UserNameField;
 		[SerializeField] private Text healthText, ammoCount, errorMessage;
 
-		private Color healed = new Color(0, 1, 0, 0.2f), hurt = new Color(1, 0, 0, 0.2f), dead = new Color(0.5f, 0, 0, 0.8f), dimmed = new Color(1, 1, 1, 0.15f), full = new Color(1, 1, 1, 1);
+		private Color
+			healed = new Color(0, 1, 0, 0.2f),
+			hurt = new Color(1, 0, 0, 0.2f),
+			dead = new Color(0.5f, 0, 0, 0.8f),
+			dimmed = new Color(1, 1, 1, 0.15f),
+			full = new Color(1, 1, 1, 1);
 
 		public bool MenuIsActive = true;
 

@@ -37,12 +37,21 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 	public class ClientHandle
 	{
+		private static List<PlayerPosData> players = new List<PlayerPosData>();
+		private static List<ProjectileData> projectiles = new List<ProjectileData>();
+
+		private static Vector3 position;
+		private static Quaternion rotation;
+
+		private static ushort projId, sequenceNumber;
+		private static uint snapshotSequenceNumber;
+		private static float decimalsValue;
+		private static byte amount, clientId, wholeNumber;
+
 		public static void OnWelcomeMessage(Packet packet)
 		{
-			var id = packet.ReadByte();
-
 			LocalClient.Instance.StopConnectionTimer();
-			LocalClient.Instance.MyId = id;
+			LocalClient.Instance.MyId = packet.ReadByte();
 			LocalClient.Instance.isConnected = true;
 
 			UIManager.Instance.GameOn();
@@ -69,28 +78,20 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 		public static void OnNewSnapshot(Packet packet)
 		{
-			byte amount, playerId;
-			ushort projId, sequenceNumber;
-			uint snapshotSequenceNumber;
-			Vector3 position;
-			Quaternion rotation;
-			var players = new List<PlayerPosData>();
-			var projectiles = new List<ProjectileData>();
-
 			snapshotSequenceNumber = packet.ReadUInt();
 
 			//players
 			amount = packet.ReadByte();
 			for (int i = 0; i < amount; i++)
 			{
-				playerId = packet.ReadByte();
+				clientId = packet.ReadByte();
 
 				sequenceNumber = packet.ReadUShort();
 				position = packet.ReadVector3();
 				rotation = packet.ReadQuaternion();
 
-				if (GameManagerClient.Instance.Players.ContainsKey(playerId))
-					players.Add(new PlayerPosData(playerId, sequenceNumber, position, rotation));
+				if (GameManagerClient.Instance.Players.ContainsKey(clientId))
+					players.Add(new PlayerPosData(clientId, sequenceNumber, position, rotation));
 			}
 
 			//projcetiles
@@ -118,16 +119,16 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 		public static void OnPlayerConnected(Packet packet)
 		{
-			var id = packet.ReadByte();
+			clientId = packet.ReadByte();
 			var playerName = packet.ReadString();
-			var position = packet.ReadVector3();
-			var rotation = packet.ReadQuaternion();
+			position = packet.ReadVector3();
+			rotation = packet.ReadQuaternion();
 
-			GameManagerClient.Instance.SpawnPlayer(id, playerName, position, rotation);
+			GameManagerClient.Instance.SpawnPlayer(clientId, playerName, position, rotation);
 		}
 		public static void OnPlayerDisconnected(Packet packet)
 		{
-			var clientId = packet.ReadByte();
+			clientId = packet.ReadByte();
 
 			if (clientId == LocalClient.Instance.MyId)
 			{
@@ -144,63 +145,49 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 		public static void OnPlayerHealthUpdate(Packet packet)
 		{
-			var clientId = packet.ReadByte();
-			var wholeNumber = packet.ReadByte();
-			var decimalsValue = ValueTypeConversions.ReturnShortAsFloat(packet.ReadShort());
+			clientId = packet.ReadByte();
+			wholeNumber = packet.ReadByte();
+			decimalsValue = ValueTypeConversions.ReturnShortAsFloat(packet.ReadShort());
 
 			GameManagerClient.Instance.Players[clientId].SetHealth(clientId, wholeNumber + decimalsValue);
 		}
 		public static void OnPlayerWeaponSwitch(Packet packet)
 		{
-			var clientId = packet.ReadByte();
-			var weaponSlot = packet.ReadByte();
-
-			GameManagerClient.Instance.Players[clientId].SetWeaponMesh(clientId, weaponSlot);
+			GameManagerClient.Instance.Players[clientId].SetWeaponMesh(packet.ReadByte(), packet.ReadByte());
 		}
 		public static void OnPlayerWeaponPickup(Packet packet)
 		{
 			var slot = packet.ReadByte();
-			var isPickedUp = packet.ReadBool();
-			var ammoCount = packet.ReadUShort();
-
 			var player = PlayerController.Instance;
+
 			var weapon = player.pickedUpWeapons[slot];
-			weapon.IsPickedUp = isPickedUp;
-			weapon.Ammo = ammoCount;
+			weapon.IsPickedUp = packet.ReadBool();
+			weapon.Ammo = packet.ReadUShort();
 
 			UIManager.Instance.NewWeaponAvailable(slot);
+
 			if (player.currentWeapon == slot)
 				UIManager.Instance.SetAmmoCount(weapon.Ammo.ToString());
 		}
 		public static void OnPlayerWeaponAmmoUpdate(Packet packet)
 		{
-			var ammoCount = packet.ReadUShort();
-
-			PlayerController.Instance.NewAmmoCount(ammoCount);
+			PlayerController.Instance.NewAmmoCount(packet.ReadUShort());
 		}
 		public static void OnPlayerFiredWeapon(Packet packet)
 		{
-			var clientId = packet.ReadByte();
-
-			GameManagerClient.Instance.Players[clientId].FireWeapon();
+			GameManagerClient.Instance.Players[packet.ReadByte()].FireWeapon();
 		}
 
 		public static void OnPlayerRespawn(Packet packet)
 		{
-			var id = packet.ReadByte();
-			var position = packet.ReadVector3();
+			clientId = packet.ReadByte();
 
-			GameManagerClient.Instance.Players[id].Respawn(position, id);
+			GameManagerClient.Instance.Players[clientId].Respawn(packet.ReadVector3(), clientId);
 		}
 
 		public static void OnWeaponSpawn(Packet packet)
 		{
-			var id = packet.ReadByte();
-			var type = (WeaponSlot)packet.ReadByte();
-			var position = packet.ReadVector3();
-			var isActive = packet.ReadBool();
-
-			GameManagerClient.Instance.SpawnWeapon(id, type, position, isActive);
+			GameManagerClient.Instance.SpawnWeapon(packet.ReadByte(), (WeaponSlot)packet.ReadByte(), packet.ReadVector3(), packet.ReadBool());
 		}
 		public static void OnWeaponPickupStatusUpdate(Packet packet)
 		{
@@ -213,31 +200,21 @@ namespace SmallMultiplayerGame.ClientLol.Net
 		}
 		public static void OnHealthpackSpawn(Packet packet)
 		{
-			var id = packet.ReadByte();
-			var position = packet.ReadVector3();
-			var isActive = packet.ReadBool();
-			var size = packet.ReadByte();
-
-			GameManagerClient.Instance.SpawnHealthPack(id, position, isActive, size);
+			GameManagerClient.Instance.SpawnHealthPack(packet.ReadByte(), packet.ReadVector3(), packet.ReadBool(), packet.ReadByte());
 		}
 
 		public static void OnProjectileSpawn(Packet packet)
 		{
-			var id = packet.ReadUShort();
-			var position = packet.ReadVector3();
-			var shotFromWeapon = packet.ReadByte();
+			projId = packet.ReadUShort();
 
-			if (GameManagerClient.Instance.Projectiles.ContainsKey(id))
-				GameManagerClient.Instance.Projectiles[id].gameObject.SetActive(true);
+			if (GameManagerClient.Instance.Projectiles.ContainsKey(projId))
+				GameManagerClient.Instance.Projectiles[projId].gameObject.SetActive(true);
 
-			GameManagerClient.Instance.SpawnProjectile(id, position, shotFromWeapon);
+			GameManagerClient.Instance.SpawnProjectile(projId, packet.ReadVector3(), packet.ReadByte());
 		}
 		public static void OnProjectieExplosion(Packet packet)
 		{
-			var id = packet.ReadUShort();
-			var position = packet.ReadVector3();
-
-			GameManagerClient.Instance.Projectiles[id].Explode(position);
+			GameManagerClient.Instance.Projectiles[packet.ReadUShort()].Explode(packet.ReadVector3());
 		}
 
 	}

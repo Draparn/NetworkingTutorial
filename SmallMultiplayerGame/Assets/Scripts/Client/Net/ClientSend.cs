@@ -6,6 +6,8 @@ namespace SmallMultiplayerGame.ClientLol.Net
 {
 	public class ClientSend
 	{
+		private static Packet packet;
+
 		public static void SendConnectRequest()
 		{
 			var packet = PacketFactory.GetClientPacketType(ClientPackets.connectRequest);
@@ -16,7 +18,7 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 		public static void SendWelcomeReceived()
 		{
-			var packet = PacketFactory.GetClientPacketType(ClientPackets.welcomeReceived);
+			packet = PacketFactory.GetClientPacketType(ClientPackets.welcomeReceived);
 
 			packet.Write(LocalClient.Instance.playerName);
 
@@ -26,7 +28,7 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 		public static void SendDisconnect()
 		{
-			var packet = PacketFactory.GetClientPacketType(ClientPackets.disconnect);
+			packet = PacketFactory.GetClientPacketType(ClientPackets.disconnect);
 
 			SendPacket(packet);
 			packet.Reset();
@@ -34,7 +36,7 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 		public static void SendPlayerInputs(ushort sequenceNumber, InputsStruct inputs, Quaternion rotation)
 		{
-			var packet = PacketFactory.GetClientPacketType(ClientPackets.playerMovement);
+			packet = PacketFactory.GetClientPacketType(ClientPackets.playerMovement);
 
 			packet.Write(sequenceNumber);
 
@@ -52,7 +54,7 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 		public static void SendPlayerPrimaryFire(Vector3 facing)
 		{
-			var packet = PacketFactory.GetClientPacketType(ClientPackets.playerPrimaryFire);
+			packet = PacketFactory.GetClientPacketType(ClientPackets.playerPrimaryFire);
 
 			packet.Write(facing);
 			packet.Write(ClientSnapshot.Snapshots[0].sequenceNumber);
@@ -63,7 +65,7 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 		public static void SendWeaponSwitch(byte weaponKey)
 		{
-			var packet = PacketFactory.GetClientPacketType(ClientPackets.playerWeaponSwitch);
+			packet = PacketFactory.GetClientPacketType(ClientPackets.playerWeaponSwitch);
 
 			packet.Write(weaponKey);
 

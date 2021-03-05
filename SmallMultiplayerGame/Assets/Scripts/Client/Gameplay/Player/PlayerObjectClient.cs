@@ -15,9 +15,9 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
 
 		private Color originalColor;
 
+		private string PlayerName;
 		public float currentHealth;
 		public float maxHealth = 100.0f;
-		private string PlayerName;
 		private byte PlayerId;
 		private bool flickering = false;
 
