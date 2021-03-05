@@ -11,10 +11,11 @@ namespace SmallMultiplayerGame.Server.Net
 	{
 		public Vector3 Position;
 		public Quaternion Rotation;
-		public ushort SequenceNumber;
+
+		public uint SequenceNumber;
 		public byte Id;
 
-		public PlayerPosData(byte id, Vector3 pos, Quaternion rot, ushort sequenceNumber)
+		public PlayerPosData(byte id, Vector3 pos, Quaternion rot, uint sequenceNumber)
 		{
 			Id = id;
 			Position = pos;
@@ -38,11 +39,11 @@ namespace SmallMultiplayerGame.Server.Net
 
 		public Dictionary<byte, PlayerPosData> PlayerPositions = new Dictionary<byte, PlayerPosData>();
 		public List<ProjectileServer> ProjectilePositions = new List<ProjectileServer>();
-		public byte? lerpValue;
 
+		public byte? lerpValue;
 		public uint SequenceNumber;
 
-		public static void AddPlayerMovement(byte id, Vector3 pos, Quaternion rot, ushort sequenceNumber)
+		public static void AddPlayerMovement(byte id, Vector3 pos, Quaternion rot, uint sequenceNumber)
 		{
 			if (currentSnapshot.PlayerPositions.ContainsKey(id))
 				currentSnapshot.PlayerPositions[id] = new PlayerPosData(id, pos, rot, sequenceNumber);

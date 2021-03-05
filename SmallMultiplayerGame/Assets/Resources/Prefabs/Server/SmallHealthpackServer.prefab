@@ -724,6 +724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f17699f17ef352b4c96410f09b145f4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  size: 0
   HealthGain: 15
   RespawnTime: 15
   currentRespawnTime: 0

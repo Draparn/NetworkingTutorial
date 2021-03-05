@@ -17,11 +17,11 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay
 		public InputsStruct Inputs;
 		public Vector3 Position;
 
-		public ushort SequenceNumber;
+		public uint SequenceNumber;
 		public float yVelocityPreMove;
 		public bool IsGroundedPreMove;
 
-		public LocalPredictionData(ushort sequenceNumber, InputsStruct inputs, Vector3 position, Transform transform, float yVelocityPreMove, bool isGroundedPreMove)
+		public LocalPredictionData(uint sequenceNumber, InputsStruct inputs, Vector3 position, Transform transform, float yVelocityPreMove, bool isGroundedPreMove)
 		{
 			SequenceNumber = sequenceNumber;
 			Inputs = inputs;

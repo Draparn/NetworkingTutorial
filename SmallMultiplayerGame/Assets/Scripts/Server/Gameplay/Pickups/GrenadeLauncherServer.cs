@@ -9,12 +9,13 @@ namespace SmallMultiplayerGame.Server.Gameplay.Pickups
 	public class GrenadeLauncherServer : MonoBehaviour
 	{
 		public static List<GrenadeLauncherServer> GrenadeLaunchers = new List<GrenadeLauncherServer>();
-		public static byte NextGrenadeLauncherId = 0;
-
+		
 		public WeaponSlot WeaponSlot = WeaponSlot.GrenadeLauncher;
+
 		public float RespawnTime = 60.0f, CurrentRespawnTime;
-		public byte MyId, AmmoPickup = 8;
 		public bool IsActive = true;
+		public static byte NextGrenadeLauncherId = 0;
+		public byte MyId, AmmoPickup = 8;
 
 		private void Start()
 		{

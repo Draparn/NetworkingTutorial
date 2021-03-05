@@ -19,7 +19,7 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
 		private Vector3 prevPos, nextPos;
 
 		private float yVelocity, yVelocityPreMove, clientTickRate;
-		private ushort sequenceNumber = 0;
+		private uint sequenceNumber = 0;
 		private byte? PressedWeaponKey = null;
 		public byte currentWeapon;
 		private bool isGroundedPreMove;

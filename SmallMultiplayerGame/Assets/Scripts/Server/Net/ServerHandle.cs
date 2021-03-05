@@ -6,6 +6,11 @@ namespace SmallMultiplayerGame.Server.Net
 {
 	public class ServerHandle
 	{
+		private static InputsStruct inputs;
+		private static Quaternion rotation;
+
+		private static uint sequenceNumber;
+
 		public static void OnWelcomeReceived(byte clientId, Packet packet)
 		{
 			var userName = packet.ReadString();
@@ -30,9 +35,9 @@ namespace SmallMultiplayerGame.Server.Net
 
 		public static void OnPlayerMovement(byte clientId, Packet packet)
 		{
-			var sequenceNumber = packet.ReadUShort();
-			var inputs = new InputsStruct(packet.ReadBool(), packet.ReadBool(), packet.ReadBool(), packet.ReadBool(), packet.ReadBool());
-			var rotation = packet.ReadQuaternion();
+			sequenceNumber = packet.ReadUInt();
+			inputs = new InputsStruct(packet.ReadBool(), packet.ReadBool(), packet.ReadBool(), packet.ReadBool(), packet.ReadBool());
+			rotation = packet.ReadQuaternion();
 
 			Server.Clients[clientId].Player.UpdatePosAndRot(sequenceNumber, inputs, rotation);
 		}

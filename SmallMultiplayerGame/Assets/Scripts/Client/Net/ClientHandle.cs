@@ -11,11 +11,11 @@ namespace SmallMultiplayerGame.ClientLol.Net
 	public struct PlayerPosData
 	{
 		public byte PlayerId;
-		public ushort Sequencenumber;
+		public uint Sequencenumber;
 		public Vector3 Position;
 		public Quaternion Rotation;
 
-		public PlayerPosData(byte playerId, ushort sequenceNumber, Vector3 position, Quaternion rotation)
+		public PlayerPosData(byte playerId, uint sequenceNumber, Vector3 position, Quaternion rotation)
 		{
 			PlayerId = playerId;
 			Sequencenumber = sequenceNumber;
@@ -43,8 +43,8 @@ namespace SmallMultiplayerGame.ClientLol.Net
 		private static Vector3 position;
 		private static Quaternion rotation;
 
-		private static ushort projId, sequenceNumber;
-		private static uint snapshotSequenceNumber;
+		private static ushort projId;
+		private static uint sequenceNumber;
 		private static float decimalsValue;
 		private static byte amount, clientId, wholeNumber;
 
@@ -78,7 +78,7 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 		public static void OnNewSnapshot(Packet packet)
 		{
-			snapshotSequenceNumber = packet.ReadUInt();
+			sequenceNumber = packet.ReadUInt();
 
 			//players
 			amount = packet.ReadByte();
@@ -86,7 +86,7 @@ namespace SmallMultiplayerGame.ClientLol.Net
 			{
 				clientId = packet.ReadByte();
 
-				sequenceNumber = packet.ReadUShort();
+				sequenceNumber = packet.ReadUInt();
 				position = packet.ReadVector3();
 				rotation = packet.ReadQuaternion();
 
@@ -114,7 +114,7 @@ namespace SmallMultiplayerGame.ClientLol.Net
 			else
 				GameManagerClient.Instance.elevator.ClientElevatorMove(null);
 
-			ClientSnapshot.Snapshots.Add(new ClientSnapshot(snapshotSequenceNumber, players, projectiles));
+			ClientSnapshot.Snapshots.Add(new ClientSnapshot(sequenceNumber, players, projectiles));
 		}
 
 		public static void OnPlayerConnected(Packet packet)

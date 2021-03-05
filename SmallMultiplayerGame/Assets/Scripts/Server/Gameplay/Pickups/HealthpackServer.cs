@@ -13,9 +13,10 @@ namespace SmallMultiplayerGame.Server.Gameplay.Pickups
 
 	public class HealthpackServer : MonoBehaviour
 	{
+		public Size size;
+
 		public float HealthGain, RespawnTime, currentRespawnTime;
 		public byte MyId;
-		public Size size;
 		public bool IsActive = true;
 
 		private void Start()

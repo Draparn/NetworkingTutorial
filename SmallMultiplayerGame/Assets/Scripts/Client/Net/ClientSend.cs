@@ -34,7 +34,7 @@ namespace SmallMultiplayerGame.ClientLol.Net
 			packet.Reset();
 		}
 
-		public static void SendPlayerInputs(ushort sequenceNumber, InputsStruct inputs, Quaternion rotation)
+		public static void SendPlayerInputs(uint sequenceNumber, InputsStruct inputs, Quaternion rotation)
 		{
 			packet = PacketFactory.GetClientPacketType(ClientPackets.playerMovement);
 

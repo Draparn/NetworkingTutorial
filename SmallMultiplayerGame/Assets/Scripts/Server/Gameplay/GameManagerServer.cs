@@ -11,9 +11,9 @@ namespace SmallMultiplayerGame.Server.Gameplay
 	{
 		public static GameManagerServer Instance;
 
+		private Dictionary<byte, HealthpackServer> healthpacks = new Dictionary<byte, HealthpackServer>();
 		public List<Vector3> respawnPoints = new List<Vector3>();
 		public GameObject PlayerPrefab;
-		private Dictionary<byte, HealthpackServer> healthpacks = new Dictionary<byte, HealthpackServer>();
 		private HealthpackServer healthpack;
 
 		private int count;

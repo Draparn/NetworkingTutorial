@@ -11,9 +11,11 @@ namespace SmallMultiplayerGame.Server.Net
 {
 	public class ServerSend
 	{
+		private static Packet packet;
+
 		public static void SendWelcomeMessage_CLIENT(byte clientId)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.welcome);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.welcome);
 
 			packet.Write(clientId);
 
@@ -23,7 +25,7 @@ namespace SmallMultiplayerGame.Server.Net
 
 		public static void SendNameTaken(byte clientId)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.nameTaken);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.nameTaken);
 
 			packet.Write("Connection error: Name was already taken.");
 
@@ -33,7 +35,7 @@ namespace SmallMultiplayerGame.Server.Net
 
 		public static void SendServerFull(IPEndPoint endpoint)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.serverFull);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.serverFull);
 
 			packet.Write("Server is full.");
 
@@ -43,7 +45,7 @@ namespace SmallMultiplayerGame.Server.Net
 
 		public static void SendNewClientInfo(byte clientId)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.newClientInfo);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.newClientInfo);
 
 			//All new info here...
 
@@ -53,7 +55,7 @@ namespace SmallMultiplayerGame.Server.Net
 
 		public static void SendSnapshot()
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.serverSnapshot);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.serverSnapshot);
 
 			packet.Write(ServerSnapshot.currentSnapshot.SequenceNumber);
 
@@ -90,7 +92,7 @@ namespace SmallMultiplayerGame.Server.Net
 
 		public static void SendPlayerConnected_CLIENT(byte clientId, PlayerObjectServer player)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerSpawn);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.playerSpawn);
 
 			packet.Write(player.PlayerId);
 			packet.Write(player.PlayerName);
@@ -102,7 +104,7 @@ namespace SmallMultiplayerGame.Server.Net
 		}
 		public static void SendPlayerDisconnected_ALL(byte clientId)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerDisconnected);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.playerDisconnected);
 
 			packet.Write(clientId);
 
@@ -112,7 +114,7 @@ namespace SmallMultiplayerGame.Server.Net
 
 		public static void SendPlayerHealthUpdate_ALL(PlayerObjectServer player)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerHealth);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.playerHealth);
 
 			packet.Write(player.PlayerId);
 			packet.Write((byte)player.CurrentHealth);
@@ -123,7 +125,7 @@ namespace SmallMultiplayerGame.Server.Net
 		}
 		public static void SendPlayerSwitchedWeapon_ALL(PlayerObjectServer player)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerWeaponSwitch);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.playerWeaponSwitch);
 
 			packet.Write(player.PlayerId);
 			packet.Write(player.currentWeaponSlot);
@@ -133,7 +135,7 @@ namespace SmallMultiplayerGame.Server.Net
 		}
 		public static void SendPlayerFiredWeapon_ALL(byte playerId)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerFiredWeapon);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.playerFiredWeapon);
 
 			packet.Write(playerId);
 
@@ -142,7 +144,7 @@ namespace SmallMultiplayerGame.Server.Net
 		}
 		public static void SendPlayerRespawned_ALL(PlayerObjectServer player)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.playerRespawn);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.playerRespawn);
 
 			packet.Write(player.PlayerId);
 			packet.Write(player.transform.position);
@@ -153,7 +155,7 @@ namespace SmallMultiplayerGame.Server.Net
 
 		public static void SendHealthpackStatusUpdate_ALL(byte healthpackId, bool isActive)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.healthpackStatusUpdate);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.healthpackStatusUpdate);
 
 			packet.Write(healthpackId);
 			packet.Write(isActive);
@@ -163,7 +165,7 @@ namespace SmallMultiplayerGame.Server.Net
 		}
 		public static void SendHealthpackSpawn_CLIENT(byte clientId, byte healthpackId, HealthpackServer hps)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.healthpackSpawn);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.healthpackSpawn);
 
 			packet.Write(healthpackId);
 			packet.Write(hps.gameObject.transform.position);
@@ -176,7 +178,7 @@ namespace SmallMultiplayerGame.Server.Net
 
 		public static void SendProjectileSpawn_ALL(ProjectileServer projectile)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.projectileSpawn);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.projectileSpawn);
 
 			packet.Write(projectile.id);
 			packet.Write(projectile.transform.position);
@@ -187,7 +189,7 @@ namespace SmallMultiplayerGame.Server.Net
 		}
 		public static void SendProjectileExplosion_ALL(ProjectileServer projectile)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.projectileExplosion);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.projectileExplosion);
 
 			packet.Write(projectile.id);
 			packet.Write(projectile.transform.position);
@@ -198,7 +200,7 @@ namespace SmallMultiplayerGame.Server.Net
 
 		public static void SendWeaponSpawn_CLIENT(byte clientId, WeaponSlot weaponSlot, byte weaponId, Vector3 position, bool isActive)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.weaponSpawn);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.weaponSpawn);
 
 			packet.Write(weaponId);
 			packet.Write((byte)weaponSlot);
@@ -210,7 +212,7 @@ namespace SmallMultiplayerGame.Server.Net
 		}
 		public static void SendWeaponPickedUp_CLIENT(byte playerId, WeaponSlot slot, bool isPickedUp, ushort ammoCount)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.weaponPickup);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.weaponPickup);
 
 			packet.Write((byte)slot);
 			packet.Write(isPickedUp);
@@ -221,7 +223,7 @@ namespace SmallMultiplayerGame.Server.Net
 		}
 		public static void SendWeaponAmmoUpdate_CLIENT(byte playerId, ushort ammoCount)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.weaponAmmoUpdate);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.weaponAmmoUpdate);
 
 			packet.Write(ammoCount);
 
@@ -230,7 +232,7 @@ namespace SmallMultiplayerGame.Server.Net
 		}
 		public static void SendWeaponPickupStatus_ALL(byte id, bool isActive)
 		{
-			var packet = PacketFactory.GetServerPacketType(ServerPackets.weaponPickupStatus);
+			packet = PacketFactory.GetServerPacketType(ServerPackets.weaponPickupStatus);
 
 			packet.Write(id);
 			packet.Write(isActive);

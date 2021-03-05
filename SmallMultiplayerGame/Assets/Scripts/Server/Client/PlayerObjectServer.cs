@@ -16,19 +16,18 @@ namespace SmallMultiplayerGame.Server.Client
 		private ServerSnapshot oldSnapshot;
 		private Client client;
 
+		private RaycastHit[] hits = new RaycastHit[7];
+
 		private InputsStruct playerInput;
 		private Quaternion prevRot;
 		private Vector2 inputDirection;
 		private Vector3 prevPos;
 
-		private RaycastHit[] hits = new RaycastHit[7];
-
 		public string PlayerName;
 		public float CurrentHealth = 100.0f, MaxHealth = 100.0f;
-		public byte PlayerId, currentWeaponSlot;
-
-		private ushort SequenceNumber = ushort.MaxValue;
 		private float yVelocity, distance;
+		private uint SequenceNumber = uint.MaxValue;
+		public byte PlayerId, currentWeaponSlot;
 		private byte hitCount, index;
 
 
@@ -147,7 +146,7 @@ namespace SmallMultiplayerGame.Server.Client
 			ServerSend.SendPlayerRespawned_ALL(this);
 		}
 
-		public void UpdatePosAndRot(ushort sequenceNumber, InputsStruct inputs, Quaternion rot)
+		public void UpdatePosAndRot(uint sequenceNumber, InputsStruct inputs, Quaternion rot)
 		{
 			if (!IsMoreRecent(sequenceNumber) && controller.enabled)
 				return;
@@ -164,7 +163,7 @@ namespace SmallMultiplayerGame.Server.Client
 			ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, transform.rotation, SequenceNumber);
 		}
 
-		private bool IsMoreRecent(ushort newSequenceNumber)
+		private bool IsMoreRecent(uint newSequenceNumber)
 		{
 			return ((newSequenceNumber > SequenceNumber) && (newSequenceNumber - SequenceNumber <= 32768)) ||
 				((newSequenceNumber < SequenceNumber) && (SequenceNumber - newSequenceNumber > 32768));

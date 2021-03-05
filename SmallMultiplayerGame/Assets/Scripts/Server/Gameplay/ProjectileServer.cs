@@ -13,9 +13,9 @@ namespace SmallMultiplayerGame.Server.Gameplay
 
 		private Vector3 initialForce;
 
+		private float fuseTimer = 1, explosionRadius = 4;
 		private static ushort nextProjectileId = 1;
 		public ushort id;
-		private float fuseTimer = 1, explosionRadius = 2.5f;
 		public byte shotFromWeapon;
 		private byte shotByPlayer;
 

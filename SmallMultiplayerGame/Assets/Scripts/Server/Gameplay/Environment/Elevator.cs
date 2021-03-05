@@ -10,7 +10,6 @@ namespace SmallMultiplayerGame.Server.Gameplay.Environment
 		[SerializeField] private Transform endpoint;
 
 		private float lerpValue = 0, yMidpoint;
-
 		private bool isMoving;
 
 		void Start()

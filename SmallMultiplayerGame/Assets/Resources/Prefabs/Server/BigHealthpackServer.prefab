@@ -724,11 +724,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f17699f17ef352b4c96410f09b145f4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  size: 1
   HealthGain: 50
   RespawnTime: 15
   currentRespawnTime: 0
   MyId: 0
-  size: 1
   IsActive: 1
 --- !u!65 &3890062150079789297
 BoxCollider:

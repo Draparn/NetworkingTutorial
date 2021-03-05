@@ -17,7 +17,10 @@ namespace SmallMultiplayerGame.Server
 		public static Dictionary<byte, Client.Client> Clients = new Dictionary<byte, Client.Client>();
 		private static UdpClient udpListener;
 
+		private static Client.Client client;
+
 		public static int MaxPlayers { get; set; }
+		private static byte clientId;
 
 		public static void StartServer(int maxPlayers)
 		{
@@ -51,7 +54,7 @@ namespace SmallMultiplayerGame.Server
 
 				using (Packet packet = new Packet(data))
 				{
-					var clientId = packet.ReadByte();
+					clientId = packet.ReadByte();
 
 					if (clientId == 0)
 					{
@@ -113,7 +116,6 @@ namespace SmallMultiplayerGame.Server
 
 		private static bool ServerHasEmptySlot(IPEndPoint endPoint)
 		{
-			Client.Client client;
 			for (byte i = 1; i <= MaxPlayers; i++)
 			{
 				client = Clients[i];
@@ -133,7 +135,6 @@ namespace SmallMultiplayerGame.Server
 
 		public static bool CheckNames(byte clientId, string name)
 		{
-			Client.Client client;
 			for (byte i = 1; i < Clients.Count; i++)
 			{
 				if (i == clientId)
