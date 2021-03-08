@@ -1,16 +1,16 @@
-﻿using SmallMultiplayerGame.ClientLol.Gameplay;
+﻿using SmallMultiplayerGame.Client.Gameplay;
 using SmallMultiplayerGame.Shared.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SmallMultiplayerGame.ClientLol.Net
+namespace SmallMultiplayerGame.Client.Net
 {
 	public class ClientSnapshot
 	{
 		public static List<ClientSnapshot> Snapshots = new List<ClientSnapshot>();
 
-		internal List<PlayerPosData> players;
-		internal List<ProjectileData> projectiles;
+		public List<PlayerPosData> players;
+		public List<ProjectileData> projectiles;
 
 		private LocalPredictionData predData;
 		private PlayerPosData playerData;
@@ -40,7 +40,6 @@ namespace SmallMultiplayerGame.ClientLol.Net
 		private void CheckPosAndReconcile(PlayerPosData playerData)
 		{
 			count = GameManagerClient.Instance.LocalPositionPredictions.Count;
-
 			for (int i = 0; i < count; i++)
 			{
 				predData = GameManagerClient.Instance.LocalPositionPredictions[i];

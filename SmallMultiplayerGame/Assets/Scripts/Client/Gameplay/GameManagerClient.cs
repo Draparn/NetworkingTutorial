@@ -1,6 +1,6 @@
-﻿using SmallMultiplayerGame.ClientLol.Gameplay.Player;
-using SmallMultiplayerGame.ClientLol.Gameplay.WeaponScrips;
-using SmallMultiplayerGame.ClientLol.Net;
+﻿using SmallMultiplayerGame.Client.Gameplay.Player;
+using SmallMultiplayerGame.Client.Gameplay.WeaponScrips;
+using SmallMultiplayerGame.Client.Net;
 using SmallMultiplayerGame.Server.Gameplay.Environment;
 using SmallMultiplayerGame.Shared;
 using SmallMultiplayerGame.Shared.Utils;
@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SmallMultiplayerGame.ClientLol.Gameplay
+namespace SmallMultiplayerGame.Client.Gameplay
 {
 	public struct LocalPredictionData
 	{

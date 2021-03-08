@@ -6,7 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
-namespace SmallMultiplayerGame.ClientLol.Net
+namespace SmallMultiplayerGame.Client.Net
 {
 	public partial class LocalClient
 	{

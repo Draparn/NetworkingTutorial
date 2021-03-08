@@ -3210,7 +3210,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh26006
+  m_Name: pb_Mesh67560
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -5481,9 +5481,9 @@ MonoBehaviour:
   - {fileID: 4480148216521664882, guid: 0c08f7ec82a70564eb124819cf1dc49f, type: 3}
   LocalPlayerPrefab: {fileID: 4591549347349979242, guid: 6b0eeaa04764f2540ad0715591dc953e, type: 3}
   RemotePlayerPrefab: {fileID: 4132987940020096212, guid: 6e72ac017ea0d694f8f81a4bf388399c, type: 3}
+  elevator: {fileID: 40919616}
   projectilePool: {fileID: 1794765119}
   pickups: {fileID: 332370955}
-  elevator: {fileID: 40919616}
 --- !u!1 &610934496
 GameObject:
   m_ObjectHideFlags: 0
@@ -6583,7 +6583,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh19068
+  m_Name: pb_Mesh74378
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -6823,7 +6823,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh26154
+  m_Name: pb_Mesh67708
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -12919,8 +12919,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerName: 
-  MyId: 0
   isConnected: 0
+  MyId: 0
 --- !u!4 &1792267353
 Transform:
   m_ObjectHideFlags: 0

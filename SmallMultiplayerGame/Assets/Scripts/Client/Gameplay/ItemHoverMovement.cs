@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SmallMultiplayerGame.ClientLol.Gameplay
+namespace SmallMultiplayerGame.Client.Gameplay
 {
 	public class ItemHoverMovement : MonoBehaviour
 	{

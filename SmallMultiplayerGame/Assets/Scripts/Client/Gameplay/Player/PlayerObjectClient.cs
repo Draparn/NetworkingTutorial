@@ -1,10 +1,10 @@
-﻿using SmallMultiplayerGame.ClientLol.Gameplay.WeaponScrips;
-using SmallMultiplayerGame.ClientLol.Net;
+﻿using SmallMultiplayerGame.Client.Gameplay.WeaponScrips;
+using SmallMultiplayerGame.Client.Net;
 using SmallMultiplayerGame.Shared;
 using System.Collections;
 using UnityEngine;
 
-namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
+namespace SmallMultiplayerGame.Client.Gameplay.Player
 {
 	public class PlayerObjectClient : MonoBehaviour
 	{
@@ -58,16 +58,17 @@ namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
 			weapon.Shoot();
 		}
 
-		public void SetWeaponMesh(byte clientId, byte weaponSlot)
+		public void SetWeaponMesh(byte id, byte slot)
 		{
 			if (WeaponMeshHolder.transform.childCount > 0)
 				Destroy(WeaponMeshHolder.transform.GetChild(0).gameObject);
 
-			currentWeapon = Instantiate(Weapons.AllWeapons[weaponSlot].ClientPrefab, WeaponMeshHolder.transform);
+			currentWeapon = Instantiate(Weapons.AllWeapons[slot].ClientPrefab, WeaponMeshHolder.transform);
 			weapon = currentWeapon.GetComponent<WeaponClient>();
 
-			if (clientId == LocalClient.Instance.MyId)
-				UIManager.Instance.SetAmmoCount(weaponSlot == (byte)WeaponSlot.Pistol ? "Inf" : PlayerController.Instance.pickedUpWeapons[weaponSlot].Ammo.ToString());
+			if (id == LocalClient.Instance.MyId)
+				UIManager.Instance.SetAmmoCount(slot == (byte)WeaponSlot.Pistol ? "Inf" : PlayerController.Instance.pickedUpWeapons[slot].Ammo.ToString());
+
 		}
 
 		private void FlashUI(float newHealthValue)

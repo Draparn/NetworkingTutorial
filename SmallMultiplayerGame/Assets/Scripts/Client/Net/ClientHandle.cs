@@ -1,12 +1,12 @@
-﻿using SmallMultiplayerGame.ClientLol.Gameplay;
-using SmallMultiplayerGame.ClientLol.Gameplay.Player;
+﻿using SmallMultiplayerGame.Client.Gameplay;
+using SmallMultiplayerGame.Client.Gameplay.Player;
 using SmallMultiplayerGame.Shared;
 using SmallMultiplayerGame.Shared.Net;
 using SmallMultiplayerGame.Shared.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SmallMultiplayerGame.ClientLol.Net
+namespace SmallMultiplayerGame.Client.Net
 {
 	public struct PlayerPosData
 	{
@@ -37,16 +37,8 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 	public class ClientHandle
 	{
-		private static List<PlayerPosData> players = new List<PlayerPosData>();
-		private static List<ProjectileData> projectiles = new List<ProjectileData>();
-
-		private static Vector3 position;
-		private static Quaternion rotation;
-
-		private static ushort projId;
-		private static uint sequenceNumber;
 		private static float decimalsValue;
-		private static byte amount, clientId, wholeNumber;
+		private static byte count, wholeNumber;
 
 		public static void OnWelcomeMessage(Packet packet)
 		{
@@ -78,31 +70,37 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 		public static void OnNewSnapshot(Packet packet)
 		{
-			sequenceNumber = packet.ReadUInt();
+			var players = new List<PlayerPosData>();
+			var projectiles = new List<ProjectileData>();
+			Vector3 position;
+			Quaternion rotation;
+			uint snapshotSequenceNumber, playerSequenceNumber;
+			ushort id;
 
+			snapshotSequenceNumber = packet.ReadUInt();
 			//players
-			amount = packet.ReadByte();
-			for (int i = 0; i < amount; i++)
+			count = packet.ReadByte();
+			for (int i = 0; i < count; i++)
 			{
-				clientId = packet.ReadByte();
+				id = packet.ReadByte();
 
-				sequenceNumber = packet.ReadUInt();
+				playerSequenceNumber = packet.ReadUInt();
 				position = packet.ReadVector3();
 				rotation = packet.ReadQuaternion();
 
-				if (GameManagerClient.Instance.Players.ContainsKey(clientId))
-					players.Add(new PlayerPosData(clientId, sequenceNumber, position, rotation));
+				if (GameManagerClient.Instance.Players.ContainsKey(id))
+					players.Add(new PlayerPosData((byte)id, playerSequenceNumber, position, rotation));
 			}
 
 			//projcetiles
-			amount = packet.ReadByte();
-			for (int i = 0; i < amount; i++)
+			count = packet.ReadByte();
+			for (int i = 0; i < count; i++)
 			{
-				projId = packet.ReadUShort();
+				id = packet.ReadUShort();
 				position = packet.ReadVector3();
 
-				if (GameManagerClient.Instance.Projectiles.ContainsKey(projId))
-					projectiles.Add(new ProjectileData(projId, position));
+				if (GameManagerClient.Instance.Projectiles.ContainsKey(id))
+					projectiles.Add(new ProjectileData(id, position));
 			}
 
 			//Elevator
@@ -114,21 +112,21 @@ namespace SmallMultiplayerGame.ClientLol.Net
 			else
 				GameManagerClient.Instance.elevator.ClientElevatorMove(null);
 
-			ClientSnapshot.Snapshots.Add(new ClientSnapshot(sequenceNumber, players, projectiles));
+			ClientSnapshot.Snapshots.Add(new ClientSnapshot(snapshotSequenceNumber, players, projectiles));
 		}
 
 		public static void OnPlayerConnected(Packet packet)
 		{
-			clientId = packet.ReadByte();
+			var clientId = packet.ReadByte();
 			var playerName = packet.ReadString();
-			position = packet.ReadVector3();
-			rotation = packet.ReadQuaternion();
+			var position = packet.ReadVector3();
+			var rotation = packet.ReadQuaternion();
 
 			GameManagerClient.Instance.SpawnPlayer(clientId, playerName, position, rotation);
 		}
 		public static void OnPlayerDisconnected(Packet packet)
 		{
-			clientId = packet.ReadByte();
+			var clientId = packet.ReadByte();
 
 			if (clientId == LocalClient.Instance.MyId)
 			{
@@ -145,7 +143,7 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 		public static void OnPlayerHealthUpdate(Packet packet)
 		{
-			clientId = packet.ReadByte();
+			var clientId = packet.ReadByte();
 			wholeNumber = packet.ReadByte();
 			decimalsValue = ValueTypeConversions.ReturnShortAsFloat(packet.ReadShort());
 
@@ -153,7 +151,10 @@ namespace SmallMultiplayerGame.ClientLol.Net
 		}
 		public static void OnPlayerWeaponSwitch(Packet packet)
 		{
-			GameManagerClient.Instance.Players[clientId].SetWeaponMesh(packet.ReadByte(), packet.ReadByte());
+			var id = packet.ReadByte();
+			var slot = packet.ReadByte();
+
+			GameManagerClient.Instance.Players[id].SetWeaponMesh(id, slot);
 		}
 		public static void OnPlayerWeaponPickup(Packet packet)
 		{
@@ -180,7 +181,7 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 		public static void OnPlayerRespawn(Packet packet)
 		{
-			clientId = packet.ReadByte();
+			var clientId = packet.ReadByte();
 
 			GameManagerClient.Instance.Players[clientId].Respawn(packet.ReadVector3(), clientId);
 		}
@@ -205,7 +206,7 @@ namespace SmallMultiplayerGame.ClientLol.Net
 
 		public static void OnProjectileSpawn(Packet packet)
 		{
-			projId = packet.ReadUShort();
+			ushort projId = packet.ReadUShort();
 
 			if (GameManagerClient.Instance.Projectiles.ContainsKey(projId))
 				GameManagerClient.Instance.Projectiles[projId].gameObject.SetActive(true);

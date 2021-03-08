@@ -1,10 +1,10 @@
-﻿using SmallMultiplayerGame.ClientLol.Net;
+﻿using SmallMultiplayerGame.Client.Net;
 using SmallMultiplayerGame.Shared;
 using SmallMultiplayerGame.Shared.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
+namespace SmallMultiplayerGame.Client.Gameplay.Player
 {
 	public class PlayerController : MonoBehaviour
 	{

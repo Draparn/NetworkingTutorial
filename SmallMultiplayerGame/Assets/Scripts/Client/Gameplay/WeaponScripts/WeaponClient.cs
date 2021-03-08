@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SmallMultiplayerGame.ClientLol.Gameplay.WeaponScrips
+namespace SmallMultiplayerGame.Client.Gameplay.WeaponScrips
 {
 	public class WeaponClient : MonoBehaviour
 	{

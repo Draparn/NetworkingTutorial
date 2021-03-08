@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SmallMultiplayerGame.ClientLol.Gameplay.Player
+namespace SmallMultiplayerGame.Client.Gameplay.Player
 {
 	public class CameraController : MonoBehaviour
 	{
