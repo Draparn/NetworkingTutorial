@@ -82,7 +82,6 @@ MonoBehaviour:
   MaxHealth: 100
   PlayerId: 0
   currentWeaponSlot: 0
-  SequenceNumber: 65535
 --- !u!143 &2212320931822615467
 CharacterController:
   m_ObjectHideFlags: 0

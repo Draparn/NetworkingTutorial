@@ -10,6 +10,8 @@
 		//Gameplay
 		public const float PLAYER_RESPAWN_TIME = 3.0f;
 		public const float PLAYER_MOVE_SPEED = 10.0f;
+		public const float PLAYER_VELOCITY_GROUND_MULTIPLIER = 0.6f;
+		public const float PLAYER_VELOCITY_AIR_MULTIPLIER = 0.8f;
 		public const float PLAYER_JUMP_FORCE = 8.0f;
 		public const float WORLD_GRAVITY = -25f;
 

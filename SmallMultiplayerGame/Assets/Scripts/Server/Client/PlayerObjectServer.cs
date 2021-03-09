@@ -17,11 +17,10 @@ namespace SmallMultiplayerGame.Server.Client
 		private Client client;
 
 		private RaycastHit[] hits = new RaycastHit[7];
-
 		private InputsStruct playerInput;
 		private Quaternion prevRot;
 		private Vector2 inputDirection;
-		private Vector3 prevPos;
+		private Vector3 prevPos, currentVelocity, previousVelocity;
 
 		public string PlayerName;
 		public float CurrentHealth = 100.0f, MaxHealth = 100.0f;
@@ -29,7 +28,6 @@ namespace SmallMultiplayerGame.Server.Client
 		private uint SequenceNumber = uint.MaxValue;
 		public byte PlayerId, currentWeaponSlot;
 		private byte hitCount, index;
-
 
 		private void Start()
 		{
@@ -152,13 +150,22 @@ namespace SmallMultiplayerGame.Server.Client
 				return;
 
 			prevRot = transform.rotation;
-
 			SequenceNumber = sequenceNumber;
 			playerInput = inputs;
 			transform.rotation = rot;
-
 			prevPos = transform.position;
-			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(playerInput, transform, ref yVelocity, controller.isGrounded));
+
+			currentVelocity = PlayerMovementCalculations.CalculateCurrentVelocity(inputs, transform, ref yVelocity, controller.isGrounded);
+			if (currentVelocity.x == 0 && currentVelocity.z == 0)
+			{
+				PlayerMovementCalculations.CalculatePreviousVelocity(yVelocity, ref previousVelocity);
+				currentVelocity = previousVelocity;
+			}
+			else
+				previousVelocity = currentVelocity;
+
+			if (controller.Move(currentVelocity) == CollisionFlags.Above)
+				yVelocity = 0;
 
 			ServerSnapshot.AddPlayerMovement(PlayerId, transform.position, transform.rotation, SequenceNumber);
 		}

@@ -61,7 +61,7 @@ namespace SmallMultiplayerGame.Client.Net
 							else
 							{
 								predData.Position = GameManagerClient.Instance.LocalPositionPredictions[j - 1].Position +
-									PlayerMovementCalculations.ReCalculatePlayerPosition(
+									PlayerMovementCalculations.ReCalculateCurrentVelocity(
 									GameManagerClient.Instance.LocalPositionPredictions[j].Inputs,
 									GameManagerClient.Instance.LocalPositionPredictions[j].Transform,
 									GameManagerClient.Instance.LocalPositionPredictions[j].yVelocityPreMove,

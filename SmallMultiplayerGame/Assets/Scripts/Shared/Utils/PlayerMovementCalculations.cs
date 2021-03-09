@@ -19,13 +19,18 @@ namespace SmallMultiplayerGame.Shared.Utils
 	public class PlayerMovementCalculations : MonoBehaviour
 	{
 		private static Vector3 velocity;
+		private static float groundMultiplier = ConstantValues.PLAYER_VELOCITY_GROUND_MULTIPLIER, airMultiplier = ConstantValues.PLAYER_VELOCITY_AIR_MULTIPLIER;
+		private static float tickRate = ConstantValues.SERVER_TICK_RATE;
+		private static float gravity = ConstantValues.WORLD_GRAVITY;
+		private static float jumpForce = ConstantValues.PLAYER_JUMP_FORCE;
+		private static float playerMoveSpeed = ConstantValues.PLAYER_MOVE_SPEED;
 
-		public static Vector3 ReCalculatePlayerPosition(InputsStruct inputs, Transform transform, float yVelocity, bool isGrounded)
+		public static Vector3 ReCalculateCurrentVelocity(InputsStruct inputs, Transform transform, float yVelocity, bool isGrounded)
 		{
-			return CalculatePlayerPosition(inputs, transform, ref yVelocity, isGrounded);
+			return CalculateCurrentVelocity(inputs, transform, ref yVelocity, isGrounded);
 		}
 
-		public static Vector3 CalculatePlayerPosition(InputsStruct inputs, Transform transform, ref float yVelocity, bool isGrounded)
+		public static Vector3 CalculateCurrentVelocity(InputsStruct inputs, Transform transform, ref float yVelocity, bool isGrounded)
 		{
 			velocity = Vector3.zero;
 			if (inputs.Forward)  //W
@@ -39,21 +44,32 @@ namespace SmallMultiplayerGame.Shared.Utils
 
 			velocity = transform.right * velocity.x + transform.forward * velocity.z;
 			velocity.Normalize();
-			velocity *= ConstantValues.PLAYER_MOVE_SPEED * ConstantValues.SERVER_TICK_RATE;
+			velocity *= playerMoveSpeed * tickRate;
 
 			if (isGrounded)
 			{
 				yVelocity = 0;
 
 				if (inputs.Jump) //Spacebar
-					yVelocity = ConstantValues.PLAYER_JUMP_FORCE * ConstantValues.SERVER_TICK_RATE;
+					yVelocity = jumpForce * tickRate;
 			}
 			else
-				yVelocity += ConstantValues.WORLD_GRAVITY * ConstantValues.SERVER_TICK_RATE * ConstantValues.SERVER_TICK_RATE;
+				yVelocity += gravity * tickRate * tickRate;
 
 			velocity.y = yVelocity;
 
 			return velocity;
+		}
+
+		public static void CalculatePreviousVelocity(float yVelocity, ref Vector3 previousVelocity)
+		{
+			if (yVelocity == 0)
+				previousVelocity = new Vector3(previousVelocity.x * groundMultiplier, yVelocity, previousVelocity.z * groundMultiplier);
+			else
+				previousVelocity = new Vector3(previousVelocity.x * airMultiplier, yVelocity, previousVelocity.z * airMultiplier);
+
+			if (previousVelocity.magnitude <= 0.05f)
+				previousVelocity = Vector3.zero;
 		}
 
 	}

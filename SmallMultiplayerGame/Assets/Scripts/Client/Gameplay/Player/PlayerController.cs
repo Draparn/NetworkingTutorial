@@ -16,7 +16,7 @@ namespace SmallMultiplayerGame.Client.Gameplay.Player
 		private PlayerObjectClient player;
 
 		private InputsStruct inputs;
-		private Vector3 prevPos, nextPos;
+		private Vector3 prevPos, nextPos, currentVelocity, previousVelocity;
 
 		private float yVelocity, yVelocityPreMove, clientTickRate;
 		private uint sequenceNumber = 0;
@@ -115,18 +115,25 @@ namespace SmallMultiplayerGame.Client.Gameplay.Player
 
 			yVelocityPreMove = yVelocity;
 			isGroundedPreMove = controller.isGrounded;
+
+
 			controller.enabled = true;
-			controller.Move(PlayerMovementCalculations.CalculatePlayerPosition(inputs, transform, ref yVelocity, controller.isGrounded));
+			currentVelocity = PlayerMovementCalculations.CalculateCurrentVelocity(inputs, transform, ref yVelocity, controller.isGrounded);
+			if (currentVelocity.x == 0 && currentVelocity.z == 0)
+			{
+				PlayerMovementCalculations.CalculatePreviousVelocity(yVelocity, ref previousVelocity);
+				currentVelocity = previousVelocity;
+			}
+			else
+				previousVelocity = currentVelocity;
+
+			if (controller.Move(currentVelocity) == CollisionFlags.Above)
+				yVelocity = 0;
 			controller.enabled = false;
 
+
 			GameManagerClient.Instance.LocalPositionPredictions.Add(new LocalPredictionData(
-				sequenceNumber,
-				inputs,
-				gameObject.transform.position,
-				transform,
-				yVelocityPreMove,
-				isGroundedPreMove
-				));
+				sequenceNumber, inputs, gameObject.transform.position, transform, yVelocityPreMove, isGroundedPreMove));
 
 			nextPos = gameObject.transform.position;
 			gameObject.transform.position = prevPos;

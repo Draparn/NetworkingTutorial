@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using UnityEditor;
 using UnityEngine;
 
@@ -25,6 +26,18 @@ public class BuildShortcuts : MonoBehaviour
 	public static void BuildAndRunServer()
 	{
 		Build("Server", true);
+	}
+
+	[MenuItem("BuildShortcuts/RunClient")]
+	public static void RunClient()
+	{
+		Process.Start("C:/Users/beatb/Downloads/ClientBuild/Client.exe");		
+	}
+
+	[MenuItem("BuildShortcuts/RunServer")]
+	public static void RunServer()
+	{
+		Process.Start("C:/Users/beatb/Downloads/ServerBuild/Server.exe");
 	}
 
 	private static void Build(string str, bool autoRun)
