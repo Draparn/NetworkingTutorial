@@ -4,22 +4,10 @@ using UnityEngine;
 
 public class BuildShortcuts : MonoBehaviour
 {
-	[MenuItem("BuildShortcuts/BuildClient")]
-	public static void BuildClient()
-	{
-		Build("Client", false);
-	}
-
 	[MenuItem("BuildShortcuts/BuildAndRunClient")]
 	public static void BuildAndRunClient()
 	{
 		Build("Client", true);
-	}
-
-	[MenuItem("BuildShortcuts/BuildServer")]
-	public static void BuildServer()
-	{
-		Build("Server", false);
 	}
 
 	[MenuItem("BuildShortcuts/BuildAndRunServer")]
@@ -28,10 +16,22 @@ public class BuildShortcuts : MonoBehaviour
 		Build("Server", true);
 	}
 
+	[MenuItem("BuildShortcuts/BuildClient")]
+	public static void BuildClient()
+	{
+		Build("Client", false);
+	}
+
+	[MenuItem("BuildShortcuts/BuildServer")]
+	public static void BuildServer()
+	{
+		Build("Server", false);
+	}
+
 	[MenuItem("BuildShortcuts/RunClient")]
 	public static void RunClient()
 	{
-		Process.Start("C:/Users/beatb/Downloads/ClientBuild/Client.exe");		
+		Process.Start("C:/Users/beatb/Downloads/ClientBuild/Client.exe");
 	}
 
 	[MenuItem("BuildShortcuts/RunServer")]
