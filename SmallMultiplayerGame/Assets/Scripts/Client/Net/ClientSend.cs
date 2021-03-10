@@ -39,13 +39,7 @@ namespace SmallMultiplayerGame.Client.Net
 			packet = PacketFactory.GetClientPacketType(ClientPackets.playerMovement);
 
 			packet.Write(sequenceNumber);
-
-			packet.Write(inputs.Forward);
-			packet.Write(inputs.Back);
-			packet.Write(inputs.Left);
-			packet.Write(inputs.Right);
-			packet.Write(inputs.Jump);
-
+			packet.Write(ValueTypeConversions.ReturnInputsAsByte(inputs));
 			packet.Write(rotation);
 
 			SendPacket(packet);

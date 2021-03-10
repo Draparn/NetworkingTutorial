@@ -36,7 +36,7 @@ namespace SmallMultiplayerGame.Server.Net
 		public static void OnPlayerMovement(byte clientId, Packet packet)
 		{
 			sequenceNumber = packet.ReadUInt();
-			inputs = new InputsStruct(packet.ReadBool(), packet.ReadBool(), packet.ReadBool(), packet.ReadBool(), packet.ReadBool());
+			inputs = ValueTypeConversions.ReturnByteAsInput(packet.ReadByte());
 			rotation = packet.ReadQuaternion();
 
 			Server.Clients[clientId].Player.UpdatePosAndRot(sequenceNumber, inputs, rotation);

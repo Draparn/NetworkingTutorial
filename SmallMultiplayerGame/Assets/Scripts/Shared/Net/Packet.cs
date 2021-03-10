@@ -86,7 +86,7 @@ namespace SmallMultiplayerGame.Shared.Net
 			readableBuffer = buffer.ToArray();
 		}
 
-		/// <summary>Inserts the length of the packet's content at the start of the buffer.</summary>
+		/// <summary>Inserts the length of the packet's content at the start of the buffer as a ushort.</summary>
 		public void WriteLength()
 		{
 			buffer.InsertRange(0, BitConverter.GetBytes((ushort)buffer.Count)); // Insert the byte length of the packet at the very beginning
