@@ -16,7 +16,7 @@ namespace SmallMultiplayerGame.Client.Gameplay.Player
 		private PlayerObjectClient player;
 
 		private InputsStruct inputs;
-		private Vector3 prevPos, nextPos, currentVelocity, previousVelocity;
+		private Vector3 prevPos, nextPos, currentVelocity /*, previousVelocity*/;
 
 		private float yVelocity, yVelocityPreMove, clientTickRate;
 		private uint sequenceNumber = 0;
@@ -120,16 +120,7 @@ namespace SmallMultiplayerGame.Client.Gameplay.Player
 			controller.enabled = true;
 			currentVelocity = PlayerMovementCalculations.CalculateCurrentVelocity(inputs, transform, ref yVelocity, controller.isGrounded);
 
-			Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1.1f);
-			Debug.Log($"{hit.transform.name}, ground is slope: {hit.normal != Vector3.up}");
-			if (hit.normal != Vector3.up)
-			{
-				var test = Vector3.ProjectOnPlane(currentVelocity, hit.normal);
-				Debug.Log(test);
-				Debug.Log("----------");
-				currentVelocity = test;
-			}
-
+			/*	//Disabled for now. Might come back to this.
 			if (currentVelocity.x == 0 && currentVelocity.z == 0)
 			{
 				PlayerMovementCalculations.CalculatePreviousVelocity(yVelocity, ref previousVelocity);
@@ -137,7 +128,8 @@ namespace SmallMultiplayerGame.Client.Gameplay.Player
 			}
 			else
 				previousVelocity = currentVelocity;
-			
+			*/
+
 			controller.Move(currentVelocity);
 			controller.enabled = false;
 

@@ -78,7 +78,7 @@ namespace SmallMultiplayerGame.Client.Gameplay.Player
 			else if (newHealthValue > currentHealth)
 				UIManager.Instance.HealDamage();
 
-			UIManager.Instance.SetHealthText(newHealthValue);
+			UIManager.Instance.SetHealthText(newHealthValue.ToString());
 			UIManager.Instance.SetHealthTextColor(newHealthValue);
 		}
 
@@ -100,7 +100,7 @@ namespace SmallMultiplayerGame.Client.Gameplay.Player
 			{
 				PlayerController.Instance.SetRespawnValues();
 				UIManager.Instance.Respawn();
-				UIManager.Instance.SetHealthText(maxHealth);
+				UIManager.Instance.SetHealthText(maxHealth.ToString());
 				UIManager.Instance.SetHealthTextColor(maxHealth);
 			}
 		}

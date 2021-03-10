@@ -149,9 +149,9 @@ namespace SmallMultiplayerGame.Client.Gameplay.Player
 			StartCoroutine(DamageTint(healed));
 		}
 
-		public void SetHealthText(float healthValue)
+		public void SetHealthText(string healthValue)
 		{
-			healthText.text = healthValue.ToString();
+			healthText.text = healthValue;
 		}
 
 		public void SetHealthTextColor(float healthValue)

@@ -46,7 +46,7 @@ namespace SmallMultiplayerGame.Client.Net
 
 				if (predData.SequenceNumber == playerData.Sequencenumber)
 				{
-					if (Vector3.Distance(predData.Position, playerData.Position) > 0.1f)
+					if (predData.IsGroundedPreMove && Vector3.Distance(predData.Position, playerData.Position) > 0.1f)
 					{
 						GameManagerClient.Instance.LocalPositionPredictions.RemoveRange(0, i);
 

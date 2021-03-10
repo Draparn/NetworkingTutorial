@@ -19,11 +19,13 @@ namespace SmallMultiplayerGame.Shared.Utils
 	public class PlayerMovementCalculations : MonoBehaviour
 	{
 		private static Vector3 velocity;
-		private static float groundMultiplier = ConstantValues.PLAYER_VELOCITY_GROUND_MULTIPLIER, airMultiplier = ConstantValues.PLAYER_VELOCITY_AIR_MULTIPLIER;
-		private static float tickRate = ConstantValues.SERVER_TICK_RATE;
-		private static float gravity = ConstantValues.WORLD_GRAVITY;
-		private static float jumpForce = ConstantValues.PLAYER_JUMP_FORCE;
-		private static float playerMoveSpeed = ConstantValues.PLAYER_MOVE_SPEED;
+		private static float
+			//prevGroundMultiplier = ConstantValues.PLAYER_PREVVELOCITY_GROUND_MULTIPLIER,	//Disabled for now. Might come back to this.
+			//prevAirMultiplier = ConstantValues.PLAYER_PREVVELOCITY_AIR_MULTIPLIER,	//Disabled for now. Might come back to this.
+			tickRate = ConstantValues.SERVER_TICK_RATE,
+			gravity = ConstantValues.WORLD_GRAVITY,
+			jumpForce = ConstantValues.PLAYER_JUMP_FORCE,
+			playerMoveSpeed = ConstantValues.PLAYER_MOVE_SPEED;
 
 		public static Vector3 ReCalculateCurrentVelocity(InputsStruct inputs, Transform transform, float yVelocity, bool isGrounded)
 		{
@@ -61,16 +63,17 @@ namespace SmallMultiplayerGame.Shared.Utils
 			return velocity;
 		}
 
+		/*	//Disabled for now. Might come back to this.
 		public static void CalculatePreviousVelocity(float yVelocity, ref Vector3 previousVelocity)
 		{
 			if (yVelocity == 0)
-				previousVelocity = new Vector3(previousVelocity.x * groundMultiplier, yVelocity, previousVelocity.z * groundMultiplier);
+				previousVelocity = new Vector3(previousVelocity.x * prevGroundMultiplier, yVelocity, previousVelocity.z * prevGroundMultiplier);
 			else
-				previousVelocity = new Vector3(previousVelocity.x * airMultiplier, yVelocity, previousVelocity.z * airMultiplier);
+				previousVelocity = new Vector3(previousVelocity.x * prevAirMultiplier, yVelocity, previousVelocity.z * prevAirMultiplier);
 
 			if (previousVelocity.magnitude <= 0.05f)
 				previousVelocity = Vector3.zero;
 		}
-
+		*/
 	}
 }
