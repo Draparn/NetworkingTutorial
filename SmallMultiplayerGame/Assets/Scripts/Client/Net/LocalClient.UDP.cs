@@ -57,7 +57,7 @@ namespace SmallMultiplayerGame.Client.Net
 					packet.InsertByte(Instance.MyId);
 					if (udpClient != null)
 					{
-						udpClient.BeginSend(packet.ToArray(), packet.Length(), null, null);
+						udpClient.BeginSend(packet.ToArray(), packet.GetLength(), null, null);
 					}
 				}
 				catch (Exception ex)

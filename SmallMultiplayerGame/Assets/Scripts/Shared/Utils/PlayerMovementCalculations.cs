@@ -20,12 +20,12 @@ namespace SmallMultiplayerGame.Shared.Utils
 	{
 		private static Vector3 velocity;
 		private static float
-			//prevGroundMultiplier = ConstantValues.PLAYER_PREVVELOCITY_GROUND_MULTIPLIER,	//Disabled for now. Might come back to this.
-			//prevAirMultiplier = ConstantValues.PLAYER_PREVVELOCITY_AIR_MULTIPLIER,	//Disabled for now. Might come back to this.
 			tickRate = ConstantValues.SERVER_TICK_RATE,
 			gravity = ConstantValues.WORLD_GRAVITY,
 			jumpForce = ConstantValues.PLAYER_JUMP_FORCE,
 			playerMoveSpeed = ConstantValues.PLAYER_MOVE_SPEED;
+		//prevGroundMultiplier = ConstantValues.PLAYER_PREVVELOCITY_GROUND_MULTIPLIER,	//Disabled for now. Might come back to this.
+		//prevAirMultiplier = ConstantValues.PLAYER_PREVVELOCITY_AIR_MULTIPLIER,	//Disabled for now. Might come back to this.
 
 		public static Vector3 ReCalculateCurrentVelocity(InputsStruct inputs, Transform transform, float yVelocity, bool isGrounded)
 		{

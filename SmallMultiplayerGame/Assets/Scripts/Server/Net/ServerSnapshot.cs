@@ -69,7 +69,7 @@ namespace SmallMultiplayerGame.Server.Net
 
 		public static void AddElevatorMovement(float lerpValue)
 		{
-			if (lerpValue < 0 || lerpValue > 1)
+			if (lerpValue <= 0 || lerpValue >= 1)
 				currentSnapshot.lerpValue = null;
 			else
 				currentSnapshot.lerpValue = ValueTypeConversions.ReturnDecimalsAsByte(lerpValue);

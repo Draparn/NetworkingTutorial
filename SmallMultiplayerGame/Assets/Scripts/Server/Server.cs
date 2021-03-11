@@ -81,7 +81,7 @@ namespace SmallMultiplayerGame.Server
 			{
 				if (endPoint != null)
 				{
-					udpListener.BeginSend(packet.ToArray(), packet.Length(), endPoint, null, null);
+					udpListener.BeginSend(packet.ToArray(), packet.GetLength(), endPoint, null, null);
 				}
 			}
 			catch (Exception ex)

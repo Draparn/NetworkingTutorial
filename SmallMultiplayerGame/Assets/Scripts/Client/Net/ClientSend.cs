@@ -39,7 +39,7 @@ namespace SmallMultiplayerGame.Client.Net
 			packet = PacketFactory.GetClientPacketType(ClientPackets.playerMovement);
 
 			packet.Write(sequenceNumber);
-			packet.Write(ValueTypeConversions.ReturnInputsAsByte(inputs));
+			packet.Write(ValueTypeConversions.ReturnBoolsAsByte(new bool[] { inputs.Forward, inputs.Back, inputs.Left, inputs.Right, inputs.Jump }));
 			packet.Write(rotation);
 
 			SendPacket(packet);
@@ -49,7 +49,6 @@ namespace SmallMultiplayerGame.Client.Net
 		public static void SendPlayerPrimaryFire(Vector3 facing)
 		{
 			packet = PacketFactory.GetClientPacketType(ClientPackets.playerPrimaryFire);
-
 			packet.Write(facing);
 			packet.Write(ClientSnapshot.Snapshots[0].sequenceNumber);
 
